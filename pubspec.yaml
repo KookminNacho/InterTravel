@@ -16,7 +16,12 @@ dependencies:
   provider:
 
   # Map Plugin
-  google_maps_flutter: ^2.5.3
+  geolocator: ^11.0.0
+  flutter_naver_map: ^1.2.1
+
+  # Permission
+  permission_handler: ^11.3.0
+
 
 
 dev_dependencies:
