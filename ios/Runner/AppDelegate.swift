@@ -8,8 +8,7 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-//    GMSServices.provideAPIKey("AIzaSyArLt9UWohhdh3W_BLVLICw8_4PvsWoaWo") // Google Maps API 키를 추가합니다.
-    GeneratedPluginRegistrant.register(with: self)
+      GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

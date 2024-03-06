@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/Profile/LoginPage.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/UserData.dart';
+import '../Util/Constrains.dart';
+import 'Diary.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,26 +20,26 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      Provider.of<UserData>(context, listen: false).updateLocation();
+      Provider.of<UserData>(context, listen: false).dummyDiaries();
+      await Provider.of<UserData>(context, listen: false).getLocation();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Main Page"),
-        ),
-        body: Center(
-          child: Consumer<UserData>(builder: (context, user, child) {
-            return Stack(
+    print("location: ${Provider.of<UserData>(context).location}");
+    return Scaffold(body: Consumer<UserData>(builder: (context, user, child) {
+      return (user.location == null)
+          ? CircularProgressIndicator()
+          : Stack(
+              alignment: Alignment.bottomCenter,
               children: [
                 NaverMap(
                   onCameraIdle: () async {
                     print(await _controller.getCameraPosition());
                   },
-                  options: NaverMapViewOptions(
+                  options: const NaverMapViewOptions(
                       extent: NLatLngBounds(
                         southWest: NLatLng(31.43, 122.37),
                         northEast: NLatLng(44.35, 132.0),
@@ -47,21 +50,49 @@ class _MainPageState extends State<MainPage> {
                               NLatLng(35.95667374781408, 127.85881633921491),
                           zoom: 6)),
                   onMapReady: (NaverMapController mapController) {
+                    Future.delayed(Duration(milliseconds: 500), () {
+                      setState(() {
+                        overlayColor = Colors.black.withOpacity(0.5);
+                        overlayHeight = 0;
+                      });
+                    });
+
+                    print("Map Ready, location: ${user.location}");
                     _controller = mapController;
                     NCameraUpdate cameraUpdate =
                         NCameraUpdate.fromCameraPosition(
-                            NCameraPosition(target: user.location, zoom: 15));
+                            NCameraPosition(target: user.location!, zoom: 15));
                     cameraUpdate.setAnimation(
                         animation: NCameraAnimation.fly,
                         duration: Duration(seconds: 3));
-
+                    _controller.addOverlayAll(_createOverlays(user.diaries));
                     _controller.updateCamera(cameraUpdate);
                   },
                 ),
+                LoginPage(),
               ],
             );
-          }),
-        ));
+    }));
+  }
+
+  Set<NAddableOverlay> _createOverlays(List<Diary> diary) {
+    print("createOverlays: $diary");
+    Set<NAddableOverlay> overlays = Set();
+    NLatLng? tempLocation = Provider.of<UserData>(context).location;
+    if (tempLocation != null) {
+      print("tempLocation: $tempLocation");
+      overlays.add(NMarker(id: "test", position: tempLocation!));
+    } else {
+      print("tempLocation is null");
+    }
+    for (Diary d in diary) {
+      overlays.add(NMarker(
+        id: d.title,
+        position: d.location!,
+      ));
+    }
+
+    return overlays;
   }
 }
 

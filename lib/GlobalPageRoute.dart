@@ -13,7 +13,6 @@ class GlobalPageRoute {
 }
 
 var namedRoutes = <String, WidgetBuilder>{
-  GlobalPageRoute.routeHome: (context) => MyHomePage(title: "루트 테스트"),
   GlobalPageRoute.routeLogin: (context) => LoginPage(),
   GlobalPageRoute.routeSignup: (context) => SignUpPage(),
   GlobalPageRoute.mainPage: (context) => const MainPage(),
