@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Profile/LoginPage.dart';
+import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
 
+import '../GlobalPageRoute.dart';
 import '../Provider/UserData.dart';
 import '../Util/Constrains.dart';
 import 'Diary.dart';
@@ -30,6 +32,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(body: Consumer<UserData>(builder: (context, user, child) {
+      mapLoaded(user);
       return (user.location == null)
           ? CircularProgressIndicator()
           : Stack(
@@ -50,25 +53,18 @@ class _MainPageState extends State<MainPage> {
                               NLatLng(35.95667374781408, 127.85881633921491),
                           zoom: 6)),
                   onMapReady: (NaverMapController mapController) {
-                    Future.delayed(Duration(milliseconds: 500), () {
+                    Future.delayed(Duration(milliseconds: 1000), () {
                       setState(() {
-                        overlayColor = Colors.black.withOpacity(0.5);
-                        overlayHeight = 0;
+                        loginColor = Colors.black.withOpacity(0.5);
+                        loginHeight = 0;
                       });
                     });
+                    print("mapLoad: ${user.mapLoad}");
 
-                    print("Map Ready, location: ${user.location}");
                     _controller = mapController;
-                    NCameraUpdate cameraUpdate =
-                        NCameraUpdate.fromCameraPosition(
-                            NCameraPosition(target: user.location!, zoom: 15));
-                    cameraUpdate.setAnimation(
-                        animation: NCameraAnimation.fly,
-                        duration: Duration(seconds: 3));
-                    _controller.addOverlayAll(_createOverlays(user.diaries));
-                    _controller.updateCamera(cameraUpdate);
                   },
                 ),
+                WelcomePage(),
                 LoginPage(),
               ],
             );
@@ -81,18 +77,32 @@ class _MainPageState extends State<MainPage> {
     NLatLng? tempLocation = Provider.of<UserData>(context).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
-      overlays.add(NMarker(id: "test", position: tempLocation!));
+      overlays.add(NMarker(id: "test", position: tempLocation));
     } else {
       print("tempLocation is null");
     }
     for (Diary d in diary) {
+      print("Diary: $d");
       overlays.add(NMarker(
         id: d.title,
-        position: d.location!,
+        position: d.location,
       ));
     }
 
     return overlays;
+  }
+
+  void mapLoaded(UserData user){
+    if(user.mapLoad){
+      NCameraUpdate cameraUpdate =
+      NCameraUpdate.fromCameraPosition(
+          NCameraPosition(target: user.location!, zoom: 15));
+      cameraUpdate.setAnimation(
+          animation: NCameraAnimation.fly,
+          duration: Duration(seconds: 3));
+      _controller.addOverlayAll(_createOverlays(user.diaries));
+      _controller.updateCamera(cameraUpdate);
+    }
   }
 }
 

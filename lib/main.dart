@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    overlayHeight = MediaQuery.of(context).size.height / 2.5;
+    loginHeight = MediaQuery.of(context).size.height / 2.5;
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

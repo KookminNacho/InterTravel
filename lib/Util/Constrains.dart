@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-Color overlayColor = Colors.black;
+Color loginColor = Colors.black;
 
+double loginHeight = 0;
 
+double welcomeHeight = 400;
 
-double overlayHeight = 0;
+int animationDuration = 150;

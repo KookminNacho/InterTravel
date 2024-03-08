@@ -6,10 +6,19 @@ import 'package:intertravel/Map/Diary.dart';
 class UserData extends ChangeNotifier {
   NLatLng? _location;
   List<Diary> diaries = [];
+  bool _mapLoad = false;
 
   NLatLng? get location => _location;
 
   List<Diary> get diary => diaries;
+
+  bool get mapLoad => _mapLoad;
+
+  set mapLoad(bool value) {
+    print("MapLoad changed: $value");
+    _mapLoad = value;
+    notifyListeners();
+  }
 
   set location(NLatLng? value) {
     _location = value;

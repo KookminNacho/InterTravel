@@ -17,3 +17,9 @@ var namedRoutes = <String, WidgetBuilder>{
   GlobalPageRoute.routeSignup: (context) => SignUpPage(),
   GlobalPageRoute.mainPage: (context) => const MainPage(),
 };
+
+Widget currentPage = LoginPage();
+
+void ChangeBottomSheet(Widget widget, BuildContext context) {
+
+}
