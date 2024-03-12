@@ -22,6 +22,11 @@ dependencies:
   # Permission
   permission_handler: ^11.3.0
 
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  google_sign_in: ^6.2.1
+
 
 
 dev_dependencies:

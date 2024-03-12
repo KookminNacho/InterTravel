@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,12 +8,20 @@ class UserData extends ChangeNotifier {
   NLatLng? _location;
   List<Diary> diaries = [];
   bool _mapLoad = false;
+  UserCredential? _user;
 
   NLatLng? get location => _location;
 
   List<Diary> get diary => diaries;
 
   bool get mapLoad => _mapLoad;
+
+  UserCredential? get user => _user;
+
+  set user(UserCredential? value) {
+    _user = value;
+    notifyListeners();
+  }
 
   set mapLoad(bool value) {
     print("MapLoad changed: $value");
@@ -32,13 +41,84 @@ class UserData extends ChangeNotifier {
   }
 
   void dummyDiaries() {
-    for (int i = 0; i < 10; i++) {
-      diaries.add(Diary(
-          title: "Title $i",
-          content: "Content $i",
-          location: NLatLng(37.5665 + i, 126.9780 + i),
-          date: DateTime.now()));
-    }
+    diaries = [
+      Diary(
+        title: "Gyeongbokgung Palace",
+        content:
+            "Visiting Gyeongbokgung Palace was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2024, 1, 2),
+        location: NLatLng(37.5781, 126.9768),
+      ),
+      Diary(
+        title: "N Seoul Tower",
+        content: "Visiting N Seoul Tower was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 11, 11),
+        location: NLatLng(37.5512, 126.9882),
+      ),
+      Diary(
+        title: "Bukchon Hanok Village",
+        content:
+            "Visiting Bukchon Hanok Village was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 4, 9),
+        location: NLatLng(37.5824, 126.9830),
+      ),
+      Diary(
+        title: "Jeonju Hanok Village",
+        content:
+            "Visiting Jeonju Hanok Village was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 5, 2),
+        location: NLatLng(35.8151, 127.1539),
+      ),
+      Diary(
+        title: "Haeundae Beach",
+        content: "Visiting Haeundae Beach was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2024, 2, 17),
+        location: NLatLng(35.1587, 129.1604),
+      ),
+      Diary(
+        title: "Gwanghwamun Square",
+        content: "Visiting Gwanghwamun Square was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 5, 18),
+        location: NLatLng(37.5763, 126.9769),
+      ),
+      Diary(
+        title: "Lotte World Tower",
+        content: "Visiting Lotte World Tower was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 12, 10),
+        location: NLatLng(37.5139, 127.1028),
+      ),
+      Diary(
+        title: "Bulguksa Temple",
+        content: "Visiting Bulguksa Temple was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 10, 29),
+        location: NLatLng(35.7892, 129.3310),
+      ),
+      Diary(
+        title: "Suncheon Bay National Garden",
+        content:
+            "Visiting Suncheon Bay National Garden was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 12, 9),
+        location: NLatLng(34.8806, 127.4888),
+      ),
+      Diary(
+        title: "DMZ (Demilitarized Zone)",
+        content:
+            "Visiting DMZ (Demilitarized Zone) was an unforgettable experience.",
+        image: "placeholder.jpg",
+        date: DateTime(2023, 9, 4),
+        location: NLatLng(37.9566, 126.6774),
+      ),
+    ];
+    notifyListeners();
   }
 
   void updateLocation() {

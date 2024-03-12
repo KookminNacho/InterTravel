@@ -5,6 +5,7 @@ import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
 
 import '../GlobalPageRoute.dart';
+import '../Provider/ImageProvider.dart';
 import '../Provider/UserData.dart';
 import '../Util/Constrains.dart';
 import 'Diary.dart';
@@ -32,7 +33,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(body: Consumer<UserData>(builder: (context, user, child) {
-      mapLoaded(user);
+      // mapLoaded(user);
       return (user.location == null)
           ? CircularProgressIndicator()
           : Stack(
@@ -71,13 +72,14 @@ class _MainPageState extends State<MainPage> {
     }));
   }
 
-  Set<NAddableOverlay> _createOverlays(List<Diary> diary) {
-    print("createOverlays: $diary");
+  Future<Set<NAddableOverlay<NOverlay<void>>>> _createOverlays(
+      List<Diary> diary) async {
     Set<NAddableOverlay> overlays = Set();
     NLatLng? tempLocation = Provider.of<UserData>(context).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
-      overlays.add(NMarker(id: "test", position: tempLocation));
+      overlays.add(NMarker(
+          id: "test", position: tempLocation));
     } else {
       print("tempLocation is null");
     }
@@ -88,19 +90,54 @@ class _MainPageState extends State<MainPage> {
         position: d.location,
       ));
     }
-
     return overlays;
   }
 
-  void mapLoaded(UserData user){
-    if(user.mapLoad){
-      NCameraUpdate cameraUpdate =
-      NCameraUpdate.fromCameraPosition(
+  // Future<void> preloadImages(List<String> imageUrls) async {
+  //   final List<Future> imagePreloadFutures = [];
+  //
+  //   for (String url in imageUrls) {
+  //     final ImageProvider.dart imageProvider = NetworkImage(url);
+  //     final Future preloadFuture = precacheImage(imageProvider, context);
+  //     imagePreloadFutures.add(preloadFuture);
+  //   }
+  //
+  //   await Future.wait(imagePreloadFutures);
+  // }
+
+  Future<NOverlayImage> markerWithImage(Map<String, Image> images) async {
+    return NOverlayImage.fromWidget(
+        widget: Column(
+          children: [
+            Container(
+                height: 40,
+                width: 48,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white),
+                child: images["https://picsum.photos/200/300"]!
+            ),
+          Container(
+              color: Colors.grey,
+              height: 4,
+              width: 2,
+            )
+          ],
+        ),
+        size: Size(50, 50),
+        context: context);
+  }
+
+  void mapLoaded(UserData user) async {
+    Provider.of<ImageProviderModel>(context, listen: false)
+        .loadImage("https://picsum.photos/200/300");
+    if (user.mapLoad) {
+      NCameraUpdate cameraUpdate = NCameraUpdate.fromCameraPosition(
           NCameraPosition(target: user.location!, zoom: 15));
       cameraUpdate.setAnimation(
-          animation: NCameraAnimation.fly,
-          duration: Duration(seconds: 3));
-      _controller.addOverlayAll(_createOverlays(user.diaries));
+          animation: NCameraAnimation.fly, duration: Duration(seconds: 3));
+      _controller.addOverlayAll(await _createOverlays(user.diaries));
       _controller.updateCamera(cameraUpdate);
     }
   }

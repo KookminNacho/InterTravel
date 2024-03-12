@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "983897180404",
+    "project_id": "intertravel-fab82",
+    "storage_bucket": "intertravel-fab82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983897180404:android:0d689881c2012034e5f6a1",
+        "android_client_info": {
+          "package_name": "com.remake.intertravel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983897180404-c895tl8kq9galr12mqpirs3l7arh4n4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDekrtagx1bJBnjVnlLDvRlcDJICKvZZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983897180404-c895tl8kq9galr12mqpirs3l7arh4n4g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "983897180404-811hrr26pojje060550hof173814grcp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.remake.intertravel"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
