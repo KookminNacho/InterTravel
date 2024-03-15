@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intertravel/Provider/UserData.dart';
 import 'package:intertravel/Util/Constrains.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -11,16 +13,21 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      transform: Matrix4.translationValues(0, welcomeHeight, 0),
-      duration: Duration(milliseconds: animationDuration),
+    return Consumer<UserData>(
+      builder: (context, userData, child) {
+        return AnimatedContainer(
+          transform: Matrix4.translationValues(0, welcomeHeight, 0),
+          duration: Duration(milliseconds: animationDuration),
+          child: Text(userData.user?.user?.uid ?? "null"),
 
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 255, 255, 255),
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      ),
-      height: 400,
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 255, 255, 255),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          ),
+          height: 400,
+        );
+      }
     );
   }
 }
