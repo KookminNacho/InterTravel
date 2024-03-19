@@ -2,13 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intertravel/Map/Diary.dart';
+import 'package:intertravel/Repository/AuthRepository.dart';
+import '../Model/Diary.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;
   List<Diary> diaries = [];
   bool _mapLoad = false;
   UserCredential? _user;
+  String _uid = "";
+  String _displayName = "";
 
   NLatLng? get location => _location;
 
@@ -18,8 +21,16 @@ class UserData extends ChangeNotifier {
 
   UserCredential? get user => _user;
 
-  set user(UserCredential? value) {
+  String get uid => _uid;
+
+  set user (UserCredential? value) {
     _user = value;
+    if(user?.user?.uid != null) {
+      _uid = user!.user!.uid;
+    }
+    if(user?.user?.displayName != null) {
+      _displayName = user!.user!.displayName!;
+    }
     notifyListeners();
   }
 

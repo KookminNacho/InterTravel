@@ -16,3 +16,21 @@ class Diary {
     date = DateTime.now();
   }
 }
+
+
+class DiaryManager{
+  List<Diary> diaries = [];
+
+
+  void addDiary(Diary diary){
+    diaries.add(diary);
+  }
+
+  void removeDiary(Diary diary){
+    diaries.remove(diary);
+  }
+
+  void updateDiary(Diary diary, int index){
+    diaries[index] = diary;
+  }
+}

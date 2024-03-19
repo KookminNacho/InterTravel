@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:intertravel/Map/MainPage.dart';
 import 'package:intertravel/main.dart';
 
-import 'Profile/LoginPage.dart';
-import 'Profile/SignUpPage.dart';
+import 'View/LoginPage.dart';
+import 'View/MainPage.dart';
+import 'View/SignUpPage.dart';
 
 class GlobalPageRoute {
   static const routeHome = '/';

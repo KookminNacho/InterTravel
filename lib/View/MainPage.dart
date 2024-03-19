@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:intertravel/Profile/LoginPage.dart';
+import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
 
 import '../GlobalPageRoute.dart';
-import '../Provider/ImageProvider.dart';
-import '../Provider/UserData.dart';
+import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
-import 'Diary.dart';
+import '../ViewModel/ImageProvider.dart';
+import '../ViewModel/UserData.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

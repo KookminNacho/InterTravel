@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:intertravel/Provider/UserPermission.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:provider/provider.dart';
 import 'GlobalPageRoute.dart';
-import 'Provider/ImageProvider.dart';
-import 'Provider/UserData.dart';
+import 'ViewModel/ImageProvider.dart';
+import 'ViewModel/UserData.dart';
+import 'ViewModel/UserPermission.dart';
 import 'firebase_options.dart';
 
 void main() async {
