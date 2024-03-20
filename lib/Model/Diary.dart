@@ -7,13 +7,17 @@ class Diary {
   String image;
   DateTime date;
   NLatLng location;
+  String owner;
+  String userID;
 
   Diary(
       {this.title = "",
       this.content = "",
       this.image = "",
       required this.date,
-      required this.location}) {
+      required this.location,
+      this.owner = "",
+      this.userID = ""}) {
     date = DateTime.now();
   }
 }

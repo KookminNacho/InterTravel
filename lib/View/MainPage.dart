@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/View/ImagedMarker.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UserPermission.dart';
@@ -44,11 +45,14 @@ class _MainPageState extends State<MainPage> {
                         color: Colors.black,
                         height: MediaQuery.of(context).size.height,
                         width: MediaQuery.of(context).size.width,
-                        child: Center(child: CircularProgressIndicator()))
+                        child: const Center(child: CircularProgressIndicator()))
                     : Stack(
                         alignment: Alignment.bottomCenter,
                         children: [
                           NaverMap(
+                            onSymbolTapped: (nMapSymbol) {
+                              print(nMapSymbol.caption);
+                            },
                             onCameraIdle: () async {
                               print(await _controller.getCameraPosition());
                             },
@@ -102,13 +106,14 @@ class _MainPageState extends State<MainPage> {
       print("tempLocation is null");
     }
     for (Diary d in diary) {
-      _controller.updateCamera(NCameraUpdate.scrollAndZoomTo(
-          target: NLatLng(d.location.latitude, d.location.longitude)));
       print(d.location);
-      overlays.add(NMarker(
+      NMarker marker = NMarker(
         id: d.title,
         position: d.location,
-      ));
+        icon: await markerWithImage(d),
+      );
+      marker.setOnTapListener((overlay) {print("tapped: ${d.title} $overlay");});
+      overlays.add(marker);
       print("title : ${d.title}");
     }
     print("Overlays: $overlays");
@@ -128,37 +133,16 @@ class _MainPageState extends State<MainPage> {
   //   await Future.wait(imagePreloadFutures);
   // }
 
-  Future<NOverlayImage> markerWithImage(Map<String, Image> images) async {
+  Future<NOverlayImage> markerWithImage(Diary diary) async {
     return NOverlayImage.fromWidget(
-        widget: Column(
-          children: [
-            Container(
-                height: 40,
-                width: 48,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.white),
-                child: images["https://picsum.photos/200/300"]!),
-            Container(
-              color: Colors.grey,
-              height: 4,
-              width: 2,
-            )
-          ],
-        ),
+        widget: ImagedMarker(diary: diary),
         size: Size(50, 50),
         context: context);
   }
 
   void mapLoaded(UserData user, DiaryProvider diaries) async {
     if (user.mapLoad) {
-      NCameraUpdate cameraUpdate = NCameraUpdate.fromCameraPosition(
-          NCameraPosition(target: user.location!, zoom: 15));
-      cameraUpdate.setAnimation(
-          animation: NCameraAnimation.fly, duration: Duration(seconds: 3));
       _controller.addOverlayAll(await _createOverlays(diaries.diaries));
-      _controller.updateCamera(cameraUpdate);
     }
   }
 }

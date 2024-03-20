@@ -33,83 +33,84 @@ class DiarySource {
 
     List diaries = [
       Diary(
-        title: "Gyeongbokgung Palace",
-        content:
-        "Visiting Gyeongbokgung Palace was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2024, 1),
-        location: NLatLng(37.5781, 126.9768),
-      ),
+          title: "Gyeongbokgung Palace",
+          content:
+              "Visiting Gyeongbokgung Palace was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2024, 1),
+          location: NLatLng(37.5781, 126.9768),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "N Seoul Tower",
-        content: "Visiting N Seoul Tower was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 11, 11),
-        location: NLatLng(37.5512, 126.9882),
-      ),
+          title: "N Seoul Tower",
+          content: "Visiting N Seoul Tower was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 11, 11),
+          location: NLatLng(37.5512, 126.9882),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Bukchon Hanok Village",
-        content:
-        "Visiting Bukchon Hanok Village was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 4, 9),
-        location: NLatLng(37.5824, 126.9830),
-      ),
+          title: "Bukchon Hanok Village",
+          content:
+              "Visiting Bukchon Hanok Village was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 4, 9),
+          location: NLatLng(37.5824, 126.9830),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Jeonju Hanok Village",
-        content:
-        "Visiting Jeonju Hanok Village was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 5, 2),
-        location: NLatLng(35.8151, 127.1539),
-      ),
+          title: "Jeonju Hanok Village",
+          content:
+              "Visiting Jeonju Hanok Village was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 5, 2),
+          location: NLatLng(35.8151, 127.1539),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Haeundae Beach",
-        content: "Visiting Haeundae Beach was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2024, 2, 17),
-        location: NLatLng(35.1587, 129.1604),
-      ),
+          title: "Haeundae Beach",
+          content: "Visiting Haeundae Beach was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2024, 2, 17),
+          location: NLatLng(35.1587, 129.1604),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Gwanghwamun Square",
-        content: "Visiting Gwanghwamun Square was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 5, 18),
-        location: NLatLng(37.5763, 126.9769),
-      ),
+          title: "Gwanghwamun Square",
+          content:
+              "Visiting Gwanghwamun Square was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 5, 18),
+          location: NLatLng(37.5763, 126.9769),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Lotte World Tower",
-        content: "Visiting Lotte World Tower was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 12, 10),
-        location: NLatLng(37.5139, 127.1028),
-      ),
+          title: "Lotte World Tower",
+          content:
+              "Visiting Lotte World Tower was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 12, 10),
+          location: NLatLng(37.5139, 127.1028),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Bulguksa Temple",
-        content: "Visiting Bulguksa Temple was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 10, 29),
-        location: NLatLng(35.7892, 129.3310),
-      ),
+          title: "Bulguksa Temple",
+          content: "Visiting Bulguksa Temple was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 10, 29),
+          location: NLatLng(35.7892, 129.3310),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "Suncheon Bay National Garden",
-        content:
-        "Visiting Suncheon Bay National Garden was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 12, 9),
-        location: NLatLng(34.8806, 127.4888),
-      ),
+          title: "Suncheon Bay National Garden",
+          content:
+              "Visiting Suncheon Bay National Garden was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 12, 9),
+          location: NLatLng(34.8806, 127.4888),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
       Diary(
-        title: "DMZ (Demilitarized Zone)",
-        content:
-        "Visiting DMZ (Demilitarized Zone) was an unforgettable experience.",
-        image: "placeholder.jpg",
-        date: DateTime(2023, 9, 4),
-        location: NLatLng(37.9566, 126.6774),
-      ),
+          title: "DMZ (Demilitarized Zone)",
+          content:
+              "Visiting DMZ (Demilitarized Zone) was an unforgettable experience.",
+          image: "placeholder.jpg",
+          date: DateTime(2023, 9, 4),
+          location: NLatLng(37.9566, 126.6774),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
     ];
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
 
     for (var d in diaries) {
       print("Adding diary: ${d.title}");
