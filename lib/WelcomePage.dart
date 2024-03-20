@@ -16,6 +16,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget build(BuildContext context) {
     return Consumer<UserData>(builder: (context, userData, child) {
       return AnimatedContainer(
+
         transform: Matrix4.translationValues(0, welcomeHeight, 0),
         duration: Duration(milliseconds: animationDuration),
         decoration: const BoxDecoration(
@@ -28,7 +29,8 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Column(
           children: [
             Text("반가워요, ${userData.user?.user?.displayName}"),
-            Text("당신의 UID는 \"${userData.user?.user?.uid}\"입니다.")
+            Text("당신의 UID는 \"${userData.user?.user?.uid}\"입니다."),
+
           ],
         ),
       );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/View/LoginPage.dart';
+import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      Provider.of<UserData>(context, listen: false).dummyDiaries();
       await Provider.of<UserData>(context, listen: false).getLocation();
     });
     super.initState();
@@ -32,64 +32,72 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     print("location: ${Provider.of<UserData>(context).location}");
-    return Scaffold(body: Consumer<UserData>(builder: (context, user, child) {
-      // mapLoaded(user);
-      return (user.location == null)
-          ? CircularProgressIndicator()
-          : Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                NaverMap(
-                  onCameraIdle: () async {
-                    print(await _controller.getCameraPosition());
-                  },
-                  options: const NaverMapViewOptions(
-                      extent: NLatLngBounds(
-                        southWest: NLatLng(31.43, 122.37),
-                        northEast: NLatLng(44.35, 132.0),
-                      ),
-                      minZoom: 6,
-                      initialCameraPosition: NCameraPosition(
-                          target:
-                              NLatLng(35.95667374781408, 127.85881633921491),
-                          zoom: 6)),
-                  onMapReady: (NaverMapController mapController) {
-                    Future.delayed(Duration(milliseconds: 1000), () {
-                      setState(() {
-                        loginColor = Colors.black.withOpacity(0.5);
-                        loginHeight = 0;
+    return Scaffold(
+        body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
+      return Consumer<UserData>(builder: (context, user, child) {
+        mapLoaded(user, diaries);
+        return (user.location == null)
+            ? CircularProgressIndicator()
+            : Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  NaverMap(
+                    onCameraIdle: () async {
+                      print(await _controller.getCameraPosition());
+                    },
+                    options: const NaverMapViewOptions(
+                        extent: NLatLngBounds(
+                          southWest: NLatLng(31.43, 122.37),
+                          northEast: NLatLng(44.35, 132.0),
+                        ),
+                        minZoom: 6,
+                        initialCameraPosition: NCameraPosition(
+                            target:
+                                NLatLng(35.95667374781408, 127.85881633921491),
+                            zoom: 6)),
+                    onMapReady: (NaverMapController mapController) {
+                      Future.delayed(Duration(milliseconds: 1000), () {
+                        setState(() {
+                          loginColor = Colors.black.withOpacity(0.5);
+                          loginHeight = 0;
+                        });
                       });
-                    });
-                    print("mapLoad: ${user.mapLoad}");
+                      print("mapLoad: ${user.mapLoad}");
 
-                    _controller = mapController;
-                  },
-                ),
-                WelcomePage(),
-                LoginPage(),
-              ],
-            );
+                      _controller = mapController;
+                    },
+                  ),
+                  WelcomePage(),
+                  LoginPage(),
+                ],
+              );
+      });
     }));
   }
 
   Future<Set<NAddableOverlay<NOverlay<void>>>> _createOverlays(
       List<Diary> diary) async {
+    print("Creating Overlays, Diary: $diary");
     Set<NAddableOverlay> overlays = Set();
     NLatLng? tempLocation = Provider.of<UserData>(context).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
-      overlays.add(NMarker(
-          id: "test", position: tempLocation));
+      overlays.add(NMarker(id: "temp", position: tempLocation));
     } else {
       print("tempLocation is null");
     }
     for (Diary d in diary) {
-      print("Diary: $d");
+      _controller.updateCamera(NCameraUpdate.scrollAndZoomTo(
+          target: NLatLng(d.location.latitude, d.location.longitude)));
+      print(d.location);
       overlays.add(NMarker(
         id: d.title,
         position: d.location,
       ));
+      print("title : ${d.title}");
     }
+    print("Overlays: $overlays");
+
     return overlays;
   }
 
@@ -116,9 +124,8 @@ class _MainPageState extends State<MainPage> {
                     border: Border.all(color: Colors.grey, width: 1),
                     borderRadius: BorderRadius.circular(5),
                     color: Colors.white),
-                child: images["https://picsum.photos/200/300"]!
-            ),
-          Container(
+                child: images["https://picsum.photos/200/300"]!),
+            Container(
               color: Colors.grey,
               height: 4,
               width: 2,
@@ -129,15 +136,13 @@ class _MainPageState extends State<MainPage> {
         context: context);
   }
 
-  void mapLoaded(UserData user) async {
-    Provider.of<ImageProviderModel>(context, listen: false)
-        .loadImage("https://picsum.photos/200/300");
+  void mapLoaded(UserData user, DiaryProvider diaries) async {
     if (user.mapLoad) {
       NCameraUpdate cameraUpdate = NCameraUpdate.fromCameraPosition(
           NCameraPosition(target: user.location!, zoom: 15));
       cameraUpdate.setAnimation(
           animation: NCameraAnimation.fly, duration: Duration(seconds: 3));
-      _controller.addOverlayAll(await _createOverlays(user.diaries));
+      _controller.addOverlayAll(await _createOverlays(diaries.diaries));
       _controller.updateCamera(cameraUpdate);
     }
   }

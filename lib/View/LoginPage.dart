@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intertravel/DataSource/AuthDataSource.dart';
 import 'package:intertravel/Repository/AuthRepository.dart';
+import 'package:intertravel/Repository/DiaryRespository.dart';
+import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../GlobalPageRoute.dart';
@@ -56,12 +58,15 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: MaterialButton(
                                 onPressed: () async {
+                                  DiaryRepository diaryRepository =
+                                      DiaryRepository();
                                   UserCredential? user =
                                       await authRepository.signInWithGoogle();
                                   if (user != null) {
                                     userData.user = user;
                                     loadPage();
                                   }
+                                  diaryRepository.getDiaries();
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -151,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
         welcomeHeight = 0;
       });
       Provider.of<UserData>(context, listen: false).mapLoad = true;
+      Provider.of<DiaryProvider>(context, listen: false).loadDiary();
     });
   }
 
