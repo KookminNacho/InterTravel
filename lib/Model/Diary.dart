@@ -5,7 +5,7 @@ class Diary {
   String title;
   String content;
   String image;
-  Timestamp date;
+  DateTime date;
   NLatLng location;
 
   Diary(
@@ -14,24 +14,6 @@ class Diary {
       this.image = "",
       required this.date,
       required this.location}) {
-    date = Timestamp.now();
-  }
-}
-
-
-class DiaryManager{
-  List<Diary> diaries = [];
-
-
-  void addDiary(Diary diary){
-    diaries.add(diary);
-  }
-
-  void removeDiary(Diary diary){
-    diaries.remove(diary);
-  }
-
-  void updateDiary(Diary diary, int index){
-    diaries[index] = diary;
+    date = DateTime.now();
   }
 }

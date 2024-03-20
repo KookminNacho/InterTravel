@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/UserPermission.dart';
 import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
 
@@ -34,42 +35,56 @@ class _MainPageState extends State<MainPage> {
     print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(
         body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-      return Consumer<UserData>(builder: (context, user, child) {
-        mapLoaded(user, diaries);
-        return (user.location == null)
-            ? CircularProgressIndicator()
-            : Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  NaverMap(
-                    onCameraIdle: () async {
-                      print(await _controller.getCameraPosition());
-                    },
-                    options: const NaverMapViewOptions(
-                        extent: NLatLngBounds(
-                          southWest: NLatLng(31.43, 122.37),
-                          northEast: NLatLng(44.35, 132.0),
-                        ),
-                        minZoom: 6,
-                        initialCameraPosition: NCameraPosition(
-                            target:
-                                NLatLng(35.95667374781408, 127.85881633921491),
-                            zoom: 6)),
-                    onMapReady: (NaverMapController mapController) {
-                      Future.delayed(Duration(milliseconds: 1000), () {
-                        setState(() {
-                          loginColor = Colors.black.withOpacity(0.5);
-                          loginHeight = 0;
-                        });
-                      });
-                      print("mapLoad: ${user.mapLoad}");
+      return Consumer<UserPermission>(builder: (context, permission, child) {
+        return (permission.locationPermission)
+            ? Consumer<UserData>(builder: (context, user, child) {
+                mapLoaded(user, diaries);
+                return (user.location == null)
+                    ? Container(
+                        color: Colors.black,
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(child: CircularProgressIndicator()))
+                    : Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          NaverMap(
+                            onCameraIdle: () async {
+                              print(await _controller.getCameraPosition());
+                            },
+                            options: const NaverMapViewOptions(
+                                extent: NLatLngBounds(
+                                  southWest: NLatLng(31.43, 122.37),
+                                  northEast: NLatLng(44.35, 132.0),
+                                ),
+                                minZoom: 6,
+                                initialCameraPosition: NCameraPosition(
+                                    target: NLatLng(
+                                        35.95667374781408, 127.85881633921491),
+                                    zoom: 6)),
+                            onMapReady: (NaverMapController mapController) {
+                              Future.delayed(Duration(milliseconds: 1000), () {
+                                setState(() {
+                                  loginColor = Colors.black.withOpacity(0.5);
+                                  loginHeight = 0;
+                                });
+                              });
+                              print("mapLoad: ${user.mapLoad}");
 
-                      _controller = mapController;
+                              _controller = mapController;
+                            },
+                          ),
+                          WelcomePage(),
+                          LoginPage(),
+                        ],
+                      );
+              })
+            : Center(
+                child: ElevatedButton(
+                    onPressed: () {
+                      permission.requestLocationPermission();
                     },
-                  ),
-                  WelcomePage(),
-                  LoginPage(),
-                ],
+                    child: Text("권한을 허용해주세요")),
               );
       });
     }));
