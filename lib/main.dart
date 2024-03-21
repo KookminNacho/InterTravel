@@ -20,7 +20,6 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserData()),
     ChangeNotifierProvider(create: (context) => UserPermission()),
-    ChangeNotifierProvider(create: (context) => ImageProviderModel()),
     ChangeNotifierProvider(create: (context) => DiaryProvider()),
   ], child: const MyApp()));
 }

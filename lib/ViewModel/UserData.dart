@@ -13,6 +13,9 @@ class UserData extends ChangeNotifier {
   UserCredential? _user;
   String _uid = "";
   String _displayName = "";
+  Set<NAddableOverlay> overlays = {};
+  Map<String, double> size = {};
+
 
   NLatLng? get location => _location;
 
@@ -23,6 +26,10 @@ class UserData extends ChangeNotifier {
   UserCredential? get user => _user;
 
   String get uid => _uid;
+
+  String get displayName => _displayName;
+
+  Set<NAddableOverlay> get overlay => overlays;
 
   set user (UserCredential? value) {
     _user = value;
@@ -70,5 +77,10 @@ class UserData extends ChangeNotifier {
       location = null; // 에러 발생 시 위치 정보를 null로 설정
       notifyListeners();
     }
+  }
+
+  void ExtendMarker(NAddableOverlay overlay) {
+
+    notifyListeners();
   }
 }
