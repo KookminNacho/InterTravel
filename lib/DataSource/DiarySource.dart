@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 import '../Model/Diary.dart';
@@ -11,6 +12,9 @@ class DiarySource {
     QuerySnapshot<Map<String, dynamic>> response =
         await firestore.collection('Diaries').get();
     for (var doc in response.docs) {
+      String url = await FirebaseStorage.instance
+          .refFromURL(doc['image'])
+          .getDownloadURL();
       GeoPoint location = doc['location'];
       NLatLng nLatLng = NLatLng(location.latitude, location.longitude);
       Timestamp tdate = doc['date'];
@@ -22,6 +26,9 @@ class DiarySource {
         date: date,
         location: nLatLng,
         image: doc['image'],
+        imageURI: url,
+        owner: doc['owner'],
+
       ));
     }
     // Fetch data from the server

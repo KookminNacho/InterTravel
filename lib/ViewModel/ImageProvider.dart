@@ -1,17 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:intertravel/Repository/ImageRepository.dart';
+
+import '../Model/Diary.dart';
 
 class ImageProviderModel with ChangeNotifier {
-  Map<String, Image> _images = {};
+  Map<String, Uint8List> _images = {};
+  ImageRepository _imageRepository = ImageRepository();
 
-  // 이미지를 불러오는 메소드
-  Future<void> loadImage(String url) async {
+  Map<String, Uint8List> get images => _images;
 
-    _images[url] = Image.network(url); // 간단한 예시입니다.
-    notifyListeners(); // 이미지 로딩 상태 변경을 알립니다.
+  Future<void> loadImages(List<Diary> diaries) async {
+    _images = await _imageRepository.loadImages(diaries);
+    notifyListeners();
   }
 
-  // 특정 URL의 이미지 가져오기
-  Image? getImage(String url) {
-    return _images[url];
-  }
+
 }

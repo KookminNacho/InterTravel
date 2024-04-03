@@ -28,8 +28,13 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+
+# 빌드시 FireStore 플러그인 다운로드가 너무 오래 걸리는 관계로 직접 다운로드
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.22.0'
+
   use_frameworks!
   use_modular_headers!
+
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
@@ -113,5 +118,7 @@ post_install do |installer|
     end
   end
 end
+
+
 
 

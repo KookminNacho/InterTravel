@@ -21,6 +21,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => UserData()),
     ChangeNotifierProvider(create: (context) => UserPermission()),
     ChangeNotifierProvider(create: (context) => DiaryProvider()),
+    ChangeNotifierProvider(create: (context) => ImageProviderModel()),
   ], child: const MyApp()));
 }
 

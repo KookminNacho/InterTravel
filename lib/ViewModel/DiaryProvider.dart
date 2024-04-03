@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Repository/DiaryRespository.dart';
+import 'package:intertravel/Repository/ImageRepository.dart';
 
 import '../Model/Diary.dart';
 
@@ -16,5 +17,4 @@ class DiaryProvider with ChangeNotifier {
     _diary = await diaryRepository.getDiaries();
     notifyListeners();
   }
-
 }

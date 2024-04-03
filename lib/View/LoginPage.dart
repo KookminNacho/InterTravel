@@ -62,7 +62,6 @@ class _LoginPageState extends State<LoginPage> {
                             userData.user = user;
                             loadPage();
                           }
-                          diaryRepository.getDiaries();
                         },
                         child: Container(
                           alignment: Alignment.center,

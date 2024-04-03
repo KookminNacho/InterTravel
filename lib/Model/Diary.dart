@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter/material.dart';
 
 class Diary {
   String title;
@@ -9,6 +9,8 @@ class Diary {
   NLatLng location;
   String owner;
   String userID;
+  String imageURI;
+  late Image imageFile;
 
   Diary(
       {this.title = "",
@@ -17,7 +19,12 @@ class Diary {
       required this.date,
       required this.location,
       this.owner = "",
-      this.userID = ""}) {
+      this.userID = "",
+      this.imageURI = ""}) {
     date = DateTime.now();
+  }
+
+  void setImageFile(Image image) {
+    imageFile = image;
   }
 }
