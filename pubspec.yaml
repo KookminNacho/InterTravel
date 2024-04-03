@@ -14,6 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   provider:
+  image: ^4.1.7
 
   # Map Plugin
   geolocator: ^11.0.0

@@ -37,87 +37,75 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     // Provider.of<UserData>(context, listen: false).getLocation();
-    print("location: ${Provider
-        .of<UserData>(context)
-        .location}");
+    print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(
         body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-          return Consumer<UserPermission>(
-              builder: (context, permission, child) {
-                return (permission.locationPermission)
-                    ? Consumer<UserData>(builder: (context, user, child) {
-                  mapLoaded(user, diaries);
-                  if (user.location == null) {
-                    user.getLocation();
-                    return Container(
-                        color: Colors.black,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        child: const Center(
-                            child: CircularProgressIndicator()));
-                  } else {
-                    return Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        NaverMap(
-                          onSymbolTapped: (nMapSymbol) {
-                            print(nMapSymbol.caption);
-                          },
-                          onCameraIdle: () async {
-                            print(await _controller.getCameraPosition());
-                          },
-                          options: const NaverMapViewOptions(
-                              extent: NLatLngBounds(
-                                southWest: NLatLng(31.43, 122.37),
-                                northEast: NLatLng(44.35, 132.0),
-                              ),
-                              minZoom: 6,
-                              initialCameraPosition: NCameraPosition(
-                                  target: NLatLng(
-                                      35.95667374781408, 127.85881633921491),
-                                  zoom: 6)),
-                          onMapReady: (NaverMapController mapController) {
-                            Future.delayed(Duration(milliseconds: 1000), () {
-                              setState(() {
-                                loginColor = Colors.black.withOpacity(0.5);
-                                loginHeight = 0;
-                              });
+      return Consumer<UserPermission>(builder: (context, permission, child) {
+        return (permission.locationPermission)
+            ? Consumer<UserData>(builder: (context, user, child) {
+                mapLoaded(user, diaries);
+                if (user.location == null) {
+                  user.getLocation();
+                  return Container(
+                      color: Colors.black,
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: const Center(child: CircularProgressIndicator()));
+                } else {
+                  return Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      NaverMap(
+                        onSymbolTapped: (nMapSymbol) {
+                          print(nMapSymbol.caption);
+                        },
+                        onCameraIdle: () async {
+                          print(await _controller.getCameraPosition());
+                        },
+                        options: const NaverMapViewOptions(
+                            extent: NLatLngBounds(
+                              southWest: NLatLng(31.43, 122.37),
+                              northEast: NLatLng(44.35, 132.0),
+                            ),
+                            minZoom: 6,
+                            initialCameraPosition: NCameraPosition(
+                                target: NLatLng(
+                                    35.95667374781408, 127.85881633921491),
+                                zoom: 6)),
+                        onMapReady: (NaverMapController mapController) {
+                          Future.delayed(Duration(milliseconds: 1000), () {
+                            setState(() {
+                              loginColor = Colors.black.withOpacity(0.5);
+                              loginHeight = 0;
                             });
-                            print("mapLoad: ${user.mapLoad}");
+                          });
+                          print("mapLoad: ${user.mapLoad}");
 
-                            _controller = mapController;
-                          },
-                        ),
-                        WelcomePage(),
-                        LoginPage(),
-                      ],
-                    );
-                  }
-                })
-                    : Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        permission.requestLocationPermission();
-                      },
-                      child: Text("권한을 허용해주세요")),
-                );
-              });
-        }));
+                          _controller = mapController;
+                        },
+                      ),
+                      WelcomePage(),
+                      LoginPage(),
+                    ],
+                  );
+                }
+              })
+            : Center(
+                child: ElevatedButton(
+                    onPressed: () {
+                      permission.requestLocationPermission();
+                    },
+                    child: Text("권한을 허용해주세요")),
+              );
+      });
+    }));
   }
 
   Future<Set<NAddableOverlay<NOverlay<void>>>> _createOverlays(
       List<Diary> diary) async {
     print("Creating Overlays, Diary: $diary");
     NLatLng? tempLocation =
-        Provider
-            .of<UserData>(context, listen: false)
-            .location;
+        Provider.of<UserData>(context, listen: false).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
       MarkerManager.overlays.add(NMarker(id: "temp", position: tempLocation));
@@ -133,6 +121,7 @@ class _MainPageState extends State<MainPage> {
         position: d.location,
         icon: await markerWithImage(d),
       );
+
       marker.setOnTapListener((overlay) async {
         print("tapped: ${d.title} $overlay");
         final infoWindow = NInfoWindow.onMap(
@@ -143,11 +132,13 @@ class _MainPageState extends State<MainPage> {
         move.setAnimation(
             animation: NCameraAnimation.fly,
             duration: const Duration(milliseconds: 1500));
-        setState(() {
+        // setState(() {
           _controller.updateCamera(move);
-        });
+        // });
       });
+
       MarkerManager.overlays.add(marker);
+
       MarkerManager.size[d.title] = 50;
       print("title : ${d.title}");
     }
@@ -171,17 +162,12 @@ class _MainPageState extends State<MainPage> {
     return Image.network(diary.image);
   }
 
+
   Future<NOverlayImage> markerWithImage(Diary diary) async {
-    Uint8List image =
-    await Provider
-        .of<ImageProviderModel>(context, listen: false)
+    Uint8List image = Provider.of<ImageProviderModel>(context, listen: false)
         .images[diary.imageURI]!;
-    return NOverlayImage.fromWidget(
-        widget: ImagedMarker(diary: diary, bytes: image),
-        size: Size(50, 50),
-        context:
-        context
-    );
+
+    return NOverlayImage.fromByteArray(image);
   }
 
   void mapLoaded(UserData user, DiaryProvider diaries) async {

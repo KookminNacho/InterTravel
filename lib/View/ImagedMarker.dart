@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import '../Model/Diary.dart';
 
 class ImagedMarker extends StatefulWidget {
-  final Diary diary;
-  final Uint8List bytes;
-
-  const ImagedMarker({super.key, required this.diary, required this.bytes});
+  const ImagedMarker({super.key});
 
   @override
   State<ImagedMarker> createState() => _ImagedMarkerState();
@@ -18,32 +15,27 @@ class _ImagedMarkerState extends State<ImagedMarker> {
   late Image image;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      image = await Image.memory(widget.bytes);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print("Uint8List: ${widget.bytes.length} ${widget.bytes.runtimeType}");
-    return Column(
-      children: [
-        Container(
-            height: 40,
-            width: 48,
+    return Padding(
+      padding: const EdgeInsets.only(top: 34),
+      child: Column(
+        children: [
+          Container(
+            height: 66,
+            width: 66,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
+              color: Colors.blue,
+              border: Border.all(color: Colors.red, width: 3),
               borderRadius: BorderRadius.circular(5),
             ),
-            child: image),
-        Container(
-          color: Colors.grey,
-          height: 4,
-          width: 2,
-        )
-      ],
+          ),
+          // Container(
+          //   color: Colors.grey,
+          //   height: 4,
+          //   width: 2,
+          // )
+        ],
+      ),
     );
   }
 }
