@@ -6,6 +6,7 @@ import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:provider/provider.dart';
 import 'GlobalPageRoute.dart';
 import 'ViewModel/ImageProvider.dart';
+import 'ViewModel/MarkerManager.dart';
 import 'ViewModel/UserData.dart';
 import 'ViewModel/UserPermission.dart';
 import 'firebase_options.dart';
@@ -22,6 +23,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => UserPermission()),
     ChangeNotifierProvider(create: (context) => DiaryProvider()),
     ChangeNotifierProvider(create: (context) => ImageProviderModel()),
+    ChangeNotifierProvider(create: (context) => MarkerManager()),
   ], child: const MyApp()));
 }
 

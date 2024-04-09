@@ -56,8 +56,14 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.bottomCenter,
                     children: [
                       NaverMap(
-                        onSymbolTapped: (nMapSymbol) {
-                          print(nMapSymbol.caption);
+                        onCameraChange: (position, isGesture) {
+                          print("Camera changed: $position");
+                          if (!isGesture) {
+                            _controller.addOverlayAll(
+                                Provider.of<MarkerManager>(context,
+                                        listen: false)
+                                    .markers);
+                          }
                         },
                         onCameraIdle: () async {
                           print(await _controller.getCameraPosition());
@@ -103,19 +109,20 @@ class _MainPageState extends State<MainPage> {
 
   Future<Set<NAddableOverlay<NOverlay<void>>>> _createOverlays(
       List<Diary> diary) async {
+    MarkerManager markerManager =
+        Provider.of<MarkerManager>(context, listen: false);
     print("Creating Overlays, Diary: $diary");
     NLatLng? tempLocation =
         Provider.of<UserData>(context, listen: false).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
-      MarkerManager.overlays.add(NMarker(id: "temp", position: tempLocation));
+      markerManager.addMarker(NMarker(id: "temp", position: tempLocation));
       _controller.updateCamera(NCameraUpdate.fromCameraPosition(
           NCameraPosition(target: tempLocation, zoom: 7)));
     } else {
       print("tempLocation is null");
     }
     for (Diary d in diary) {
-      print(d.location);
       NMarker marker = NMarker(
         id: d.title,
         position: d.location,
@@ -123,27 +130,27 @@ class _MainPageState extends State<MainPage> {
       );
 
       marker.setOnTapListener((overlay) async {
-        print("tapped: ${d.title} $overlay");
-        final infoWindow = NInfoWindow.onMap(
-            id: "test", position: overlay.position, text: "인포윈도우 텍스트");
+        print("Marker tapped: ${d.title}");
+        marker = NMarker(
+          id: d.title,
+          position: d.location,
+        );
+        _controller.addOverlay(marker);
         NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
             target: NLatLng(d.location.latitude, d.location.longitude),
             zoom: 14);
         move.setAnimation(
             animation: NCameraAnimation.fly,
             duration: const Duration(milliseconds: 1500));
-        // setState(() {
-          _controller.updateCamera(move);
-        // });
+        _controller.updateCamera(move);
       });
 
-      MarkerManager.overlays.add(marker);
+      markerManager.addMarker(marker);
 
-      MarkerManager.size[d.title] = 50;
       print("title : ${d.title}");
     }
 
-    return MarkerManager.overlays;
+    return markerManager.markers;
   }
 
   // Future<void> preloadImages(List<String> imageUrls) async {
@@ -161,7 +168,6 @@ class _MainPageState extends State<MainPage> {
   Future<Image> loadImage(Diary diary) async {
     return Image.network(diary.image);
   }
-
 
   Future<NOverlayImage> markerWithImage(Diary diary) async {
     Uint8List image = Provider.of<ImageProviderModel>(context, listen: false)

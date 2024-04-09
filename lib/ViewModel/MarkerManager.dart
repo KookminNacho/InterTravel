@@ -1,24 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
-class MarkerManager {
-  static Set<NMarker> overlays = {};
-  static Map<String, double> size = {};
+class MarkerManager extends ChangeNotifier {
+  final Set<NMarker> _markers = {};
 
-  static void extendMarker(NMarker marker) {
-    for (int i = 0; i < overlays.length; i++) {
-      if (overlays.elementAt(i).info.id == marker.info.id) {
-        size[marker.info.id] = 200;
-        print("Marker extended: ${marker.info.id}");
-      }
-      else{
-        size[marker.info.id] = 50;
-      }
-    }
+  Set<NMarker> get markers => _markers;
+
+
+
+  void addMarker(NMarker marker) {
+    _markers.add(marker);
+    notifyListeners();
   }
 
-
-
-
+  void removeMarker(NMarker marker) {
+    _markers.remove(marker);
+    notifyListeners();
+  }
 }
