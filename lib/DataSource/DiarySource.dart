@@ -9,31 +9,30 @@ class DiarySource {
   Future<List<Diary>> getDiaries() async {
     List<Diary> diaries = [];
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot<Map<String, dynamic>> response =
-        await firestore.collection('Diaries').get();
-    for (var doc in response.docs) {
-      String url = await FirebaseStorage.instance
-          .refFromURL(doc['image'])
-          .getDownloadURL();
-      GeoPoint location = doc['location'];
+    QuerySnapshot<Map<String, dynamic>> response = await firestore.collection('Diaries').get();
+
+    var futures = response.docs.map((doc) async {
+      String url = await FirebaseStorage.instance.refFromURL(doc.data()['image']).getDownloadURL();
+      GeoPoint location = doc.data()['location'];
       NLatLng nLatLng = NLatLng(location.latitude, location.longitude);
-      Timestamp tdate = doc['date'];
+      Timestamp tdate = doc.data()['date'];
       DateTime date = tdate.toDate();
-      print(doc.data());
-      diaries.add(Diary(
-        title: doc['title'],
-        content: doc['content'],
+
+      return Diary(
+        title: doc.data()['title'],
+        content: doc.data()['content'],
         date: date,
         location: nLatLng,
-        image: doc['image'],
+        image: doc.data()['image'],
         imageURI: url,
-        owner: doc['owner'],
+        owner: doc.data()['owner'],
+      );
+    }).toList();
 
-      ));
-    }
-    // Fetch data from the server
+    diaries = await Future.wait(futures);
     return diaries;
   }
+
 
   void addDiary() async {
     print("Adding diaries");
@@ -43,79 +42,90 @@ class DiarySource {
           title: "Gyeongbokgung Palace",
           content:
               "Visiting Gyeongbokgung Palace was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-07-21-49-39 001.jpeg",
           date: DateTime(2024, 1),
           location: NLatLng(37.5781, 126.9768),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"
+      ),
       Diary(
           title: "N Seoul Tower",
           content: "Visiting N Seoul Tower was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-07-21-49-40 002.jpeg",
           date: DateTime(2023, 11, 11),
           location: NLatLng(37.5512, 126.9882),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Bukchon Hanok Village",
           content:
               "Visiting Bukchon Hanok Village was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-07-21-49-40 003.jpeg",
           date: DateTime(2023, 4, 9),
           location: NLatLng(37.5824, 126.9830),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Jeonju Hanok Village",
           content:
               "Visiting Jeonju Hanok Village was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-07-21-49-40 003.jpeg",
           date: DateTime(2023, 5, 2),
           location: NLatLng(35.8151, 127.1539),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Haeundae Beach",
           content: "Visiting Haeundae Beach was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-16-17-50-07.jpeg",
           date: DateTime(2024, 2, 17),
           location: NLatLng(35.1587, 129.1604),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Gwanghwamun Square",
           content:
               "Visiting Gwanghwamun Square was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Photo_2024-02-16-17-50-07.jpeg",
           date: DateTime(2023, 5, 18),
           location: NLatLng(37.5763, 126.9769),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Lotte World Tower",
           content:
               "Visiting Lotte World Tower was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Snapshot_20240206_153547.png",
           date: DateTime(2023, 12, 10),
           location: NLatLng(37.5139, 127.1028),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Bulguksa Temple",
           content: "Visiting Bulguksa Temple was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Snapshot_20240206_153547.png",
           date: DateTime(2023, 10, 29),
           location: NLatLng(35.7892, 129.3310),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "Suncheon Bay National Garden",
           content:
               "Visiting Suncheon Bay National Garden was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Snapshot_20240206_153547.png",
           date: DateTime(2023, 12, 9),
           location: NLatLng(34.8806, 127.4888),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
       Diary(
           title: "DMZ (Demilitarized Zone)",
           content:
               "Visiting DMZ (Demilitarized Zone) was an unforgettable experience.",
-          image: "placeholder.jpg",
+          image: "gs://intertravel-fab82.appspot.com/KakaoTalk_Snapshot_20240206_153547.png",
           date: DateTime(2023, 9, 4),
           location: NLatLng(37.9566, 126.6774),
-          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02"),
+          owner: "QtVM9ksIScXQ29RPlWCgXUlSfP02",
+          userID : "kim990321@gmail.com"),
     ];
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -128,6 +138,8 @@ class DiarySource {
         'date': date,
         'location': GeoPoint(d.location.latitude, d.location.longitude),
         'image': d.image,
+        'owner': d.owner,
+        'userID': d.userID
       });
     }
   }

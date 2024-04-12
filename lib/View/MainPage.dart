@@ -1,5 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as IMG;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/View/ImagedMarker.dart';
@@ -25,6 +28,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late NaverMapController _controller;
+  bool _isLoaded = false;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool _cameraMove = false;
     // Provider.of<UserData>(context, listen: false).getLocation();
     print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(
@@ -43,7 +48,9 @@ class _MainPageState extends State<MainPage> {
       return Consumer<UserPermission>(builder: (context, permission, child) {
         return (permission.locationPermission)
             ? Consumer<UserData>(builder: (context, user, child) {
-                mapLoaded(user, diaries);
+                if (!_isLoaded && diaries.isLoaded) {
+                  mapLoad(user, diaries);
+                }
                 if (user.location == null) {
                   user.getLocation();
                   return Container(
@@ -56,17 +63,16 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.bottomCenter,
                     children: [
                       NaverMap(
-                        onCameraChange: (position, isGesture) {
-                          print("Camera changed: $position");
-                          if (!isGesture) {
-                            _controller.addOverlayAll(
-                                Provider.of<MarkerManager>(context,
-                                        listen: false)
-                                    .markers);
+                        onCameraChange: (reason, isGesture) {
+                          if (reason == NCameraUpdateReason.gesture) {
+                            // print("cameraMove: $_cameraMove");
                           }
                         },
                         onCameraIdle: () async {
-                          print(await _controller.getCameraPosition());
+                          if (_cameraMove) {
+                            // loadImage(diaries.selectedDiary!);
+                            _cameraMove = false;
+                          }
                         },
                         options: const NaverMapViewOptions(
                             extent: NLatLngBounds(
@@ -85,8 +91,6 @@ class _MainPageState extends State<MainPage> {
                               loginHeight = 0;
                             });
                           });
-                          print("mapLoad: ${user.mapLoad}");
-
                           _controller = mapController;
                         },
                       ),
@@ -111,14 +115,11 @@ class _MainPageState extends State<MainPage> {
       List<Diary> diary) async {
     MarkerManager markerManager =
         Provider.of<MarkerManager>(context, listen: false);
-    print("Creating Overlays, Diary: $diary");
     NLatLng? tempLocation =
         Provider.of<UserData>(context, listen: false).location;
     if (tempLocation != null) {
       print("tempLocation: $tempLocation");
       markerManager.addMarker(NMarker(id: "temp", position: tempLocation));
-      _controller.updateCamera(NCameraUpdate.fromCameraPosition(
-          NCameraPosition(target: tempLocation, zoom: 7)));
     } else {
       print("tempLocation is null");
     }
@@ -134,6 +135,7 @@ class _MainPageState extends State<MainPage> {
         marker = NMarker(
           id: d.title,
           position: d.location,
+          // icon: await biggerMarkerWithImage(d),
         );
         _controller.addOverlay(marker);
         NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
@@ -153,34 +155,54 @@ class _MainPageState extends State<MainPage> {
     return markerManager.markers;
   }
 
-  // Future<void> preloadImages(List<String> imageUrls) async {
-  //   final List<Future> imagePreloadFutures = [];
-  //
-  //   for (String url in imageUrls) {
-  //     final ImageProvider.dart imageProvider = NetworkImage(url);
-  //     final Future preloadFuture = precacheImage(imageProvider, context);
-  //     imagePreloadFutures.add(preloadFuture);
-  //   }
-  //
-  //   await Future.wait(imagePreloadFutures);
-  // }
-
-  Future<Image> loadImage(Diary diary) async {
-    return Image.network(diary.image);
-  }
-
   Future<NOverlayImage> markerWithImage(Diary diary) async {
     Uint8List image = Provider.of<ImageProviderModel>(context, listen: false)
-        .images[diary.imageURI]!;
+        .images[diary.imageURI]![0];
 
     return NOverlayImage.fromByteArray(image);
   }
 
-  void mapLoaded(UserData user, DiaryProvider diaries) async {
-    if (user.mapLoad) {
-      await Provider.of<ImageProviderModel>(context, listen: false)
-          .loadImages(diaries.diaries);
-      _controller.addOverlayAll(await _createOverlays(diaries.diaries));
+  void mapLoad(UserData user, DiaryProvider diaries) async {
+    print("마커 불러오기");
+    ImageProviderModel imageProvider =
+        Provider.of<ImageProviderModel>(context, listen: false);
+    for (Diary d in diaries.diaries) {
+      if (imageProvider.images[d.imageURI] == null) {
+        await imageProvider.loadImage(d);
+      }
+      drawMarker(d, imageProvider);
     }
+    _isLoaded = true;
+  }
+
+  void drawMarker(Diary d, ImageProviderModel imageProviderModel) async {
+    Uint8List img = imageProviderModel.images[d.imageURI]![0];
+    Uint8List bigimg = imageProviderModel.images[d.imageURI]![1];
+    _controller.addOverlay(clickAbleMarker(d, [
+      await NOverlayImage.fromByteArray(img),
+      await NOverlayImage.fromByteArray(bigimg)
+    ]));
+  }
+
+  NMarker clickAbleMarker(Diary diary, List<NOverlayImage> image) {
+    NMarker marker =
+        NMarker(id: diary.title, position: diary.location, icon: image[0]);
+    marker.setOnTapListener((overlay) async {
+      Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+      marker = NMarker(
+        id: diary.title,
+        position: diary.location,
+        icon: await image[1],
+      );
+      _controller.addOverlay(marker);
+      NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
+          target: NLatLng(diary.location.latitude, diary.location.longitude),
+          zoom: 14);
+      move.setAnimation(
+          animation: NCameraAnimation.fly,
+          duration: const Duration(milliseconds: 1500));
+      _controller.updateCamera(move);
+    });
+    return marker;
   }
 }

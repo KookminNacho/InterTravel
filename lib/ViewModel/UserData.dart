@@ -8,7 +8,6 @@ import '../Model/Diary.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;
-  List<Diary> diaries = [];
   bool _mapLoad = false;
   UserCredential? _user;
   String _uid = "";
@@ -16,10 +15,7 @@ class UserData extends ChangeNotifier {
   Set<NAddableOverlay> overlays = {};
   Map<String, double> size = {};
 
-
   NLatLng? get location => _location;
-
-  List<Diary> get diary => diaries;
 
   bool get mapLoad => _mapLoad;
 
@@ -31,12 +27,12 @@ class UserData extends ChangeNotifier {
 
   Set<NAddableOverlay> get overlay => overlays;
 
-  set user (UserCredential? value) {
+  set user(UserCredential? value) {
     _user = value;
-    if(user?.user?.uid != null) {
+    if (user?.user?.uid != null) {
       _uid = user!.user!.uid;
     }
-    if(user?.user?.displayName != null) {
+    if (user?.user?.displayName != null) {
       _displayName = user!.user!.displayName!;
     }
     notifyListeners();
@@ -51,11 +47,6 @@ class UserData extends ChangeNotifier {
   set location(NLatLng? value) {
     _location = value;
     print("Location: $_location");
-    notifyListeners();
-  }
-
-  set diary(List<Diary> value) {
-    diaries = value;
     notifyListeners();
   }
 
@@ -80,7 +71,6 @@ class UserData extends ChangeNotifier {
   }
 
   void ExtendMarker(NAddableOverlay overlay) {
-
     notifyListeners();
   }
 }

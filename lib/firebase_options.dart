@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,18 +49,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCCbpYLYcQzLgzKxZ_xkeDg7fyX2Cp3XBw',
-    appId: '1:983897180404:web:f550ab918606c409e5f6a1',
-    messagingSenderId: '983897180404',
-    projectId: 'intertravel-fab82',
-    authDomain: 'intertravel-fab82.firebaseapp.com',
-    storageBucket: 'intertravel-fab82.appspot.com',
-    measurementId: 'G-W4YPFLGEYM',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBDekrtagx1bJBnjVnlLDvRlcDJICKvZZQ',
+    apiKey: 'AIzaSyC0Okg8Hq7y9tkvvXwfgzBKNqaJAd4m2YI',
     appId: '1:983897180404:android:0d689881c2012034e5f6a1',
     messagingSenderId: '983897180404',
     projectId: 'intertravel-fab82',
@@ -67,17 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '983897180404',
     projectId: 'intertravel-fab82',
     storageBucket: 'intertravel-fab82.appspot.com',
+    androidClientId: '983897180404-9sguv0n72auo4vq9tbn34gfueuhlp13k.apps.googleusercontent.com',
     iosClientId: '983897180404-811hrr26pojje060550hof173814grcp.apps.googleusercontent.com',
     iosBundleId: 'com.remake.intertravel',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBJkj-jnZU9QtQ0yq-tCB3P11TvhMWVJrw',
-    appId: '1:983897180404:ios:0debadf3eb598b0ae5f6a1',
-    messagingSenderId: '983897180404',
-    projectId: 'intertravel-fab82',
-    storageBucket: 'intertravel-fab82.appspot.com',
-    iosClientId: '983897180404-ir6bulvhu03irpsgcvbvkq84krq4t3aj.apps.googleusercontent.com',
-    iosBundleId: 'com.remake.intertravel.RunnerTests',
   );
 }
