@@ -24,7 +24,7 @@ class DiaryProvider with ChangeNotifier {
   }
 
   // 일기를 선택하는 메소드
-  void selectDiary(Diary diary) {
+  void selectDiary(Diary? diary) {
     _selectedDiary = diary;
     notifyListeners();
   }

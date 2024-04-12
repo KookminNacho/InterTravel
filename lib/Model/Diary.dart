@@ -4,27 +4,22 @@ import 'package:flutter/material.dart';
 class Diary {
   String title;
   String content;
-  String image;
+  List<String> image;
   DateTime date;
   NLatLng location;
   String owner;
   String userID;
-  String imageURI;
-  late Image imageFile;
+  List<String> imageURI;
 
   Diary(
       {this.title = "",
       this.content = "",
-      this.image = "",
+      required this.image,
       required this.date,
       required this.location,
       this.owner = "",
       this.userID = "",
-      this.imageURI = ""}) {
+      this.imageURI = const []}) {
     date = DateTime.now();
-  }
-
-  void setImageFile(Image image) {
-    imageFile = image;
   }
 }

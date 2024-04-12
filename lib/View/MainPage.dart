@@ -57,7 +57,14 @@ class _MainPageState extends State<MainPage> {
                       color: Colors.black,
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
-                      child: const Center(child: CircularProgressIndicator()));
+                      child: const Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("위치 정보를 불러오는 중입니다."),
+                          CircularProgressIndicator(),
+                        ],
+                      )));
                 } else {
                   return Stack(
                     alignment: Alignment.bottomCenter,
@@ -65,13 +72,14 @@ class _MainPageState extends State<MainPage> {
                       NaverMap(
                         onCameraChange: (reason, isGesture) {
                           if (reason == NCameraUpdateReason.gesture) {
-                            // print("cameraMove: $_cameraMove");
+                            _cameraMove = true;
                           }
                         },
                         onCameraIdle: () async {
                           if (_cameraMove) {
-                            // loadImage(diaries.selectedDiary!);
+                            mapLoad(user, diaries);
                             _cameraMove = false;
+                            diaries.selectDiary(null);
                           }
                         },
                         options: const NaverMapViewOptions(
@@ -131,7 +139,6 @@ class _MainPageState extends State<MainPage> {
       );
 
       marker.setOnTapListener((overlay) async {
-        print("Marker tapped: ${d.title}");
         marker = NMarker(
           id: d.title,
           position: d.location,
@@ -163,21 +170,21 @@ class _MainPageState extends State<MainPage> {
   }
 
   void mapLoad(UserData user, DiaryProvider diaries) async {
-    print("마커 불러오기");
-    ImageProviderModel imageProvider =
-        Provider.of<ImageProviderModel>(context, listen: false);
-    for (Diary d in diaries.diaries) {
-      if (imageProvider.images[d.imageURI] == null) {
-        await imageProvider.loadImage(d);
+      ImageProviderModel imageProvider =
+          Provider.of<ImageProviderModel>(context, listen: false);
+      for (Diary d in diaries.diaries) {
+        if (imageProvider.images[d.imageURI] == null) {
+          await imageProvider.loadImage(d);
+        }
+        drawMarker(d, imageProvider);
       }
-      drawMarker(d, imageProvider);
-    }
-    _isLoaded = true;
+      _isLoaded = true;
   }
 
   void drawMarker(Diary d, ImageProviderModel imageProviderModel) async {
-    Uint8List img = imageProviderModel.images[d.imageURI]![0];
-    Uint8List bigimg = imageProviderModel.images[d.imageURI]![1];
+    print("imageURI: ${d.imageURI}");
+    Uint8List img = imageProviderModel.images[d.imageURI[0]]![0];
+    Uint8List bigimg = imageProviderModel.images[d.imageURI[0]]![1];
     _controller.addOverlay(clickAbleMarker(d, [
       await NOverlayImage.fromByteArray(img),
       await NOverlayImage.fromByteArray(bigimg)
