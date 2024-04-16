@@ -1,13 +1,14 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:intertravel/DataSource/AuthDataSource.dart";
+import "package:intertravel/ViewModel/UserData.dart";
 
 class AuthRepository{
 
   AuthDataSource _authDataSource = AuthDataSource();
 
-  Future<UserCredential?> signInWithGoogle() async {
-    UserCredential? user = await _authDataSource.signWithGoogle();
+  Future<UserCredential?> signInWithGoogle(UserData userdata) async {
+    UserCredential? user = await _authDataSource.signWithGoogle(userdata);
     if (user != null) {
       addUserToFirestore();
     }

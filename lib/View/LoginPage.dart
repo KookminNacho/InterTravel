@@ -8,6 +8,7 @@ import 'package:intertravel/DataSource/AuthDataSource.dart';
 import 'package:intertravel/Repository/AuthRepository.dart';
 import 'package:intertravel/Repository/DiaryRespository.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
 
 import '../GlobalPageRoute.dart';
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: MaterialButton(
                         onPressed: () async {
                           UserCredential? user =
-                              await authRepository.signInWithGoogle();
+                              await authRepository.signInWithGoogle(userData);
                           if (user != null) {
                             userData.user = user;
                             loadPage();
@@ -139,8 +140,10 @@ class _LoginPageState extends State<LoginPage> {
     Future.delayed(Duration(milliseconds: animationDuration), () {
       setState(() {
         _isOverlay = false;
-        welcomeHeight = 0;
       });
+      print("loadPage");
+      Provider.of<UIViewModel>(context, listen: false).welcomePosition = 0;
+
       Provider.of<UserData>(context, listen: false).mapLoad = true;
       Provider.of<DiaryProvider>(context, listen: false).loadDiary();
     });

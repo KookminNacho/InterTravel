@@ -8,6 +8,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/View/ImagedMarker.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:intertravel/ViewModel/UserPermission.dart';
 import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   late NaverMapController _controller;
   bool _isLoaded = false;
+  bool _cameraMove = false;
 
   @override
   void initState() {
@@ -40,9 +42,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool _cameraMove = false;
-    // Provider.of<UserData>(context, listen: false).getLocation();
-    print("location: ${Provider.of<UserData>(context).location}");
     return Scaffold(
         body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
       return Consumer<UserPermission>(builder: (context, permission, child) {
@@ -77,6 +76,8 @@ class _MainPageState extends State<MainPage> {
                         },
                         onCameraIdle: () async {
                           if (_cameraMove) {
+                            Provider.of<UIViewModel>(context, listen: false)
+                                .welcomeHeight = 200;
                             mapLoad(user, diaries);
                             _cameraMove = false;
                             diaries.selectDiary(null);
@@ -104,6 +105,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                       WelcomePage(),
                       LoginPage(),
+                      floatingButton(user.photo),
                     ],
                   );
                 }
@@ -119,47 +121,17 @@ class _MainPageState extends State<MainPage> {
     }));
   }
 
-  Future<Set<NAddableOverlay<NOverlay<void>>>> _createOverlays(
-      List<Diary> diary) async {
-    MarkerManager markerManager =
-        Provider.of<MarkerManager>(context, listen: false);
-    NLatLng? tempLocation =
-        Provider.of<UserData>(context, listen: false).location;
-    if (tempLocation != null) {
-      print("tempLocation: $tempLocation");
-      markerManager.addMarker(NMarker(id: "temp", position: tempLocation));
-    } else {
-      print("tempLocation is null");
-    }
-    for (Diary d in diary) {
-      NMarker marker = NMarker(
-        id: d.title,
-        position: d.location,
-        icon: await markerWithImage(d),
-      );
-
-      marker.setOnTapListener((overlay) async {
-        marker = NMarker(
-          id: d.title,
-          position: d.location,
-          // icon: await biggerMarkerWithImage(d),
-        );
-        _controller.addOverlay(marker);
-        NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
-            target: NLatLng(d.location.latitude, d.location.longitude),
-            zoom: 14);
-        move.setAnimation(
-            animation: NCameraAnimation.fly,
-            duration: const Duration(milliseconds: 1500));
-        _controller.updateCamera(move);
-      });
-
-      markerManager.addMarker(marker);
-
-      print("title : ${d.title}");
-    }
-
-    return markerManager.markers;
+  Widget floatingButton(Image image) {
+    return (Provider.of<UserData>(context, listen: false).mapLoad)
+        ? Positioned(
+            top: 32,
+            right: 32,
+            child: FloatingActionButton(
+              onPressed: () {},
+              child: image,
+            ),
+          )
+        : Container();
   }
 
   Future<NOverlayImage> markerWithImage(Diary diary) async {
@@ -170,19 +142,18 @@ class _MainPageState extends State<MainPage> {
   }
 
   void mapLoad(UserData user, DiaryProvider diaries) async {
-      ImageProviderModel imageProvider =
-          Provider.of<ImageProviderModel>(context, listen: false);
-      for (Diary d in diaries.diaries) {
-        if (imageProvider.images[d.imageURI] == null) {
-          await imageProvider.loadImage(d);
-        }
-        drawMarker(d, imageProvider);
+    ImageProviderModel imageProvider =
+        Provider.of<ImageProviderModel>(context, listen: false);
+    for (Diary d in diaries.diaries) {
+      if (imageProvider.images[d.imageURI] == null) {
+        await imageProvider.loadImage(d);
       }
-      _isLoaded = true;
+      drawMarker(d, imageProvider);
+    }
+    _isLoaded = true;
   }
 
   void drawMarker(Diary d, ImageProviderModel imageProviderModel) async {
-    print("imageURI: ${d.imageURI}");
     Uint8List img = imageProviderModel.images[d.imageURI[0]]![0];
     Uint8List bigimg = imageProviderModel.images[d.imageURI[0]]![1];
     _controller.addOverlay(clickAbleMarker(d, [
@@ -196,6 +167,7 @@ class _MainPageState extends State<MainPage> {
         NMarker(id: diary.title, position: diary.location, icon: image[0]);
     marker.setOnTapListener((overlay) async {
       Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+      Provider.of<UIViewModel>(context, listen: false).welcomeHeight = 400;
       marker = NMarker(
         id: diary.title,
         position: diary.location,
@@ -204,7 +176,7 @@ class _MainPageState extends State<MainPage> {
       _controller.addOverlay(marker);
       NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
           target: NLatLng(diary.location.latitude, diary.location.longitude),
-          zoom: 14);
+          zoom: 10);
       move.setAnimation(
           animation: NCameraAnimation.fly,
           duration: const Duration(milliseconds: 1500));

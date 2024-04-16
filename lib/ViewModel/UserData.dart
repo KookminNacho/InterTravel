@@ -12,8 +12,7 @@ class UserData extends ChangeNotifier {
   UserCredential? _user;
   String _uid = "";
   String _displayName = "";
-  Set<NAddableOverlay> overlays = {};
-  Map<String, double> size = {};
+  Image _photo = Image.asset("assets/images/user.png");
 
   NLatLng? get location => _location;
 
@@ -25,7 +24,8 @@ class UserData extends ChangeNotifier {
 
   String get displayName => _displayName;
 
-  Set<NAddableOverlay> get overlay => overlays;
+  Image get photo => _photo;
+
 
   set user(UserCredential? value) {
     _user = value;
@@ -70,7 +70,8 @@ class UserData extends ChangeNotifier {
     }
   }
 
-  void ExtendMarker(NAddableOverlay overlay) {
+  set photo(Image value) {
+    _photo = value;
     notifyListeners();
   }
 }

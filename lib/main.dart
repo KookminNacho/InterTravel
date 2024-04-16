@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
 import 'GlobalPageRoute.dart';
 import 'ViewModel/ImageProvider.dart';
@@ -24,6 +25,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => DiaryProvider()),
     ChangeNotifierProvider(create: (context) => ImageProviderModel()),
     ChangeNotifierProvider(create: (context) => MarkerManager()),
+    ChangeNotifierProvider(create: (context) => UIViewModel())
   ], child: const MyApp()));
 }
 

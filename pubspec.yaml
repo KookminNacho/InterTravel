@@ -15,6 +15,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider:
   image: ^4.1.7
+  flutter_image_slideshow: ^0.1.6
 
   # Map Plugin
   geolocator: ^11.0.0
@@ -42,3 +43,6 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+assets:
+  - assets/images/user.png
