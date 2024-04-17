@@ -8,6 +8,16 @@ class UIViewModel extends ChangeNotifier {
   double get welcomeHeight => _welcomeHeight;
   double get welcomePosition => _welcomePosition;
 
+  void bigWelcome() {
+    _welcomeHeight = 400;
+    notifyListeners();
+  }
+
+  void smallWelcome() {
+    _welcomeHeight = 200;
+    notifyListeners();
+  }
+
   set welcomeHeight(double value) {
     _welcomeHeight = value;
     notifyListeners();
