@@ -1,3 +1,4 @@
+import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intertravel/main.dart';
 
@@ -15,11 +16,10 @@ class GlobalPageRoute {
 var namedRoutes = <String, WidgetBuilder>{
   GlobalPageRoute.routeLogin: (context) => LoginPage(),
   GlobalPageRoute.routeSignup: (context) => SignUpPage(),
-  GlobalPageRoute.mainPage: (context) => const MainPage(),
+  GlobalPageRoute.mainPage: (context) =>
+      DefaultBottomBarController(child: const MainPage()),
 };
 
 Widget currentPage = LoginPage();
 
-void ChangeBottomSheet(Widget widget, BuildContext context) {
-
-}
+void ChangeBottomSheet(Widget widget, BuildContext context) {}

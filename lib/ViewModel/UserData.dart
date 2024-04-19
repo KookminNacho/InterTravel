@@ -9,7 +9,7 @@ import '../Model/Diary.dart';
 class UserData extends ChangeNotifier {
   NLatLng? _location;
   bool _mapLoad = false;
-  UserCredential? _user;
+  User? _user;
   String _uid = "";
   String _displayName = "";
   Image _photo = Image.asset("assets/images/user.png");
@@ -18,7 +18,7 @@ class UserData extends ChangeNotifier {
 
   bool get mapLoad => _mapLoad;
 
-  UserCredential? get user => _user;
+  User? get user => _user;
 
   String get uid => _uid;
 
@@ -27,14 +27,35 @@ class UserData extends ChangeNotifier {
   Image get photo => _photo;
 
 
-  set user(UserCredential? value) {
+  set user(User? value) {
     _user = value;
-    if (user?.user?.uid != null) {
-      _uid = user!.user!.uid;
+    if (user?.uid != null) {
+      _uid = user!.uid;
     }
-    if (user?.user?.displayName != null) {
-      _displayName = user!.user!.displayName!;
+    if (user?.displayName != null) {
+      _displayName = user!.displayName!;
     }
+    if(user?.photoURL != null) {
+      _photo = Image.network(user!.photoURL!);
+    }
+    notifyListeners();
+  }
+
+  void autoLogin() {
+    if(FirebaseAuth.instance.currentUser != null) {
+      user = FirebaseAuth.instance.currentUser;
+      print("Auto login: ${user!.displayName}");
+    }
+    else{
+      print("Auto login failed");
+    }
+
+
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    user = null;
     notifyListeners();
   }
 

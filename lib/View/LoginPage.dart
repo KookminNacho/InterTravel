@@ -28,130 +28,85 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double buttonHeight = MediaQuery.of(context).size.height / 15;
     return Visibility(
       visible: _isOverlay,
       child: Consumer<UserData>(builder: (context, userData, child) {
         AuthRepository authRepository = AuthRepository();
-        return Stack(
-          alignment: Alignment.bottomCenter,
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedContainer(
-              color: loginColor,
-              duration: Duration(milliseconds: animationDuration),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: MaterialButton(
+                  onPressed: () async {
+                    UserCredential? user =
+                        await authRepository.signInWithGoogle(userData);
+                    if (user != null) {
+                      userData.user = user.user;
+                      // loadPage();
+                    }
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: buttonHeight,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Text(
+                      "구글로 시작하기",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 118, 118, 118),
+                        fontSize: 16,
+                      ),
+                    ),
+                  )),
             ),
-            AnimatedContainer(
-              transform: Matrix4.translationValues(0, loginHeight, 0),
-              duration: Duration(milliseconds: animationDuration),
-              decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 186, 186, 186),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20))),
-              height: MediaQuery.of(context).size.height / 2.5,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: MaterialButton(
-                        onPressed: () async {
-                          UserCredential? user =
-                              await authRepository.signInWithGoogle(userData);
-                          if (user != null) {
-                            userData.user = user;
-                            loadPage();
-                          }
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                            "구글로 시작하기",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 118, 118, 118),
-                              fontSize: 16,
-                            ),
-                          ),
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: MaterialButton(
-                        onPressed: () {
-                          Provider.of<UserData>(context, listen: false)
-                              .updateLocation();
-                          Navigator.popAndPushNamed(
-                              context, GlobalPageRoute.routeLogin);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          height: 60,
-                          decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 255, 245, 0),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                            "카카오로 시작하기",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 101, 48, 0),
-                              fontSize: 16,
-                            ),
-                          ),
-                        )),
-                  ),
-                  MaterialButton(
-                      onPressed: () {
-                        setState(() {
-                          loadPage();
-                        });
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Text(
-                          "게스트로 시작하기",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 118, 118, 118),
-                            fontSize: 16,
-                          ),
-                        ),
-                      )),
-                ],
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: MaterialButton(
+                  onPressed: null,
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: buttonHeight,
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 255, 245, 0),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Text(
+                      "카카오로 시작하기 (개발 예정)",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 101, 48, 0),
+                        fontSize: 16,
+                      ),
+                    ),
+                  )),
             ),
+            // MaterialButton(
+            //     onPressed: () {
+            //       // setState(() {
+            //       //   loadPage();
+            //       // });
+            //     },
+            //     child: Container(
+            //       alignment: Alignment.center,
+            //       width: MediaQuery.of(context).size.width / 1.2,
+            //       height: buttonHeight,
+            //       decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           borderRadius: BorderRadius.circular(10)),
+            //       child: const Text(
+            //         "게스트로 시작하기",
+            //         style: TextStyle(
+            //           color: Color.fromARGB(255, 118, 118, 118),
+            //           fontSize: 16,
+            //         ),
+            //       ),
+            //     )),
           ],
         );
       }),
     );
-  }
-
-  void loadPage() {
-    loginHeight = MediaQuery.of(context).size.height / 2.5;
-    loginColor = Colors.transparent;
-    Future.delayed(Duration(milliseconds: animationDuration), () {
-      setState(() {
-        _isOverlay = false;
-      });
-      print("loadPage");
-      Provider.of<UIViewModel>(context, listen: false).welcomePosition = 0;
-
-      Provider.of<UserData>(context, listen: false).mapLoad = true;
-      Provider.of<DiaryProvider>(context, listen: false).loadDiary();
-    });
-  }
-
-  void removeOverlay() {
-    setState(() {
-      _isOverlay = false;
-    });
   }
 }

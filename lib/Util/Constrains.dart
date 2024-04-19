@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Color loginColor = Colors.black;
 
-double loginHeight = 0;
+double loginHeight = 200;
 
 double welcomeHeight = 400;
 

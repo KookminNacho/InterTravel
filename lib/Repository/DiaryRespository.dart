@@ -7,9 +7,9 @@ class DiaryRepository{
 
   DiarySource _diarySource = DiarySource();
 
-  Future<List<Diary>> getDiaries() async {
+  Future<List<Diary>> getDiaries(String userID) async {
     print("DiaryRepository getDiaries");
-    List<Diary> diaries = await _diarySource.getDiaries();
+    List<Diary> diaries = await _diarySource.getDiaries(userID);
 
     return diaries;
   }

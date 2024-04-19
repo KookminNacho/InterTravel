@@ -4,6 +4,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
+import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 import 'GlobalPageRoute.dart';
 import 'ViewModel/ImageProvider.dart';
@@ -32,15 +33,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     loginHeight = MediaQuery.of(context).size.height / 2.5;
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: CustomTheme.dark(),
       initialRoute: GlobalPageRoute.mainPage,
       routes: namedRoutes,
     );

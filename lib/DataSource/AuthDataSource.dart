@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intertravel/ViewModel/UserData.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthDataSource {
   Future<UserCredential?> signWithGoogle(UserData user) async {
@@ -15,18 +16,25 @@ class AuthDataSource {
 
     if (googleAuth != null) {
       user.photo = Image.network(googleUser!.photoUrl!);
+
       return getCredentials(googleAuth);
     }
+    return null;
   }
 
   Future<UserCredential?> getCredentials(
       GoogleSignInAuthentication googleAuth) async {
     OAuthCredential? credential;
-
     credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final UserCredential user =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    if (user.credential != null) {
+      return user;
+    }
+    return null;
   }
+
 }
