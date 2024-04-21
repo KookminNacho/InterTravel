@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intertravel/DataSource/ImageDataSource.dart';
 import 'package:image/image.dart' as IMG;
+import 'dart:io';
 
 import '../Model/Diary.dart';
 
@@ -23,12 +24,25 @@ class ImageRepository {
   //     return _images;
   //   }
 
-    Future<List<Uint8List>> loadImage(String imageURI) async {
-      ImageDataSource imageDataSource = ImageDataSource();
-      Uint8List image = await imageDataSource.getImage(imageURI);
-      IMG.Image img = IMG.decodeImage(image)!;
-      IMG.Image bigimg = IMG.copyResize(img, width: -1, height: 600);
-      img = IMG.copyResize(img, width: -1, height: 150);
-      return [IMG.encodeJpg(img), IMG.encodeJpg(bigimg)];
-    }
+  Future<List<Uint8List>> loadImage(String imageURI) async {
+    ImageDataSource imageDataSource = ImageDataSource();
+    Uint8List image = await imageDataSource.getImage(imageURI);
+    IMG.Image img = IMG.decodeImage(image)!;
+    IMG.Image bigimg = IMG.copyResize(img, width: -1, height: 600);
+    img = IMG.copyResize(img, width: -1, height: 150);
+    return [IMG.encodeJpg(img), IMG.encodeJpg(bigimg)];
   }
+
+  Future<List<String>> upLoadImage(List<File> images, Diary diary) async {
+    ImageDataSource imageDataSource = ImageDataSource();
+    List<String> imageURI = [];
+    int i = 0;
+    for (File image in images) {
+      Uint8List byteData = await image.readAsBytes();
+      String imgURL =
+          await imageDataSource.upLoadImage(byteData, "${diary.title}${i++}");
+      imageURI.add(imgURL);
+    }
+    return imageURI;
+  }
+}

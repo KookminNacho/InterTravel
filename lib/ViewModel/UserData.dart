@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intertravel/Repository/AuthRepository.dart';
-import '../Model/Diary.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;

@@ -1,8 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
-import '../Model/Diary.dart';
 
 class ImagedMarker extends StatefulWidget {
   const ImagedMarker({super.key});

@@ -1,20 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intertravel/DataSource/AuthDataSource.dart';
 import 'package:intertravel/Repository/AuthRepository.dart';
-import 'package:intertravel/Repository/DiaryRespository.dart';
-import 'package:intertravel/ViewModel/DiaryProvider.dart';
-import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
 
-import '../GlobalPageRoute.dart';
-import '../Util/Constrains.dart';
 import '../ViewModel/UserData.dart';
-import '../ViewModel/UserPermission.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Repository/DiaryRespository.dart';
-import 'package:intertravel/Repository/ImageRepository.dart';
 
 import '../Model/Diary.dart';
+import 'UserData.dart';
 
 class DiaryProvider with ChangeNotifier {
   bool _isLoaded = false;
@@ -35,6 +34,14 @@ class DiaryProvider with ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 100));
     _diary = [];
     _isLoaded = false;
+    notifyListeners();
+  }
+
+  // 일기를 추가하는 메소드
+  void addDiary(Diary diary, UserData user) {
+    DiaryRepository diaryRepository = DiaryRepository();
+    diaryRepository.addDiary(diary, user.user!.uid);
+    _diary.add(diary);
     notifyListeners();
   }
 }

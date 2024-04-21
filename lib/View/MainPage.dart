@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/View/AddNewDiaryPage.dart';
 import 'package:intertravel/View/DIalog/ListDialog.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
@@ -15,7 +15,6 @@ import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:intertravel/ViewModel/UserPermission.dart';
 import 'package:intertravel/WelcomePage.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
@@ -36,7 +35,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   bool _isLoaded = false;
   bool _cameraMove = false;
   bool _firstLoad = true;
-  late Future<SharedPreferences> _prefs;
 
   @override
   void initState() {
@@ -46,8 +44,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
       await provider.getLocation();
     });
-    _prefs = SharedPreferences.getInstance();
-
     generateButtonList();
     super.initState();
   }
@@ -55,13 +51,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void mapFunction(DiaryProvider diaries, UserData user) {
     if (user.user != null) {
       _userVerified = true;
-      if (_firstLoad) {
-        diaries.loadDiary(user.uid);
-        print(user.uid);
-        DefaultBottomBarController.of(context).open();
-
-        _firstLoad = false;
-      }
 
       if (!_isLoaded && diaries.isLoaded) {
         mapLoad(user, diaries);
@@ -77,11 +66,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             duration: const Duration(milliseconds: 1500),
             animation: NCameraAnimation.fly);
         _controller.updateCamera(target);
-      } else {
-        if (!DefaultBottomBarController.of(context).isClosing ||
-            DefaultBottomBarController.of(context).isOpen) {
-          DefaultBottomBarController.of(context).close();
-        }
+      }
+
+      if (_firstLoad) {
+        diaries.loadDiary(user.uid);
+        DefaultBottomBarController.of(context).open();
+
+        _firstLoad = false;
       }
     } else {
       try {
@@ -313,12 +304,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   void callDialog(int index) {
     showDialog(
+
         barrierColor: Colors.black.withOpacity(0.2),
         context: context,
         builder: (BuildContext context) {
           switch (index) {
             case 0:
-              return Container();
+              return AddNewDiaryPage();
             case 1:
               return const ListDialog();
             case 2:
@@ -339,8 +331,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           expandedHeight: welcomeHeight,
           bottomOffset: 0,
           horizontalMargin: 16,
-          shape: AutomaticNotchedShape(
-              RoundedRectangleBorder(), StadiumBorder(side: BorderSide())),
+          shape: const AutomaticNotchedShape(
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(100))),
+          ),
           expandedBody: (user.user == null) ? LoginPage() : WelcomePage());
     });
   }

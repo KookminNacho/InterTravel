@@ -1,6 +1,5 @@
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intertravel/main.dart';
 
 import 'View/LoginPage.dart';
 import 'View/MainPage.dart';

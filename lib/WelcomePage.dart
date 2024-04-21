@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/ImageProvider.dart';
 import 'package:provider/provider.dart';

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intertravel/Repository/ImageRepository.dart';
+import 'dart:io';
 
 import '../Model/Diary.dart';
 
@@ -34,5 +35,13 @@ class ImageProviderModel with ChangeNotifier {
       print("imageRequestCount: $imageRequestCount");
       notifyListeners();
     }
+  }
+
+  Future<List<String>> upLoadImage(List<File> images, Diary diary) async {
+    List<String> imageURI = await _imageRepository.upLoadImage(images, diary);
+    diary.imageURI = imageURI;
+    notifyListeners();
+
+    return imageURI;
   }
 }

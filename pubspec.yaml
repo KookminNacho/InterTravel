@@ -25,6 +25,8 @@ dependencies:
   intl: ^0.17.0 # 시간 표시용
   expandable_bottom_bar: ^2.0.2 # 하단 네비게이션 바
 
+  image_picker: ^1.1.0
+
   # Map Plugin
   geolocator: ^11.0.0
   flutter_naver_map: ^1.2.1
