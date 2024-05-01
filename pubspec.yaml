@@ -26,6 +26,8 @@ dependencies:
   expandable_bottom_bar: ^2.0.2 # 하단 네비게이션 바
 
   image_picker: ^1.1.0
+  material_dialogs: ^1.1.4
+
 
   # Map Plugin
   geolocator: ^11.0.0

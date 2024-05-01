@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +7,9 @@ import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/ImageProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'Model/Diary.dart';
+import 'Util/Constrains.dart';
+import 'View/DiaryPreview.dart';
 import 'ViewModel/UIViewMode.dart';
 import 'ViewModel/UserData.dart';
 
@@ -19,60 +23,66 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DiaryProvider>(builder: (context, diaryProvider, child) {
-      return Consumer<UserData>(builder: (context, userData, child) {
-        return Consumer<ImageProviderModel>(
-            builder: (context, imageProvider, child) {
-          return Consumer<UIViewModel>(
-              builder: (context, UIViewModel uiViewModel, child) {
-            return (diaryProvider.isLoaded)
-                ? ((diaryProvider.selectedDiary == null))
-                    ? Column(children: [
-                      Flexible(
-                          child:
-                              Text("반가워요, ${userData.user?.displayName}")),
-                      Flexible(
-                          child: Text(
-                              "일기의 개수는 ${diaryProvider.diaries.length}개 입니다.")),
-                      Expanded(
-                        child:
-                            Container(height: 100, child: userData.photo),
-                      ),
-                    ])
+    return Container(
+      color: Colors.white,
+      child: Selector<DiaryProvider, Diary?>(
+        builder: (_, selectedDiary, __) {
+          return Selector<UserData, User?>(
+            builder: (context, userData, child) {
+              return Consumer<ImageProviderModel>(
+                  builder: (context, imageProvider, child) {
+                return (selectedDiary != null)
+                    ? Column(
+                        children: [
+                          Flexible(
+                            child: Text(selectedDiary.title),
+                          ),
+                          Flexible(child: Text(formatDate(selectedDiary.date))),
+                          Flexible(
+                              flex: 6,
+                              fit: FlexFit.tight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ImageSlideshow(
+                                  width: MediaQuery.of(context).size.width,
+                                  initialPage: 0,
+                                  indicatorBottomPadding: 16,
+                                  children: selectedDiary.imageURI
+                                      .map((e) => Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 36.0),
+                                            child: Image.memory(
+                                              imageProvider.images[e]![1],
+                                              fit: BoxFit.fitHeight,
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ))
+                        ],
+                      )
                     : Column(
                         children: [
                           Flexible(
-                            child: Text(
-                                "현재 선택한 일기는 ${diaryProvider.selectedDiary?.title}입니다."),
+                            child: Text("${userData?.displayName} 님 환영합니다"),
                           ),
-                          Flexible(child: Text(diaryProvider.selectedDiary!.content)),
                           Flexible(
-                            flex: 6,
-                            fit: FlexFit.tight,
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ImageSlideshow(
-                              width: MediaQuery.of(context).size.width,
-                              initialPage: 0,
-                              indicatorBottomPadding: 16,
-                              children: diaryProvider.selectedDiary!.imageURI
-                                  .map((e) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 36.0),
-                                        child: Image.memory(
-                                          imageProvider.images[e]![1],
-                                          fit: BoxFit.fitHeight,
-                                        ),
-                                      ))
-                                  .toList(),
-                            ),
-                          ))
+                            child: Text("일기를 선택해주세요"),
+                          ),
+                          DiaryPreView(),
                         ],
-                      )
-                : const Center(child: CircularProgressIndicator());
-          });
-        });
-      });
-    });
+                      );
+              });
+            },
+            selector: (_, userData) {
+              return userData.user;
+            },
+          );
+        },
+        selector: (_, provider) {
+          return provider.selectedDiary;
+        },
+      ),
+    );
   }
 }

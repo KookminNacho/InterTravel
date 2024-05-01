@@ -21,4 +21,3 @@ var namedRoutes = <String, WidgetBuilder>{
 
 Widget currentPage = LoginPage();
 
-void ChangeBottomSheet(Widget widget, BuildContext context) {}

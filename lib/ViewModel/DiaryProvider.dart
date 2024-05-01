@@ -44,4 +44,9 @@ class DiaryProvider with ChangeNotifier {
     _diary.add(diary);
     notifyListeners();
   }
+
+  set isLoaded(bool value) {
+    _isLoaded = value;
+    notifyListeners();
+  }
 }

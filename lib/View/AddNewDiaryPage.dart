@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
@@ -125,6 +126,9 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                                             .addDiary(diary, userData);
                                         Navigator.pop(context);
                                         Navigator.pop(context);
+                                        Provider.of<UIViewModel>(context,
+                                                listen: false)
+                                            .setFirstLoad(true);
                                       },
                                       child: const Text("확인")),
                                 ],

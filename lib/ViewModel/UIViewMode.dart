@@ -8,6 +8,14 @@ class UIViewModel extends ChangeNotifier {
   double get welcomeHeight => _welcomeHeight;
   double get welcomePosition => _welcomePosition;
 
+  bool _firstLoad = true;
+  bool get firstLoad => _firstLoad;
+
+  Future<void> setFirstLoad(bool)async {
+    _firstLoad = bool;
+    notifyListeners();
+  }
+
   void bigWelcome() {
     _welcomeHeight = 400;
     notifyListeners();

@@ -32,9 +32,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   late NaverMapController _controller;
   bool _userVerified = false;
-  bool _isLoaded = false;
   bool _cameraMove = false;
-  bool _firstLoad = true;
 
   @override
   void initState() {
@@ -48,11 +46,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     super.initState();
   }
 
-  void mapFunction(DiaryProvider diaries, UserData user) {
+  void mapFunction(
+      DiaryProvider diaries, UserData user, UIViewModel uiViewModel) {
     if (user.user != null) {
       _userVerified = true;
 
-      if (!_isLoaded && diaries.isLoaded) {
+      if (diaries.isLoaded) {
         mapLoad(user, diaries);
       }
       if (diaries.selectedDiary != null) {
@@ -68,11 +67,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         _controller.updateCamera(target);
       }
 
-      if (_firstLoad) {
+      if (uiViewModel.firstLoad) {
         diaries.loadDiary(user.uid);
         DefaultBottomBarController.of(context).open();
 
-        _firstLoad = false;
+        // **** State 관리가 필요함 ****
+        uiViewModel.setFirstLoad(false);
       }
     } else {
       try {
@@ -82,8 +82,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       }
       diaries.clearDiary();
       _userVerified = false;
-      _firstLoad = true;
-      _isLoaded = false;
+      uiViewModel.setFirstLoad(true);
       DefaultBottomBarController.of(context).open();
     }
   }
@@ -91,82 +90,95 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Consumer<DiaryProvider>(builder: (context, diaries, child) {
-      return Consumer<UserPermission>(builder: (context, permission, child) {
-        return (permission.locationPermission)
-            ? Consumer<UserData>(builder: (context, user, child) {
-                mapFunction(diaries, user);
-                return Scaffold(
-                  bottomNavigationBar: bottomNavBar(user),
-                  floatingActionButtonLocation: ExpandableFab.location,
-                  floatingActionButton: (diaries.isLoaded && _userVerified)
-                      ? floatingButton(user)
-                      : Container(),
-                  body: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      NaverMap(
-                        onMapTapped: (point, latLng) {
-                          if (_userVerified) {
-                            DefaultBottomBarController.of(context).swap();
-                          }
-                        },
-                        onCameraChange: (reason, isGesture) {
-                          if (reason == NCameraUpdateReason.gesture) {
-                            if (!DefaultBottomBarController.of(context)
-                                .isClosing) {
-                              DefaultBottomBarController.of(context).close();
-                            }
-                          }
-                        },
-                        onCameraIdle: () async {
-                          if (_cameraMove) {
-                            _cameraMove = false;
-                          }
-                        },
-                        options: NaverMapViewOptions(
-                            extent: const NLatLngBounds(
-                              southWest: NLatLng(31.43, 122.37),
-                              northEast: NLatLng(44.35, 132.0),
-                            ),
-                            minZoom: 6,
-                            initialCameraPosition: (diaries.selectedDiary !=
-                                    null)
-                                ? NCameraPosition(
-                                    target: diaries.selectedDiary!.location,
-                                    zoom: 10)
-                                : NCameraPosition(
-                                    target: NLatLng(
-                                        35.95667374781408, 127.85881633921491),
-                                    zoom: 6)),
-                        onMapReady: (NaverMapController mapController) {
-                          Future.delayed(Duration(milliseconds: 1000), () {
-                            setState(() {
-                              loginColor = Colors.black.withOpacity(0.5);
-                              loginHeight = 0;
-                            });
-                          });
-                          _controller = mapController;
-                        },
+      return Selector<UserPermission, bool>(
+        selector: (_, permission) => permission.locationPermission,
+        builder: (context, locationPermission, child) {
+          return locationPermission
+              ? Consumer<UIViewModel>(builder: (context, uiViewModel, child) {
+                  return Consumer<UserData>(builder: (context, user, child) {
+                    mapFunction(diaries, user, uiViewModel);
+                    return Scaffold(
+                      bottomSheet: bottomNavBar(),
+                      floatingActionButtonLocation: ExpandableFab.location,
+                      floatingActionButton: (diaries.isLoaded && _userVerified)
+                          ? floatingButton(user)
+                          : Container(),
+                      body: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          NaverMap(
+                            onMapTapped: (point, latLng) {
+                              if (_userVerified) {
+                                if (diaries.selectedDiary != null) {
+                                  diaries.selectDiary(null);
+                                  DefaultBottomBarController.of(context)
+                                      .close();
+                                }
+                                DefaultBottomBarController.of(context).swap();
+                              }
+                            },
+                            onCameraChange: (reason, isGesture) {
+                              if (reason == NCameraUpdateReason.gesture) {
+                                if (!DefaultBottomBarController.of(context)
+                                    .isClosing) {
+                                  DefaultBottomBarController.of(context)
+                                      .close();
+                                }
+                              }
+                            },
+                            onCameraIdle: () async {
+                              if (_cameraMove) {
+                                _cameraMove = false;
+                              }
+                            },
+                            options: NaverMapViewOptions(
+                                extent: const NLatLngBounds(
+                                  southWest: NLatLng(31.43, 122.37),
+                                  northEast: NLatLng(44.35, 132.0),
+                                ),
+                                minZoom: 6,
+                                initialCameraPosition: (diaries.selectedDiary !=
+                                        null)
+                                    ? NCameraPosition(
+                                        target: diaries.selectedDiary!.location,
+                                        zoom: 10)
+                                    : NCameraPosition(
+                                        target: NLatLng(35.95667374781408,
+                                            127.85881633921491),
+                                        zoom: 6)),
+                            onMapReady: (NaverMapController mapController) {
+                              Future.delayed(Duration(milliseconds: 1000), () {
+                                setState(() {
+                                  loginColor = Colors.black.withOpacity(0.5);
+                                  loginHeight = 0;
+                                });
+                              });
+                              _controller = mapController;
+                            },
+                          ),
+                          (_userVerified)
+                              ? Container()
+                              : Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.black.withOpacity(0.2),
+                                ),
+                        ],
                       ),
-                      (_userVerified)
-                          ? Container()
-                          : Container(
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.black.withOpacity(0.2),
-                            ),
-                    ],
-                  ),
+                    );
+                  });
+                })
+              : Center(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        context
+                            .read<UserPermission>()
+                            .requestLocationPermission();
+                      },
+                      child: Text("권한을 허용해주세요")),
                 );
-              })
-            : Center(
-                child: ElevatedButton(
-                    onPressed: () {
-                      permission.requestLocationPermission();
-                    },
-                    child: Text("권한을 허용해주세요")),
-              );
-      });
+        },
+      );
     });
   }
 
@@ -179,8 +191,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           alignment: Alignment.center,
           children: [
             GestureDetector(
-                //
-                // Set onVerticalDrag event to drag handlers of controller for swipe effect
                 onVerticalDragUpdate:
                     DefaultBottomBarController.of(context).onDrag,
                 onVerticalDragEnd:
@@ -237,15 +247,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       }
       drawMarker(d, imageProvider);
     }
-    _isLoaded = true;
   }
 
   void drawMarker(Diary d, ImageProviderModel imageProviderModel) async {
     Uint8List img = imageProviderModel.images[d.imageURI[0]]![0];
-    Uint8List bigimg = imageProviderModel.images[d.imageURI[0]]![1];
     _controller.addOverlay(clickAbleMarker(d, [
       await NOverlayImage.fromByteArray(img),
-      await NOverlayImage.fromByteArray(bigimg)
     ]));
   }
 
@@ -262,7 +269,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       _cameraMove = false;
       DefaultBottomBarController.of(context).open();
       Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
-      Provider.of<UIViewModel>(context, listen: false).welcomeHeight = 400;
       NCameraUpdate move = NCameraUpdate.scrollAndZoomTo(
           target: NLatLng(diary.location.latitude, diary.location.longitude),
           zoom: 10);
@@ -287,6 +293,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             borderRadius: BorderRadius.all(Radius.circular(24.0))),
         onPressed: () {
           callDialog(i);
+          DefaultBottomBarController.of(context).close();
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -303,39 +310,53 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Widget> floatingButtonList = [];
 
   void callDialog(int index) {
-    showDialog(
-
-        barrierColor: Colors.black.withOpacity(0.2),
-        context: context,
-        builder: (BuildContext context) {
-          switch (index) {
-            case 0:
-              return AddNewDiaryPage();
-            case 1:
-              return const ListDialog();
-            case 2:
-              return const SettingDialog();
-            default:
-              return const Text("Error");
-          }
-        });
+    showGeneralDialog(
+      context: context,
+      transitionDuration: const Duration(milliseconds: 250),
+      transitionBuilder: (BuildContext context, Animation<double> a1,
+          Animation<double> a2, Widget child) {
+        return FadeTransition(
+          opacity: CurvedAnimation(
+            parent: a1,
+            curve: Curves.easeInBack,
+          ),
+          child: child,
+        );
+      },
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        switch (index) {
+          case 0:
+            return AddNewDiaryPage();
+          case 1:
+            return const ListDialog();
+          case 2:
+            return const SettingDialog();
+          default:
+            return const Text("Error");
+        }
+      },
+    );
   }
 
-  Widget bottomNavBar(UserData user) {
+  Widget bottomNavBar() {
+    UserData user = Provider.of<UserData>(context, listen: false);
     BottomBarController bottomBarController = BottomBarController(vsync: this);
     bottomBarController.onDragEnd(DragEndDetails(velocity: Velocity.zero));
-    return Consumer<UserData>(builder: (context, user, child) {
-      return BottomExpandableAppBar(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
+      child: BottomExpandableAppBar(
           attachSide: Side.Top,
           appBarHeight: 10,
           expandedHeight: welcomeHeight,
           bottomOffset: 0,
           horizontalMargin: 16,
-          shape: const AutomaticNotchedShape(
-            RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(100))),
-          ),
-          expandedBody: (user.user == null) ? LoginPage() : WelcomePage());
-    });
+          expandedBody: (user.user == null) ? LoginPage() : WelcomePage()),
+    );
   }
 }

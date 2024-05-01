@@ -18,8 +18,12 @@ class DiarySource {
       for (var i in doc.data()['image']) {
         String imageURI = i;
         final ref = FirebaseStorage.instance.refFromURL(imageURI);
-        final urlStr = await ref.getDownloadURL();
-        url.add(urlStr);
+        try {
+          String? urlStr = await ref.getDownloadURL();
+          url.add(urlStr);
+        } catch (e) {
+          print(e);
+        }
       }
       GeoPoint location = doc.data()['location'];
       NLatLng nLatLng = NLatLng(location.latitude, location.longitude);
