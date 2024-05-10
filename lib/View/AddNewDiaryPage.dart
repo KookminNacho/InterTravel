@@ -102,33 +102,11 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                                       },
                                       child: const Text("취소")),
                                   MaterialButton(
-                                      onPressed: () async {
-                                        UserData userData =
-                                            Provider.of<UserData>(context,
-                                                listen: false);
+                                      onPressed: () {
+                                        uploadImage();
 
-                                        Diary diary = Diary(
-                                            title: titleController.text,
-                                            content: contentController.text,
-                                            imageURI: [],
-                                            date: DateTime.now(),
-                                            location: userData.location!,
-                                            owner: userData.uid,
-                                            userID: userData.displayName);
-
-                                        List<String> imageUri = await Provider
-                                                .of<ImageProviderModel>(context,
-                                                    listen: false)
-                                            .upLoadImage(file, diary);
-                                        diary.imageURI = imageUri;
-                                        Provider.of<DiaryProvider>(context,
-                                                listen: false)
-                                            .addDiary(diary, userData);
                                         Navigator.pop(context);
                                         Navigator.pop(context);
-                                        Provider.of<UIViewModel>(context,
-                                                listen: false)
-                                            .setFirstLoad(true);
                                       },
                                       child: const Text("확인")),
                                 ],
@@ -148,5 +126,33 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
         ],
       ),
     );
+  }
+
+  void uploadImage() async{
+
+    UserData userData =
+    Provider.of<UserData>(context,
+        listen: false);
+
+    Diary diary = Diary(
+        title: titleController.text,
+        content: contentController.text,
+        imageURI: [],
+        date: DateTime.now(),
+        location: userData.location!,
+        owner: userData.uid,
+        userID: userData.displayName);
+
+    List<String> imageUri = await Provider
+        .of<ImageProviderModel>(context,
+        listen: false)
+        .upLoadImage(file, diary);
+    diary.imageURI = imageUri;
+    Provider.of<DiaryProvider>(context,
+        listen: false)
+        .addDiary(diary, userData);
+    Provider.of<UIViewModel>(context,
+        listen: false)
+        .setFirstLoad(true);
   }
 }

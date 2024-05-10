@@ -4,7 +4,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
-import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 import 'GlobalPageRoute.dart';
 import 'ViewModel/ImageProvider.dart';
@@ -39,6 +38,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: GlobalPageRoute.mainPage,
       routes: namedRoutes,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue,
+          textTheme: ButtonTextTheme.primary,
+        ),
+
+      )
     );
   }
 }

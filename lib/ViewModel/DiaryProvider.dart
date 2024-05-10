@@ -15,6 +15,7 @@ class DiaryProvider with ChangeNotifier {
 
   Diary? get selectedDiary => _selectedDiary;
 
+
   // 일기를 불러오는 메소드
   Future<void> loadDiary(String userID) async {
     DiaryRepository diaryRepository = DiaryRepository();
@@ -48,5 +49,9 @@ class DiaryProvider with ChangeNotifier {
   set isLoaded(bool value) {
     _isLoaded = value;
     notifyListeners();
+  }
+
+  Diary lastDiary() {
+    return _diary.last;
   }
 }

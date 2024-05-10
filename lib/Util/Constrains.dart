@@ -5,7 +5,7 @@ Color loginColor = Colors.black;
 
 double loginHeight = 200;
 
-double welcomeHeight = 400;
+double welcomeHeight = 500;
 
 int animationDuration = 150;
 

@@ -16,7 +16,5 @@ class Diary {
       required this.location,
       required this.owner,
       this.userID = "",
-      this.imageURI = const []}) {
-    date = DateTime.now();
-  }
+      this.imageURI = const []}) {}
 }

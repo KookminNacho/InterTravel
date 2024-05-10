@@ -24,12 +24,22 @@ class ImageRepository {
   //     return _images;
   //   }
 
-  Future<List<Uint8List>> loadImage(String imageURI) async {
+  Future<List<Uint8List?>> loadImage(String imageURI) async {
     ImageDataSource imageDataSource = ImageDataSource();
-    Uint8List image = await imageDataSource.getImage(imageURI);
+    Uint8List? image = await imageDataSource.getImage(imageURI);
+    if (image == null) {
+      return [null, null];
+    }
     IMG.Image img = IMG.decodeImage(image)!;
-    IMG.Image bigimg = IMG.copyResize(img, width: -1, height: 600);
-    img = IMG.copyResize(img, width: -1, height: 150);
+    IMG.Image bigimg;
+    if (img.height < img.width) {
+      bigimg = IMG.copyResize(img, width: img.height, height: -1);
+      img = IMG.copyResize(img, width: 150, height: -1);
+    } else {
+      bigimg = IMG.copyResize(img, width: -1, height: img.height);
+
+      img = IMG.copyResize(img, width: -1, height: 150);
+    }
     return [IMG.encodeJpg(img), IMG.encodeJpg(bigimg)];
   }
 

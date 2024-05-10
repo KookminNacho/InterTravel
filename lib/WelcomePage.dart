@@ -35,9 +35,15 @@ class _WelcomePageState extends State<WelcomePage> {
                     ? Column(
                         children: [
                           Flexible(
-                            child: Text(selectedDiary.title),
-                          ),
-                          Flexible(child: Text(formatDate(selectedDiary.date))),
+                              child: Text(
+                            selectedDiary.title,
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w700),
+                          )),
+                          Flexible(
+                              child: Text(formatDate(selectedDiary.date),
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.grey))),
                           Flexible(
                               flex: 6,
                               fit: FlexFit.tight,
@@ -52,7 +58,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                             padding: const EdgeInsets.only(
                                                 bottom: 36.0),
                                             child: Image.memory(
-                                              imageProvider.images[e]![1],
+                                              imageProvider.images[e]![1]!,
                                               fit: BoxFit.fitHeight,
                                             ),
                                           ))
@@ -61,17 +67,7 @@ class _WelcomePageState extends State<WelcomePage> {
                               ))
                         ],
                       )
-                    : Column(
-                        children: [
-                          Flexible(
-                            child: Text("${userData?.displayName} 님 환영합니다"),
-                          ),
-                          Flexible(
-                            child: Text("일기를 선택해주세요"),
-                          ),
-                          DiaryPreView(),
-                        ],
-                      );
+                    : DiaryPreView();
               });
             },
             selector: (_, userData) {
