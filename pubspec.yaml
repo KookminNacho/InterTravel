@@ -15,12 +15,35 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider:
 
+  # 자동 로그인
+  shared_preferences: ^2.2.3
+
+  # UI
+  image: ^4.1.7
+  flutter_image_slideshow: ^0.1.6
+  flutter_expandable_fab: ^2.0.0
+  intl: ^0.17.0 # 시간 표시용
+  expandable_bottom_bar: ^2.0.2 # 하단 네비게이션 바
+
+  image_picker: ^1.1.0
+  material_dialogs: ^1.1.4
+
+
   # Map Plugin
   geolocator: ^11.0.0
   flutter_naver_map: ^1.2.1
 
   # Permission
   permission_handler: ^11.3.0
+
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  google_sign_in: ^6.2.1
+  firebase_storage: ^11.6.10
+
+
 
 
 
@@ -33,3 +56,11 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/images/user.png
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/PretendardVariable.ttf
