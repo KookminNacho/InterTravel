@@ -68,5 +68,7 @@ flutter {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.8.0')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet'
 }
 apply plugin: 'com.google.gms.google-services'

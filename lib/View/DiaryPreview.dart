@@ -19,26 +19,47 @@ class _DiaryPreViewState extends State<DiaryPreView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-          child: Text(
-            Provider.of<UserData>(context).displayName ?? "User Name",
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-          child: Text(
-            (Provider.of<DiaryProvider>(context).diaries.length > 0)
-                ? '마지막 일기: ${formatDate(Provider.of<DiaryProvider>(context).diaries.last.date)}\n${Provider.of<DiaryProvider>(context).diaries.last.title}'
-                : '일기가 없습니다.',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+        Container(
+          decoration: BoxDecoration(color: Colors.white,boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: -1,
+              blurRadius: 2,
+              offset: const Offset(0, 4),
+            ),
+          ]),
+          alignment: Alignment.centerLeft,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                child: Text(
+                  Provider.of<UserData>(context).displayName ?? "User Name",
+                  style:
+                      const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                  child: Text(
+                    (Provider.of<DiaryProvider>(context).diaries.length > 0)
+                        ? '마지막 일기: ${formatDate(Provider.of<DiaryProvider>(context).diaries.last.date)}\n${Provider.of<DiaryProvider>(context).diaries.last.title}'
+                        : '일기가 없습니다.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
             child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
               return GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

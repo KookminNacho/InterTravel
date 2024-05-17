@@ -105,8 +105,6 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                                       onPressed: () {
                                         uploadImage();
 
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
                                       },
                                       child: const Text("확인")),
                                 ],
@@ -154,5 +152,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
     Provider.of<UIViewModel>(context,
         listen: false)
         .setFirstLoad(true);
+
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

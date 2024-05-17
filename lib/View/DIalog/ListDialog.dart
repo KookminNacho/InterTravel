@@ -45,17 +45,8 @@ class _ListDialogState extends State<ListDialog> {
                 child: ListView.builder(
                   itemCount: diaries.diaries.length,
                   itemBuilder: (context, index) {
-                    ImageProviderModel imageProvider =
-                        Provider.of<ImageProviderModel>(context);
-                    if (imageProvider
-                            .images[diaries.diaries[index].imageURI[0]] ==
-                        null) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    Image? imageData = Image.memory(
-                        fit: BoxFit.fitWidth,
-                        Provider.of<ImageProviderModel>(context, listen: false)
-                            .images[diaries.diaries[index].imageURI[0]]![0]!);
+                    Image? imageData = Image.network(
+                        fit: BoxFit.fitWidth,diaries.diaries[index].imageURI[0]!);
                     return ListTile(
                         leading: SizedBox(
                           height: 75,
