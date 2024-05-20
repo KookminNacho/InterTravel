@@ -35,6 +35,7 @@ class DiarySource {
       }
 
       return Diary(
+        uid: doc.id,
         title: doc.data()['title'],
         content: doc.data()['content'],
         date: date,
@@ -65,6 +66,26 @@ class DiarySource {
       return false;
     }
     return true;
+  }
+
+  Future<bool> updateDiary(Diary diary) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    Timestamp date = Timestamp.fromDate(diary.date);
+    try {
+      firestore.collection('Diaries').doc(diary.uid).update({
+        'title': diary.title,
+        'content': diary.content,
+        'date': date,
+        'location': GeoPoint(diary.location.latitude, diary.location.longitude),
+        'image': diary.imageURI,
+        'owner': diary.owner,
+      });
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return true;
+
   }
 
 // void addDiary() async {

@@ -16,4 +16,9 @@ class DiaryRepository{
     bool result = await _diarySource.addDiary(diary, userId);
     return result;
   }
+
+  Future<bool> updateDiary(Diary diary) async {
+
+    return await _diarySource.updateDiary(diary);
+  }
 }

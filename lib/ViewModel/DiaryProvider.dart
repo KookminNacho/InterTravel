@@ -54,4 +54,11 @@ class DiaryProvider with ChangeNotifier {
   Diary lastDiary() {
     return _diary.last;
   }
+
+  void updateDiary(Diary diary, Diary newDiary, UserData user) {
+    DiaryRepository diaryRepository = DiaryRepository();
+    diaries[diaries.indexOf(diary)] = newDiary;
+    diaryRepository.updateDiary(newDiary);
+    notifyListeners();
+  }
 }

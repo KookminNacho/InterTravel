@@ -28,7 +28,7 @@ dependencies:
 
   image_picker: ^1.1.0
   material_dialogs: ^1.1.4
-
+  photo_view: ^0.15.0
 
   # Map Plugin
   geolocator: ^11.0.0

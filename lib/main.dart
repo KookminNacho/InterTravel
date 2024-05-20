@@ -44,6 +44,13 @@ class MyApp extends StatelessWidget {
       initialRoute: GlobalPageRoute.mainPage,
       routes: namedRoutes,
       theme: ThemeData(
+        canvasColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
         primarySwatch: Colors.blue,
         buttonTheme: const ButtonThemeData(
           buttonColor: Colors.blue,

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
@@ -10,17 +12,32 @@ import '../ViewModel/ImageProvider.dart';
 import '../ViewModel/UserData.dart';
 
 class AddNewDiaryPage extends StatefulWidget {
-  const AddNewDiaryPage({super.key});
+  AddNewDiaryPage({super.key, this.diary});
+
+  Diary? diary;
 
   @override
   State<AddNewDiaryPage> createState() => _AddNewDiaryPageState();
 }
 
 class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
-  List<File> file = [];
+  List<String> file = [];
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   bool imageUploaded = false;
+  late UserData userData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userData = Provider.of<UserData>(context, listen: false);
+    if (widget.diary != null) {
+      titleController.text = widget.diary!.title;
+      contentController.text = widget.diary!.content;
+      file = widget.diary!.imageURI;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +71,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                     scrollDirection: Axis.horizontal,
                     itemCount: file.length + 1,
                     itemBuilder: (BuildContext context, int index) {
+                      print("file length: ${file.length}");
                       if (file.isEmpty) {
                         return MaterialButton(
                             onPressed: () async {
@@ -62,13 +80,17 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                               if (image == null) return;
                               print("이미지 추가: ${image.path}");
                               setState(() {
-                                file.add(File(image.path));
+                                file.add(image.path);
                               });
                             },
                             child: const Icon(Icons.add));
                       } else {
                         if (index != file.length) {
-                          return Image.file(file[index]);
+                          if (file[index].contains(
+                              "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
+                            return Image.network(file[index]);
+                          }
+                          return Image.file(File(file[index]));
                         }
                         return MaterialButton(
                             onPressed: () async {
@@ -77,7 +99,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                               if (image == null) return;
                               print("이미지 추가: ${image.path}");
                               setState(() {
-                                file.add(File(image.path));
+                                file.add(image.path);
                               });
                             },
                             child: const Icon(Icons.add));
@@ -94,7 +116,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("저장"),
-                                content: const Text("저장하시겠습니까?"),
+                                content: Text(
+                                    "저장하시겠습니까? 일기 ID: ${widget.diary?.uid}"),
                                 actions: [
                                   MaterialButton(
                                       onPressed: () {
@@ -103,8 +126,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                                       child: const Text("취소")),
                                   MaterialButton(
                                       onPressed: () {
-                                        uploadImage();
-
+                                        uploadImage(userData);
                                       },
                                       child: const Text("확인")),
                                 ],
@@ -126,13 +148,9 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
     );
   }
 
-  void uploadImage() async{
-
-    UserData userData =
-    Provider.of<UserData>(context,
-        listen: false);
-
+  void uploadImage(UserData userData) async {
     Diary diary = Diary(
+        uid: "local",
         title: titleController.text,
         content: contentController.text,
         imageURI: [],
@@ -141,17 +159,25 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
         owner: userData.uid,
         userID: userData.displayName);
 
-    List<String> imageUri = await Provider
-        .of<ImageProviderModel>(context,
-        listen: false)
-        .upLoadImage(file, diary);
+    List<String> imageUri =
+        await Provider.of<ImageProviderModel>(context, listen: false)
+            .upLoadImage(userData, file, diary);
     diary.imageURI = imageUri;
-    Provider.of<DiaryProvider>(context,
-        listen: false)
-        .addDiary(diary, userData);
-    Provider.of<UIViewModel>(context,
-        listen: false)
-        .setFirstLoad(true);
+    for(int i = 0; i < imageUri.length; i++){
+      print("imageUri: ${imageUri[i]}");
+    }
+    if (widget.diary != null) {
+      diary.uid = widget.diary!.uid;
+      diary.date = widget.diary!.date;
+      diary.location = widget.diary!.location;
+      Provider.of<DiaryProvider>(context, listen: false)
+          .updateDiary(widget.diary!, diary, userData);
+      Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+    } else {
+      Provider.of<DiaryProvider>(context, listen: false)
+          .addDiary(diary, userData);
+    }
+    Provider.of<UIViewModel>(context, listen: false).setFirstLoad(true);
 
     Navigator.pop(context);
     Navigator.pop(context);

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
-import 'package:intertravel/ViewModel/ImageProvider.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
@@ -79,12 +79,23 @@ class _DiaryPageWState extends State<DiaryPage> {
                                 initialPage: 0,
                                 indicatorBottomPadding: 16,
                                 children: diary.imageURI
-                                    .map((e) => Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 36.0),
-                                          child:
-                                              images[diary.imageURI.indexOf(e)],
-                                        ))
+                                    .map((e) => (e.contains("https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot"))
+                                        ? InkWell(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      PhotoViewDialog(
+                                                          imageURI: e));
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 36.0),
+                                              child: images[
+                                                  diary.imageURI.indexOf(e)],
+                                            ),
+                                          )
+                                        : Container())
                                     .toList(),
                               ),
                             ),
@@ -114,6 +125,34 @@ class _DiaryPageWState extends State<DiaryPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class PhotoViewDialog extends StatelessWidget {
+  final String imageURI;
+
+  const PhotoViewDialog({required this.imageURI});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: PhotoView(
+              maxScale: PhotoViewComputedScale.covered * 3.0,
+              minScale: PhotoViewComputedScale.contained,
+              imageProvider: NetworkImage(imageURI),
+            ),
+          ),
+          CloseButton(onPressed: () {
+            Navigator.pop(context);
+          }),
+        ],
       ),
     );
   }

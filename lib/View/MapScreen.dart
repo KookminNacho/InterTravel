@@ -327,29 +327,34 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       ),
       child: BottomExpandableAppBar(
-        bottomAppBarColor: Colors.white,
+          expandedBackColor: Colors.white,
+          bottomAppBarColor: Colors.white,
           attachSide: Side.Top,
           appBarHeight: 30,
           expandedHeight: welcomeHeight,
           bottomOffset: 25,
           horizontalMargin: 0,
           bottomAppBarBody: Container(
+              color: Colors.transparent,
               height: 25,
-              color: Colors.white,
               child: GestureDetector(
                 onVerticalDragUpdate:
                     DefaultBottomBarController.of(context).onDrag,
                 onVerticalDragEnd:
                     DefaultBottomBarController.of(context).onDragEnd,
                 child: MaterialButton(
+                    minWidth: 200,
                     padding: EdgeInsets.zero,
                     onPressed: () {
                       setState(() {
                         DefaultBottomBarController.of(context).swap();
                       });
                     },
-                    child: const Icon(Icons.keyboard_arrow_up,
-                        size: 30)),
+                    child: Container(
+                        width: 100,
+                        child: const Divider(
+                          thickness: 5,
+                        ))),
               )),
           expandedBody: const WelcomePage()),
     );

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/View/AddNewDiaryPage.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/ImageProvider.dart';
 import 'package:provider/provider.dart';
@@ -41,77 +42,109 @@ class _WelcomePageState extends State<WelcomePage> {
                   builder: (context, userData, child) {
                     return Consumer<ImageProviderModel>(
                         builder: (context, imageProvider, child) {
-                      return Stack(
-                        children: [
-                          DiaryPreView(),
-                          (selectedDiary != null)
-                              ? Scaffold(
-                                  body: Column(
-                                    children: [
-                                      Flexible(
-                                          child: Row(
-                                        children: [
-                                          BackButton(
-                                            onPressed: () {
-                                              DiaryProvider diary =
-                                                  Provider.of<DiaryProvider>(
-                                                      context,
-                                                      listen: false);
+                          return Stack(
+                            children: [
+                              DiaryPreView(),
+                              (selectedDiary != null)
+                                  ? Scaffold(
+                                backgroundColor: Colors.white,
+                                body: Column(
+                                  children: [
+                                    Flexible(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            BackButton(
+                                              onPressed: () {
+                                                DiaryProvider diary =
+                                                Provider.of<DiaryProvider>(
+                                                    context,
+                                                    listen: false);
 
-                                              diary.selectDiary(Diary(
-                                                  date: DateTime.now(),
-                                                  location: NLatLng(1, 1),
-                                                  owner: userData!.uid,
-                                                  title: "temp",
-                                                  content: "temp",
-                                                  imageURI: ["a", "b", "c"]));
-                                              diary.selectDiary(null);
-                                            },
-                                          ),
-                                          Text(
-                                            selectedDiary.title,
-                                            style: const TextStyle(
+                                                diary.selectDiary(Diary(
+                                                  uid: "local",
+                                                    date: DateTime.now(),
+                                                    location: NLatLng(1, 1),
+                                                    owner: userData!.uid,
+                                                    title: "temp",
+                                                    content: "temp",
+                                                    imageURI: ["a", "b", "c"]));
+                                                diary.selectDiary(null);
+                                              },
+                                            ),
+                                            Text(
+                                              selectedDiary.title,
+                                              style: const TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            SubmenuButton(
+                                              menuChildren: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                        builder: (context)
+                                                    =>
+                                                        AddNewDiaryPage(
+                                                          diary: selectedDiary,)
+                                                    ));
+                                                  },
+                                                  child: Text("수정"),
+                                                ),
+                                                const ListTile(
+                                                  title: Text("삭제"),
+                                                  onTap: null,
+                                                ),
+                                              ],
+                                              child: const Icon(
+                                                  Icons.more_vert),
+                                            ),
+                                          ],
+                                        )),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey
+                                                  .withOpacity(0.5),
+                                              spreadRadius: 3,
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 1),
+                                            ),
+                                          ],
+                                          border: Border.all(
+                                              color: Color.fromARGB(
+                                                  55, 0, 0, 0))),
+                                      padding: const EdgeInsets.all(60.0),
+                                      child: const Center(
+                                          child: RandomStackPhoto()),
+                                    ),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.only(top: 32.0),
+                                      child: MaterialButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, "/diary");
+                                          },
+                                          child: const Text("읽기",
+                                              style: TextStyle(
                                                 fontSize: 24,
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                        ],
-                                      )),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.5),
-                                                spreadRadius: 3,
-                                                blurRadius: 3,
-                                                offset: const Offset(0, 1),
-                                              ),
-                                            ],
-                                            border: Border.all(
-                                                color: Color.fromARGB(
-                                                    55, 0, 0, 0))),
-                                        padding: const EdgeInsets.all(60.0),
-                                        child: const Center(
-                                            child: RandomStackPhoto()),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 32.0),
-                                        child: MaterialButton(
-                                            onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context, "/diary");
-                                            },
-                                            child: const Text("자세히")),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                        ],
-                      );
-                    });
+                                              )),
+                                          color: Colors.white,
+                                          elevation: 0),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  : Container(),
+                            ],
+                          );
+                        });
                   },
                   selector: (_, userData) {
                     return userData.user;

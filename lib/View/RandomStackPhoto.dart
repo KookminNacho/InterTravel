@@ -21,8 +21,11 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
         children: List.generate(
           diaryProvider.selectedDiary!.imageURI.length,
           (index) {
-            return Positioned(
-                child: Image.network(
+            Image image = Image.network(
+
+              height: MediaQuery.of(context).size.width * 0.35,
+              width: MediaQuery.of(context).size.width * 0.35,
+              fit: BoxFit.contain,
               key: ValueKey(diaryProvider.selectedDiary!.imageURI[index]),
               diaryProvider.selectedDiary!.imageURI[index],
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
@@ -43,10 +46,11 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
                   ),
                 );
               },
-              height: MediaQuery.of(context).size.width * 0.35,
-              width: MediaQuery.of(context).size.width * 0.35,
-              fit: BoxFit.contain,
-            ));
+            );
+            return Positioned(
+                child: image,
+
+            );
           },
         ),
       );
