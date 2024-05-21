@@ -88,6 +88,17 @@ class DiarySource {
 
   }
 
+  Future<bool> deleteDiary(Diary selectedDiary) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      firestore.collection('Diaries').doc(selectedDiary.uid).delete();
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return true;
+  }
+
 // void addDiary() async {
 //   print("Adding diaries");
 //

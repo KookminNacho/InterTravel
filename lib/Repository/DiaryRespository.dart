@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:intertravel/DataSource/DiarySource.dart';
 
 import '../Model/Diary.dart';
@@ -20,5 +22,10 @@ class DiaryRepository{
   Future<bool> updateDiary(Diary diary) async {
 
     return await _diarySource.updateDiary(diary);
+  }
+
+  Future<bool> deleteDiary(Diary selectedDiary) async {
+    return await _diarySource.deleteDiary(selectedDiary);
+
   }
 }

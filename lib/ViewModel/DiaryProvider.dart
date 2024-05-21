@@ -61,4 +61,17 @@ class DiaryProvider with ChangeNotifier {
     diaryRepository.updateDiary(newDiary);
     notifyListeners();
   }
+
+  Future<void> deleteDiary(Diary selectedDiary) async {
+    DiaryRepository diaryRepository = DiaryRepository();
+    bool result = await diaryRepository.deleteDiary(selectedDiary);
+    if(result) {
+      _diary.remove(selectedDiary);
+      selectDiary(null);
+      notifyListeners();
+    }
+    else{
+      print("Diary delete failed");
+    }
+  }
 }

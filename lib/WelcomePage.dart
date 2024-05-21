@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,8 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+
+  MenuController menuController = MenuController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +39,9 @@ class _WelcomePageState extends State<WelcomePage> {
       child: Column(
         children: [
           Expanded(
-            child: Selector<DiaryProvider, Diary?>(
-              builder: (_, selectedDiary, __) {
+            child: Consumer<DiaryProvider>(
+              builder: (context, diaryProvider, child) {
+                Diary? selectedDiary = diaryProvider.selectedDiary;
                 return Selector<UserData, User?>(
                   builder: (context, userData, child) {
                     return Consumer<ImageProviderModel>(
@@ -73,15 +77,20 @@ class _WelcomePageState extends State<WelcomePage> {
                                                 diary.selectDiary(null);
                                               },
                                             ),
-                                            Text(
-                                              selectedDiary.title,
-                                              style: const TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w700),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width * 0.7,
+                                              child: AutoSizeText(
+                                                selectedDiary.title,
+                                                maxLines: 1,
+                                                style: const TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w700),
+                                              ),
                                             ),
                                             SubmenuButton(
+                                              controller: menuController,
                                               menuChildren: [
-                                                TextButton(
+                                                MenuItemButton(
                                                   onPressed: () {
                                                     Navigator.push(
                                                         context,
@@ -94,9 +103,30 @@ class _WelcomePageState extends State<WelcomePage> {
                                                   },
                                                   child: Text("수정"),
                                                 ),
-                                                const ListTile(
-                                                  title: Text("삭제"),
-                                                  onTap: null,
+                                                MenuItemButton(
+                                                  child: Text("삭제"),
+                                                  onPressed: (){
+                                                    showDialog(context: context, builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text("삭제"),
+                                                        content: const Text("삭제하시겠습니까?"),
+                                                        actions: [
+                                                          MaterialButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: const Text("취소")),
+                                                          MaterialButton(
+                                                              onPressed: () {
+                                                                Provider.of<DiaryProvider>(context, listen: false).deleteDiary(selectedDiary);
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: const Text("확인")),
+                                                        ],
+                                                      );
+
+                                                    });
+                                                  },
                                                 ),
                                               ],
                                               child: const Icon(
@@ -150,9 +180,6 @@ class _WelcomePageState extends State<WelcomePage> {
                     return userData.user;
                   },
                 );
-              },
-              selector: (_, provider) {
-                return provider.selectedDiary;
               },
             ),
           ),
