@@ -286,21 +286,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       } catch (LateInitializationError) {
         print("Map is not ready");
       }
-      if (diaries.selectedDiary != null) {
+
+      if (!diaries.isLoaded) {
+        diaries.loadDiary(user.uid);
+        await mapLoad(diaries);
+      }
+
+      if (diaries.selectedDiary == null) {
         if (!DefaultBottomBarController.of(context).isOpening ||
-            DefaultBottomBarController.of(context).isOpen) {
+            !DefaultBottomBarController.of(context).isOpen) {
           DefaultBottomBarController.of(context).open();
-        } else {
-          NCameraUpdate target = NCameraUpdate.scrollAndZoomTo(
-              target: NLatLng(
-                  diaries.selectedDiary!.location.latitude - 1 / zoomLevel,
-                  diaries.selectedDiary!.location.longitude),
-              zoom: (zoomLevel > 10) ? 10 : zoomLevel);
-          target.setAnimation(
-              duration: const Duration(milliseconds: 1500),
-              animation: NCameraAnimation.fly);
-          _controller.updateCamera(target);
         }
+      } else {
+        NCameraUpdate target = NCameraUpdate.scrollAndZoomTo(
+            target: NLatLng(
+                diaries.selectedDiary!.location.latitude - 1 / zoomLevel,
+                diaries.selectedDiary!.location.longitude),
+            zoom: (zoomLevel > 10) ? 10 : zoomLevel);
+        target.setAnimation(
+            duration: const Duration(milliseconds: 1500),
+            animation: NCameraAnimation.fly);
+        _controller.updateCamera(target);
       }
     } else {
       try {

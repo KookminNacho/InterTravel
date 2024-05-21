@@ -59,6 +59,7 @@ class DiaryProvider with ChangeNotifier {
     DiaryRepository diaryRepository = DiaryRepository();
     diaries[diaries.indexOf(diary)] = newDiary;
     diaryRepository.updateDiary(newDiary);
+    isLoaded = false;
     notifyListeners();
   }
 
@@ -68,6 +69,7 @@ class DiaryProvider with ChangeNotifier {
     if(result) {
       _diary.remove(selectedDiary);
       selectDiary(null);
+      isLoaded = false;
       notifyListeners();
     }
     else{
