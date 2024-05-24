@@ -9,6 +9,7 @@ class Diary {
   String owner;
   String? userID;
   List<String> imageURI;
+  String? address;
 
   Diary(
       {required this.uid,
@@ -18,5 +19,7 @@ class Diary {
       required this.location,
       required this.owner,
       this.userID = "",
-      this.imageURI = const []}) {}
+      this.imageURI = const [],
+      this.address = ""
+      }) {}
 }

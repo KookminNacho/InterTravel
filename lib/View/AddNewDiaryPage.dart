@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intertravel/DataSource/NaverGeoCoder.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
@@ -42,131 +43,150 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(padding: EdgeInsets.only(bottom: 32),),
       appBar: AppBar(
         title: const Text("새 일기"),
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(children: [
-              TextField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  hintText: "제목을 입력해주세요",
-                ),
-              ),
-              Expanded(
-                child: TextField(
-                  controller: contentController,
-                  maxLines: 20,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(children: [
+                TextField(
+                  controller: titleController,
                   decoration: InputDecoration(
-                    hintText: "내용을 입력해주세요",
+                    hintText: "제목을 입력해주세요",
                   ),
                 ),
-              ),
-              Container(
-                height: 100,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: file.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      print("file length: ${file.length}");
-                      if (file.isEmpty) {
-                        return MaterialButton(
-                            onPressed: () async {
-                              XFile? image = await ImagePicker()
-                                  .pickImage(source: ImageSource.gallery);
-                              if (image == null) return;
-                              print("이미지 추가: ${image.path}");
-                              setState(() {
-                                file.add(image.path);
-                              });
-                            },
-                            child: const Icon(Icons.add));
-                      } else {
-                        if (index != file.length) {
-                          if (file[index].contains(
-                              "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
-                            return Image.network(file[index]);
-                          }
-                          return Image.file(File(file[index]));
-                        }
-                        return MaterialButton(
-                            onPressed: () async {
-                              XFile? image = await ImagePicker()
-                                  .pickImage(source: ImageSource.gallery);
-                              if (image == null) return;
-                              print("이미지 추가: ${image.path}");
-                              setState(() {
-                                file.add(image.path);
-                              });
-                            },
-                            child: const Icon(Icons.add));
+                Expanded(
+                  child: TextField(
+                    controller: contentController,
+                    maxLines: 20,
+                    decoration: InputDecoration(
+                      hintText: "내용을 입력해주세요",
+                    ),
+                  ),
+                ),
+                FutureBuilder(
+                    future: NaverGeoCoder.getCityName(userData.location!),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                      if (snapshot.hasData) {
+                        return Flexible(
+                            flex: 0, child: Text("현재 위치: ${snapshot.data}"));
                       }
+                      return const Text("현재 위치를 불러오는 중입니다.");
                     }),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  MaterialButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("저장"),
-                                content: Text(
-                                    "저장하시겠습니까? 일기 ID: ${widget.diary?.uid}"),
-                                actions: [
-                                  MaterialButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("취소")),
-                                  MaterialButton(
-                                      onPressed: () {
-                                        uploadImage(userData);
-                                      },
-                                      child: const Text("확인")),
-                                ],
-                              );
-                            });
-                      },
-                      child: Text("저장하기")),
-                  MaterialButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("나가기")),
-                ],
-              )
-            ]),
-          ),
-        ],
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: file.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        print("file length: ${file.length}");
+                        if (file.isEmpty) {
+                          return MaterialButton(
+                              onPressed: () async {
+                                XFile? image = await ImagePicker()
+                                    .pickImage(source: ImageSource.gallery);
+                                if (image == null) return;
+                                print("이미지 추가: ${image.path}");
+                                setState(() {
+                                  file.add(image.path);
+                                });
+                              },
+                              child: const Icon(Icons.add));
+                        } else {
+                          if (index != file.length) {
+                            if (file[index].contains(
+                                "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
+                              return Image.network(file[index]);
+                            }
+                            return Image.file(File(file[index]));
+                          }
+                          return MaterialButton(
+                              onPressed: () async {
+                                XFile? image = await ImagePicker()
+                                    .pickImage(source: ImageSource.gallery);
+                                if (image == null) return;
+                                print("이미지 추가: ${image.path}");
+                                setState(() {
+                                  file.add(image.path);
+                                });
+                              },
+                              child: const Icon(Icons.add));
+                        }
+                      }),
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MaterialButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("저장"),
+                                  content: Text(
+                                      "저장하시겠습니까? 일기 ID: ${widget.diary?.uid}"),
+                                  actions: [
+                                    MaterialButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("취소")),
+                                    MaterialButton(
+                                        onPressed: () {
+                                          uploadImage(userData);
+                                        },
+                                        child: const Text("확인")),
+                                  ],
+                                );
+                              });
+                        },
+                        child: Text("저장하기")),
+                    MaterialButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("나가기")),
+                  ],
+                )
+              ]),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void uploadImage(UserData userData) async {
     Diary diary = Diary(
-        uid: "local",
-        title: titleController.text,
-        content: contentController.text,
-        imageURI: [],
-        date: DateTime.now(),
-        location: userData.location!,
-        owner: userData.uid,
-        userID: userData.displayName);
+      uid: "local",
+      title: titleController.text,
+      content: contentController.text,
+      imageURI: [],
+      date: DateTime.now(),
+      location: userData.location!,
+      owner: userData.uid,
+      userID: userData.displayName,
+      address: await NaverGeoCoder.getCityName(userData.location!),
+    );
 
     List<String> imageUri =
         await Provider.of<ImageProviderModel>(context, listen: false)
             .upLoadImage(userData, file, diary);
     diary.imageURI = imageUri;
-    for(int i = 0; i < imageUri.length; i++){
-      print("imageUri: ${imageUri[i]}");
-    }
+    for (int i = 0; i < imageUri.length; i++) {}
     if (widget.diary != null) {
+      diary.address = widget.diary!.address;
+      if (diary.address == "") {
+        diary.address = await NaverGeoCoder.getCityName(userData.location!);
+      }
       diary.uid = widget.diary!.uid;
       diary.date = widget.diary!.date;
       diary.location = widget.diary!.location;

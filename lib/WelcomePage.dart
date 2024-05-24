@@ -49,8 +49,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           return Stack(
                             children: [
                               DiaryPreView(),
-                              (selectedDiary != null)
-                                  ? Scaffold(
+                              if (selectedDiary != null) Scaffold(
                                 backgroundColor: Colors.white,
                                 body: Column(
                                   children: [
@@ -134,24 +133,26 @@ class _WelcomePageState extends State<WelcomePage> {
                                             ),
                                           ],
                                         )),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey
-                                                  .withOpacity(0.5),
-                                              spreadRadius: 3,
-                                              blurRadius: 3,
-                                              offset: const Offset(0, 1),
-                                            ),
-                                          ],
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  55, 0, 0, 0))),
-                                      padding: const EdgeInsets.all(60.0),
-                                      child: const Center(
-                                          child: RandomStackPhoto()),
+                                    Flexible(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.5),
+                                                spreadRadius: 3,
+                                                blurRadius: 3,
+                                                offset: const Offset(0, 1),
+                                              ),
+                                            ],
+                                            border: Border.all(
+                                                color: Color.fromARGB(
+                                                    55, 0, 0, 0))),
+                                        padding: const EdgeInsets.all(60.0),
+                                        child: const Center(
+                                            child: RandomStackPhoto()),
+                                      ),
                                     ),
                                     Padding(
                                       padding:
@@ -170,8 +171,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                     ),
                                   ],
                                 ),
-                              )
-                                  : Container(),
+                              ) else Container(),
                             ],
                           );
                         });

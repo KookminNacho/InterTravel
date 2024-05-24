@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:intertravel/Util/Constrains.dart';
@@ -38,12 +39,13 @@ class _DiaryPageWState extends State<DiaryPage> {
         body: SafeArea(
           top: true,
           child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                   child: AutoSizeText(
                     diary.title,
                     maxLines: 1,
@@ -71,10 +73,10 @@ class _DiaryPageWState extends State<DiaryPage> {
                                 child: Text(formatDate(diary.date),
                                     style: const TextStyle(
                                         fontSize: 14, color: Colors.grey))),
-                            Padding(
+                            Container(
                               padding: const EdgeInsets.all(8.0),
                               child: ImageSlideshow(
-                                height: MediaQuery.of(context).size.width * 0.6,
+                                height: MediaQuery.of(context).size.width,
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 initialPage: 0,
                                 indicatorBottomPadding: 16,
@@ -90,7 +92,7 @@ class _DiaryPageWState extends State<DiaryPage> {
                                             },
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  bottom: 36.0),
+                                                  bottom: 0),
                                               child: images[
                                                   diary.imageURI.indexOf(e)],
                                             ),
@@ -100,16 +102,25 @@ class _DiaryPageWState extends State<DiaryPage> {
                               ),
                             ),
                           ],
+
                         ),
                       ),
                     ),
                   ),
                 ),
+                (diary.address != null)?Text((diary.address != "")?diary.address!:"위치 정보가 없습니다."):Container(),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                  child: Text('${diary.content}',
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const Divider(
+                    thickness: 1,
+                    color: Colors.grey,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                  child: Text(diary.content,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                       )),
                 ),
                 Padding(

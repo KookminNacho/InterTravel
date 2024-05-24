@@ -20,7 +20,6 @@ class ImageDataSource {
     await ref.putData(image);
 
     String imgURL = await ref.getDownloadURL();
-    print("ImageDataSource upLoadImage: $imgURL");
     return imgURL;
   }
 }

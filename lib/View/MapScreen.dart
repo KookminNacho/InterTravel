@@ -4,6 +4,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:provider/provider.dart';
 
+import '../DataSource/NaverGeoCoder.dart';
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
 import '../ViewModel/DiaryProvider.dart';
@@ -46,6 +47,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print(DateTime.now().microsecondsSinceEpoch);
     return Consumer<DiaryProvider>(builder: (context, diaries, child) {
       return Selector<ImageProviderModel, bool>(selector: (_, imageProvider) {
         return imageProvider.isLoaded;
@@ -335,19 +337,20 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           expandedBackColor: Colors.white,
           bottomAppBarColor: Colors.white,
           attachSide: Side.Top,
-          appBarHeight: 30,
+          appBarHeight: 25,
           expandedHeight: welcomeHeight,
           bottomOffset: 25,
           horizontalMargin: 0,
           bottomAppBarBody: Container(
               color: Colors.transparent,
-              height: 25,
+              height: 1,
               child: GestureDetector(
                 onVerticalDragUpdate:
                     DefaultBottomBarController.of(context).onDrag,
                 onVerticalDragEnd:
                     DefaultBottomBarController.of(context).onDragEnd,
                 child: MaterialButton(
+                  height: 100,
                     minWidth: 200,
                     padding: EdgeInsets.zero,
                     onPressed: () {

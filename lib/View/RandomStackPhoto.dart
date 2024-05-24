@@ -23,8 +23,8 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
           (index) {
             Image image = Image.network(
 
-              height: MediaQuery.of(context).size.width * 0.35,
-              width: MediaQuery.of(context).size.width * 0.35,
+              height: MediaQuery.of(context).size.width * 0.45,
+              width: MediaQuery.of(context).size.width * 0.45,
               fit: BoxFit.contain,
               key: ValueKey(diaryProvider.selectedDiary!.imageURI[index]),
               diaryProvider.selectedDiary!.imageURI[index],

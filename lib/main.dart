@@ -1,6 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
@@ -22,7 +23,9 @@ void main() async {
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.debug
   );
-  await NaverMapSdk.instance.initialize(clientId: "d1e8xig1zk");
+  await dotenv.load(fileName: ".env");
+
+  await NaverMapSdk.instance.initialize(clientId: dotenv.env["ACCESS_KEY"]!);
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserData()),
