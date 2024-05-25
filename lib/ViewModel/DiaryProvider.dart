@@ -15,7 +15,6 @@ class DiaryProvider with ChangeNotifier {
 
   Diary? get selectedDiary => _selectedDiary;
 
-
   // 일기를 불러오는 메소드
   Future<void> loadDiary(String userID) async {
     DiaryRepository diaryRepository = DiaryRepository();
@@ -33,6 +32,7 @@ class DiaryProvider with ChangeNotifier {
   // 불러온 일기를 초기화하는 메소드
   Future<void> clearDiary() async {
     await Future.delayed(const Duration(milliseconds: 100));
+    _selectedDiary = null;
     _diary = [];
     _isLoaded = false;
     notifyListeners();
@@ -66,13 +66,12 @@ class DiaryProvider with ChangeNotifier {
   Future<void> deleteDiary(Diary selectedDiary) async {
     DiaryRepository diaryRepository = DiaryRepository();
     bool result = await diaryRepository.deleteDiary(selectedDiary);
-    if(result) {
+    if (result) {
       _diary.remove(selectedDiary);
       selectDiary(null);
       isLoaded = false;
       notifyListeners();
-    }
-    else{
+    } else {
       print("Diary delete failed");
     }
   }

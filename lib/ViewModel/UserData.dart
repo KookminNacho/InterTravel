@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intertravel/ViewModel/DiaryProvider.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;
@@ -50,8 +51,9 @@ class UserData extends ChangeNotifier {
 
   }
 
-  void signOut() {
+  void signOut(DiaryProvider diaryProvider) {
     FirebaseAuth.instance.signOut();
+    diaryProvider.clearDiary();
     user = null;
     notifyListeners();
   }

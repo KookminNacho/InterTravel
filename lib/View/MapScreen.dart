@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -15,6 +17,7 @@ import '../WelcomePage.dart';
 import 'AddNewDiaryPage.dart';
 import 'DIalog/ListDialog.dart';
 import 'DIalog/SettingDialog.dart';
+import 'GallayPage.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -32,7 +35,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    generateButtonList();
     UserData user = Provider.of<UserData>(context, listen: false);
     if (user.location == null) {
       user.getLocation();
@@ -58,12 +60,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               return Consumer<UserData>(builder: (context, user, child) {
                 mapFunction(diaries, user, uiViewModel);
                 return Scaffold(
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.startTop,
                   backgroundColor: Colors.white,
-                  bottomSheet: bottomNavBar(),
-                  floatingActionButtonLocation: ExpandableFab.location,
-                  floatingActionButton: (diaries.isLoaded && _userVerified)
-                      ? floatingButton(user)
-                      : Container(),
+                  bottomSheet: bottomSheet(),
+                  bottomNavigationBar: Container(
+                    color: Colors.white,
+                    height: 80,
+                    child: bottomBar(),
+                  ),
                   body: Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
@@ -140,57 +145,47 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     });
   }
 
-  Widget floatingButton(UserData user) {
-    return Consumer<UserData>(builder: (context, uuser, child) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            GestureDetector(
-                onVerticalDragUpdate:
-                    DefaultBottomBarController.of(context).onDrag,
-                onVerticalDragEnd:
-                    DefaultBottomBarController.of(context).onDragEnd,
-                child: ExpandableFab(
-                    openButtonBuilder: RotateFloatingActionButtonBuilder(
-                      heroTag: "FloatingButton1",
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: user.photo,
-                      ),
-                      fabSize: ExpandableFabSize.regular,
-                      foregroundColor: Colors.amber,
-                      backgroundColor: Colors.white,
-                      shape: const CircleBorder(
-                        side: BorderSide(color: Colors.grey, width: 1),
-                      ),
-                    ),
-                    closeButtonBuilder: RotateFloatingActionButtonBuilder(
-                      heroTag: "FloatingButton2",
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: user.photo,
-                      ),
-                      fabSize: ExpandableFabSize.regular,
-                      foregroundColor: Colors.deepOrangeAccent,
-                      backgroundColor: Colors.grey,
-                      shape: const CircleBorder(),
-                    ),
-                    type: ExpandableFabType.values[2],
-                    distance: 60.0,
-                    children: floatingButtonList)),
-          ],
+  Widget bottomBar() {
+    return Consumer<UserData>(builder: (context, user, child) {
+      List<Widget> buttonList = List.generate(
+        iconList.length,
+        (index) => MaterialButton(
+          height: 80,
+          onPressed: () {
+            callDialog(index);
+          },
+          child: Column(
+            children: [
+              Icon(iconList[index][0]),
+              Text(iconList[index][1], style: const TextStyle(fontSize: 9))
+            ],
+          ),
         ),
       );
+      buttonList.add(MaterialButton(
+        onPressed: () {
+          showDialog(
+              context: context, builder: (context) => const SettingDialog());
+        },
+        child: CircleAvatar(
+            child: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Image.network(user.user!.photoURL!))),
+      ));
+      return BottomAppBar(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: buttonList,
+          ));
     });
   }
 
   List iconList = [
     [Icons.add, "새 일기"],
     [Icons.list, "리스트"],
-    [Icons.settings, "설정"]
+    [Icons.space_dashboard, "갤러리"]
   ];
 
   void callDialog(int index) {
@@ -213,39 +208,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           case 0:
             return AddNewDiaryPage();
           case 1:
-            return const ListDialog();
+            return const ListPage();
           case 2:
-            return const SettingDialog();
+            return const GallaryPage();
           default:
             return const Text("Error");
         }
       },
     );
   }
-
-  void generateButtonList() {
-    for (int i = 0; i < 3; i++) {
-      floatingButtonList.add(FloatingActionButton(
-        heroTag: iconList[i][1],
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(24.0))),
-        onPressed: () {
-          callDialog(i);
-          DefaultBottomBarController.of(context).close();
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(),
-            Icon(iconList[i][0]),
-            Text("${iconList[i][1]}", style: TextStyle(fontSize: 8))
-          ],
-        ),
-      ));
-    }
-  }
-
-  List<Widget> floatingButtonList = [];
 
   Future<void> mapLoad(DiaryProvider diaries) async {
     if (DefaultBottomBarController.of(context).isClosed) {
@@ -323,7 +294,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     }
   }
 
-  Widget bottomNavBar() {
+  Widget bottomSheet() {
     BottomBarController bottomBarController = BottomBarController(vsync: this);
     bottomBarController.onDragEnd(DragEndDetails(velocity: Velocity.zero));
     return Container(
@@ -339,7 +310,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           attachSide: Side.Top,
           appBarHeight: 25,
           expandedHeight: welcomeHeight,
-          bottomOffset: 25,
+          bottomOffset: 0,
           horizontalMargin: 0,
           bottomAppBarBody: Container(
               color: Colors.transparent,
@@ -349,20 +320,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     DefaultBottomBarController.of(context).onDrag,
                 onVerticalDragEnd:
                     DefaultBottomBarController.of(context).onDragEnd,
-                child: MaterialButton(
-                  height: 100,
-                    minWidth: 200,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      setState(() {
-                        DefaultBottomBarController.of(context).swap();
-                      });
+                child: InkWell(
+                    onTap: () {
+                      DefaultBottomBarController.of(context).swap();
                     },
-                    child: Container(
-                        width: 100,
-                        child: const Divider(
-                          thickness: 5,
-                        ))),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/2-50),
+                      child: const Divider(
+                        thickness: 5,
+                      ),
+                    )),
               )),
           expandedBody: const WelcomePage()),
     );

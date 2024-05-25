@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../../ViewModel/UserData.dart';
@@ -20,9 +21,11 @@ class _SettingDialogState extends State<SettingDialog> {
           children: <Widget>[
             Text('이곳은 설정 다이얼로그입니다.'),
             Text('현재는 로그아웃 기능을 추가할 예정입니다.'),
-            MaterialButton(onPressed: () {
-              signOut();
-            }, child: Text("로그아웃")),
+            MaterialButton(
+                onPressed: () {
+                  signOut();
+                },
+                child: Text("로그아웃")),
           ],
         ),
       ),
@@ -38,7 +41,8 @@ class _SettingDialogState extends State<SettingDialog> {
   }
 
   void signOut() {
-    Provider.of<UserData>(context, listen: false).signOut();
+    Provider.of<UserData>(context, listen: false)
+        .signOut(Provider.of<DiaryProvider>(context, listen: false));
     Navigator.of(context).pop();
   }
 }

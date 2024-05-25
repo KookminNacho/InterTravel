@@ -7,46 +7,32 @@ import '../../Util/Constrains.dart';
 import '../../ViewModel/DiaryProvider.dart';
 import '../../ViewModel/ImageProvider.dart';
 
-class ListDialog extends StatefulWidget {
-  const ListDialog({super.key});
+class ListPage extends StatefulWidget {
+  const ListPage({super.key});
 
   @override
-  State<ListDialog> createState() => _ListDialogState();
+  State<ListPage> createState() => _ListPageState();
 }
 
-class _ListDialogState extends State<ListDialog> {
+class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      insetAnimationDuration: const Duration(milliseconds: 1000),
-      surfaceTintColor: Colors.white,
-      child: SizedBox(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('일기 목록'),
+      ),
+      body: SizedBox(
         height: MediaQuery.of(context).size.height * 0.8,
         child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
           return Column(
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icon(Icons.arrow_back_ios),
-                  ),
-                  Container(
-                    height: 50,
-                    child: const Center(
-                      child: Text('일기 목록'),
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
                 child: ListView.builder(
                   itemCount: diaries.diaries.length,
                   itemBuilder: (context, index) {
                     Image? imageData = Image.network(
-                        fit: BoxFit.fitWidth,diaries.diaries[index].imageURI[0]!);
+                        fit: BoxFit.fitWidth,
+                        diaries.diaries[index].imageURI[0]!);
                     return ListTile(
                         leading: SizedBox(
                           height: 75,

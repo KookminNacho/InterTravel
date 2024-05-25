@@ -58,7 +58,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                     0 &&
                                 Provider.of<DiaryProvider>(context).isLoaded)
                             ? '마지막 일기: ${formatDate(Provider.of<DiaryProvider>(context).diaries.last.date)}\n${Provider.of<DiaryProvider>(context).diaries.last.title}'
-                            : '일기가 없습니다.',
+                            : '',
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ),
@@ -74,7 +74,17 @@ class _DiaryPreViewState extends State<DiaryPreView> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
             child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-              return diaries.diaries.isEmpty
+              if(!diaries.isLoaded) {
+                return const Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment:   CrossAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Text("일기를 불러오는 중입니다..." ,style: TextStyle(color: Colors.grey),),
+                  ],
+                ));
+              }
+              return diaries.diaries.isEmpty && diaries.isLoaded
                   ? Center(child: Text("일기가 없습니다."))
                   : GridView.builder(
                       gridDelegate:
