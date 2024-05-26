@@ -210,7 +210,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           case 1:
             return const ListPage();
           case 2:
-            return const GallaryPage();
+            return const GalleryPage();
           default:
             return const Text("Error");
         }

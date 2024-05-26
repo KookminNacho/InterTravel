@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:provider/provider.dart';
@@ -74,21 +73,27 @@ class _DiaryPreViewState extends State<DiaryPreView> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
             child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-              if(!diaries.isLoaded) {
-                return const Center(child: Column(
+              if (!diaries.isLoaded) {
+                return const Center(
+                    child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment:   CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircularProgressIndicator(),
-                    Text("일기를 불러오는 중입니다..." ,style: TextStyle(color: Colors.grey),),
+                    Text(
+                      "일기를 불러오는 중입니다...",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ));
               }
               return diaries.diaries.isEmpty && diaries.isLoaded
                   ? Center(child: Text("일기가 없습니다."))
                   : GridView.builder(
+                      cacheExtent: 9999,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 300,
                         crossAxisCount: 2,
                         crossAxisSpacing: 4,
                         mainAxisSpacing: 8,
@@ -106,13 +111,19 @@ class _DiaryPreViewState extends State<DiaryPreView> {
   }
 }
 
-class DiaryEntryCard extends StatelessWidget {
+class DiaryEntryCard extends StatefulWidget {
   final Diary diary;
 
   const DiaryEntryCard({Key? key, required this.diary}) : super(key: key);
 
   @override
+  State<DiaryEntryCard> createState() => _DiaryEntryCardState();
+}
+
+class _DiaryEntryCardState extends State<DiaryEntryCard> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -120,7 +131,7 @@ class DiaryEntryCard extends StatelessWidget {
       color: Color.fromARGB(255, 242, 249, 254),
       child: InkWell(
         onTap: () {
-          Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+          Provider.of<DiaryProvider>(context, listen: false).selectDiary(widget.diary);
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -128,9 +139,9 @@ class DiaryEntryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: diary.imageURI.isNotEmpty
+                child: widget.diary.imageURI.isNotEmpty
                     ? Image.network(
-                        diary.imageURI[0],
+                        widget.diary.imageURI[0],
                         fit: BoxFit.fitWidth,
                       )
                     : Container(color: Colors.grey),
@@ -138,7 +149,7 @@ class DiaryEntryCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  diary.title,
+                  widget.diary.title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -149,7 +160,7 @@ class DiaryEntryCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  diary.content,
+                  widget.diary.content,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.grey,
@@ -163,4 +174,8 @@ class DiaryEntryCard extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
