@@ -20,9 +20,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.debug
-  );
+      androidProvider: AndroidProvider.debug,
+      appleProvider: AppleProvider.debug);
   await dotenv.load(fileName: ".env");
 
   await NaverMapSdk.instance.initialize(clientId: dotenv.env["ACCESS_KEY"]!);
@@ -44,23 +43,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     loginHeight = MediaQuery.of(context).size.height / 2.5;
     return MaterialApp(
-      initialRoute: GlobalPageRoute.mainPage,
-      routes: namedRoutes,
-      theme: ThemeData(
-        canvasColor: Colors.white,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        primarySwatch: Colors.blue,
-        buttonTheme: const ButtonThemeData(
-          buttonColor: Colors.blue,
-          textTheme: ButtonTextTheme.primary,
-        ),
-
-      )
-    );
+        initialRoute: GlobalPageRoute.mainPage,
+        routes: namedRoutes,
+        theme: ThemeData(
+          primaryColor: Colors.white,
+          dialogTheme: const DialogTheme(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            surfaceTintColor: Colors.white,
+          ),
+          useMaterial3: true,
+          /**/
+          canvasColor: Colors.white,
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          primarySwatch: Colors.blue,
+          buttonTheme: const ButtonThemeData(
+            buttonColor: Colors.blue,
+            textTheme: ButtonTextTheme.primary,
+          ),
+        ));
   }
 }

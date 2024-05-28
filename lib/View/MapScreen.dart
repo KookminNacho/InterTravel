@@ -49,7 +49,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(DateTime.now().microsecondsSinceEpoch);
     return Consumer<DiaryProvider>(builder: (context, diaries, child) {
       return Selector<ImageProviderModel, bool>(selector: (_, imageProvider) {
         return imageProvider.isLoaded;
@@ -155,6 +154,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             callDialog(index);
           },
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(iconList[index][0]),
               Text(iconList[index][1], style: const TextStyle(fontSize: 9))
@@ -168,14 +168,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               context: context, builder: (context) => const SettingDialog());
         },
         child: CircleAvatar(
-            child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Image.network(user.user!.photoURL!))),
+            backgroundColor: Colors.white,
+            child: Image.network(user.user!.photoURL!)),
       ));
       return BottomAppBar(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
           color: Colors.white,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: buttonList,
           ));
@@ -194,11 +194,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       transitionDuration: const Duration(milliseconds: 250),
       transitionBuilder: (BuildContext context, Animation<double> a1,
           Animation<double> a2, Widget child) {
-        return FadeTransition(
-          opacity: CurvedAnimation(
-            parent: a1,
-            curve: Curves.easeInBack,
-          ),
+        final CurvedAnimation c = CurvedAnimation(
+            parent: a1, curve: Curves.fastOutSlowIn, reverseCurve: Curves.ease);
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(c),
           child: child,
         );
       },
@@ -300,20 +302,23 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20)),
       ),
       child: BottomExpandableAppBar(
-          expandedBackColor: Colors.white,
-          bottomAppBarColor: Colors.white,
+          bottomAppBarColor: Colors.transparent,
           attachSide: Side.Top,
           appBarHeight: 25,
           expandedHeight: welcomeHeight,
           bottomOffset: 0,
           horizontalMargin: 0,
           bottomAppBarBody: Container(
-              color: Colors.transparent,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+              ),
               height: 1,
               child: GestureDetector(
                 onVerticalDragUpdate:
@@ -325,7 +330,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       DefaultBottomBarController.of(context).swap();
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/2-50),
+                      padding: EdgeInsets.symmetric(
+                          horizontal:
+                              MediaQuery.of(context).size.width / 2 - 50),
                       child: const Divider(
                         thickness: 5,
                       ),

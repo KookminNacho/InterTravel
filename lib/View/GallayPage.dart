@@ -19,33 +19,30 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("일기 갤러리"),
+        centerTitle: true,
+        backgroundColor: Colors.black54,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        foregroundColor: Colors.white,
+      ),
+
       backgroundColor: Colors.black54,
       body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-        return Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: MasonryGridView.count(
-                clipBehavior: Clip.none,
-                itemCount: diaries.diaries.length,
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                itemBuilder: (context, index) {
-                  return KeepAliveDiaryCard(diary: diaries.diaries[index]);
-                },
-              ),
-            ),
-            Container(
-              child: Row(children: [
-                BackButton( onPressed: () {
-                  Navigator.pop(context);
-                },),
-              ],),
-              color: Colors.white,
-              height: 100,
-            ),
-          ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: MasonryGridView.count(
+            clipBehavior: Clip.none,
+            itemCount: diaries.diaries.length,
+            crossAxisCount: (MediaQuery.of(context).size.aspectRatio < 0.6) ? 2 : 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            itemBuilder: (context, index) {
+              return KeepAliveDiaryCard(diary: diaries.diaries[index]);
+            },
+          ),
         );
       }),
     );

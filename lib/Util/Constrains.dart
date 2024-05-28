@@ -37,3 +37,16 @@ const List<Color> colors = [
 String formatDate(DateTime date) {
   return DateFormat('yyyy년 MM월 dd일 hh:mm').format(date);
 }
+
+String timeDifference(DateTime date) {
+  Duration difference = DateTime.now().difference(date);
+  if (difference.inDays > 0) {
+    return '${difference.inDays}일 전';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}시간 전';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}분 전';
+  } else {
+    return '방금 전';
+  }
+}

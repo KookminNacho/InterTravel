@@ -7,6 +7,8 @@ import 'UserData.dart';
 class DiaryProvider with ChangeNotifier {
   bool _isLoaded = false;
   List<Diary> _diary = [];
+  List<Diary> _dateSortedDiary = [];
+  List<Diary> _nameSortedDiary = [];
   Diary? _selectedDiary;
 
   bool get isLoaded => _isLoaded;
@@ -19,6 +21,11 @@ class DiaryProvider with ChangeNotifier {
   Future<void> loadDiary(String userID) async {
     DiaryRepository diaryRepository = DiaryRepository();
     _diary = await diaryRepository.getDiaries(userID);
+    _dateSortedDiary = List.from(_diary);
+    _dateSortedDiary.sort((a, b) => b.date.compareTo(a.date));
+    _nameSortedDiary = List.from(_diary);
+    _nameSortedDiary.sort((a, b) => a.title.compareTo(b.title));
+    _diary = _dateSortedDiary;
     _isLoaded = true;
     notifyListeners();
   }

@@ -18,6 +18,9 @@ class DiaryPreView extends StatefulWidget {
 class _DiaryPreViewState extends State<DiaryPreView> {
   @override
   Widget build(BuildContext context) {
+    DiaryProvider diaryProvider = Provider.of<DiaryProvider>(context);
+    Diary? lateDiary =
+        (diaryProvider.isLoaded) ? diaryProvider.diaries.first : null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,17 +52,53 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                     ),
                   ),
                   Container(
+                    alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 8.0),
-                      child: Text(
-                        (Provider.of<DiaryProvider>(context).diaries.length >
-                                    0 &&
-                                Provider.of<DiaryProvider>(context).isLoaded)
-                            ? '마지막 일기: ${formatDate(Provider.of<DiaryProvider>(context).diaries.last.date)}\n${Provider.of<DiaryProvider>(context).diaries.last.title}'
-                            : '',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
+                      child: ((diaryProvider.diaries.isNotEmpty &&
+                              diaryProvider.isLoaded &&
+                              lateDiary != null))
+                          ? RichText(
+                        textAlign: TextAlign.right,
+                              text: TextSpan(
+
+                                children: [
+                                  TextSpan(
+                                    text: '마지막 일기: ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[800],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  TextSpan(
+                                    text: "${lateDiary.title}\n",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '${formatDate(lateDiary.date)}\n',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '${timeDifference(lateDiary.date)}에 작성됨',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.blueAccent,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Text(""),
                     ),
                   ),
                 ],
@@ -93,7 +132,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                       cacheExtent: 9999,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: 300,
+                        mainAxisExtent: 300,
                         crossAxisCount: 2,
                         crossAxisSpacing: 4,
                         mainAxisSpacing: 8,
@@ -120,7 +159,8 @@ class DiaryEntryCard extends StatefulWidget {
   State<DiaryEntryCard> createState() => _DiaryEntryCardState();
 }
 
-class _DiaryEntryCardState extends State<DiaryEntryCard> with AutomaticKeepAliveClientMixin {
+class _DiaryEntryCardState extends State<DiaryEntryCard>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -131,7 +171,8 @@ class _DiaryEntryCardState extends State<DiaryEntryCard> with AutomaticKeepAlive
       color: Color.fromARGB(255, 242, 249, 254),
       child: InkWell(
         onTap: () {
-          Provider.of<DiaryProvider>(context, listen: false).selectDiary(widget.diary);
+          Provider.of<DiaryProvider>(context, listen: false)
+              .selectDiary(widget.diary);
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
