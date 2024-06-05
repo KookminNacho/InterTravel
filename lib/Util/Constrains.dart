@@ -11,13 +11,13 @@ double welcomeHeight = 500;
 
 int animationDuration = 150;
 List<double> photoAngleSpread =
-    [0.0] + List.generate(99, (index) => Random().nextDouble() * 0.5 - 0.25);
+    [0.0] + List.generate(99, (index) => Random().nextDouble() * 0.25 - 0.125);
 
 List<List<double>> photoPositionSpread = List.generate(
     100,
     (index) => [
-          Random().nextDouble() * 10 - 5,
-          Random().nextDouble() * 10 - 5,
+          Random().nextDouble() * 5 - 3,
+          Random().nextDouble() * 5 - 3,
         ]);
 
 const List<Color> colors = [

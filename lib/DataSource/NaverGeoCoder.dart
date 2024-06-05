@@ -21,9 +21,26 @@ class NaverGeoCoder {
         'coords=${latLng.longitude},${latLng.latitude}' +
         "&output=json&orders=roadaddr,admcode");
     http.Response response = await http.get(uri, headers: header);
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
+      print("data//////////: $data");
+      final addType = data['results'][0]['name'];
+      if(addType == "roadaddr") {
+        String city = data['results'][0]['region']['area1']['name'] +
+            " " +
+            data['results'][0]['region']['area2']['name'] +
+            " " +
+            data['results'][0]['region']['area3']['name'] +
+            " " +
+            data['results'][0]['land']['name'];
+        if(data['results'][0]['land']['addition0']["value"] != null){
+          print(data['results'][0]['land']['addition0']["value"]);
+          city += " " + data['results'][0]['land']['addition0']["value"];
+        }
+        return city;
+      }
+
       String city = data['results'][0]['region']['area1']['name'] +
           " " +
           data['results'][0]['region']['area2']['name'] +
@@ -35,4 +52,6 @@ class NaverGeoCoder {
     }
     return null;
   }
+
+
 }

@@ -74,6 +74,7 @@ class _DiaryPageWState extends State<DiaryPage> {
                                     style: const TextStyle(
                                         fontSize: 14, color: Colors.grey))),
                             Container(
+                              height: MediaQuery.of(context).size.height * 0.5,
                               padding: const EdgeInsets.all(8.0),
                               child: ImageSlideshow(
                                 height: MediaQuery.of(context).size.width,

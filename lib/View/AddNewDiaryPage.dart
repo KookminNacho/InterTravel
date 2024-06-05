@@ -1,8 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intertravel/DataSource/NaverGeoCoder.dart';
+import 'package:intertravel/View/DIalog/CustomLocationDialog.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
@@ -26,12 +29,10 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   bool imageUploaded = false;
-  late UserData userData;
 
   @override
   void initState() {
     super.initState();
-    userData = Provider.of<UserData>(context, listen: false);
     if (widget.diary != null) {
       titleController.text = widget.diary!.title;
       contentController.text = widget.diary!.content;
@@ -71,21 +72,56 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                 ),
               ),
             ),
-            FutureBuilder(
-              future: NaverGeoCoder.getCityName(userData.location!),
-              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                if (snapshot.hasData) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text("현재 위치: ${snapshot.data}"),
+            Consumer<UserData>(builder: (context, userData, child) {
+              return FutureBuilder(
+                future: NaverGeoCoder.getCityName(
+                    (userData.selectedLocation == null)
+                        ? userData.location!
+                        : userData.selectedLocation!),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Row(
+
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          (userData.selectedLocation == null)
+                              ? Text("현재 위치: ")
+                              : Text("설정 위치: "),
+                          SizedBox(
+                            width: 200,
+                            child: AutoSizeText(
+                              snapshot.data.toString(),
+                              minFontSize: 10,
+                              maxFontSize: 14,
+                              maxLines: 2,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                setCustomLocation(userData.location!);
+                              },
+                              icon: const Icon(Icons.map_outlined, size: 14)),
+                          IconButton(
+                              onPressed: () {
+                                userData.selectedLocation = null;
+                              },
+                              icon: const Icon(Icons.location_on_outlined,
+                                  size: 14)),
+                        ],
+                      ),
+                    );
+                  }
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text("현재 위치를 불러오는 중입니다."),
                   );
-                }
-                return const Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text("현재 위치를 불러오는 중입니다."),
-                );
-              },
-            ),
+                },
+              );
+            }),
             const SizedBox(height: 10),
             SizedBox(
               height: 100,
@@ -123,7 +159,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                             ),
                             TextButton(
                               onPressed: () {
-                                uploadImage(userData);
+                                uploadImage(Provider.of<UserData>(context,
+                                    listen: false));
                               },
                               child: const Text("확인"),
                             ),
@@ -136,6 +173,12 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                 ),
                 MaterialButton(
                   onPressed: () {
+                    if (titleController.text == "" &&
+                        contentController.text == "" &&
+                        file.isEmpty) {
+                      Navigator.pop(context);
+                      return;
+                    }
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -222,6 +265,14 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
             : Image.file(File(file[index])),
       ),
     );
+  }
+
+  void setCustomLocation(NLatLng location) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const CustomLocationDialog();
+        });
   }
 
   void uploadImage(UserData userData) async {

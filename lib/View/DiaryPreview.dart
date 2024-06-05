@@ -21,128 +21,129 @@ class _DiaryPreViewState extends State<DiaryPreView> {
     DiaryProvider diaryProvider = Provider.of<DiaryProvider>(context);
     Diary? lateDiary =
         (diaryProvider.isLoaded) ? diaryProvider.diaries.first : null;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        Flexible(
-          flex: 0,
-          child: Container(
-            decoration: BoxDecoration(color: Colors.white, boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: -1,
-                blurRadius: 2,
-                offset: const Offset(0, 4),
-              ),
-            ]),
-            alignment: Alignment.centerLeft,
-            width: MediaQuery.of(context).size.width,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+          child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
+            if (!diaries.isLoaded) {
+              return const Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Text(
-                      Provider.of<UserData>(context).displayName ?? "User Name",
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 8.0),
-                      child: ((diaryProvider.diaries.isNotEmpty &&
-                              diaryProvider.isLoaded &&
-                              lateDiary != null))
-                          ? RichText(
-                        textAlign: TextAlign.right,
-                              text: TextSpan(
-
-                                children: [
-                                  TextSpan(
-                                    text: '마지막 일기: ',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[800],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-
-                                  TextSpan(
-                                    text: "${lateDiary.title}\n",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '${formatDate(lateDiary.date)}\n',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '${timeDifference(lateDiary.date)}에 작성됨',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Text(""),
-                    ),
+                  CircularProgressIndicator(),
+                  Text(
+                    "일기를 불러오는 중입니다...",
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
-              ),
-            ),
-          ),
-        ),
-        Flexible(
-          flex: 1,
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-            child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-              if (!diaries.isLoaded) {
-                return const Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text(
-                      "일기를 불러오는 중입니다...",
-                      style: TextStyle(color: Colors.grey),
+              ));
+            }
+            final aspectRatio = MediaQuery.of(context).size.aspectRatio;
+            return diaries.diaries.isEmpty && diaries.isLoaded
+                ? const Center(child: Text("일기가 없습니다."))
+                : ClipRect(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 116.0),
+                      child: GridView.builder(
+                          clipBehavior: Clip.none,
+                          physics: const ClampingScrollPhysics(),
+                          cacheExtent: 9999,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 300,
+                            crossAxisCount: (aspectRatio > 0.6) ? 3 : 2,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 8,
+                            childAspectRatio: 1,
+                          ),
+                          itemCount: diaries.diaries.length,
+                          itemBuilder: (context, index) {
+                            return DiaryEntryCard(
+                                diary: diaries.diaries[index]);
+                          }),
                     ),
-                  ],
-                ));
-              }
-              return diaries.diaries.isEmpty && diaries.isLoaded
-                  ? Center(child: Text("일기가 없습니다."))
-                  : GridView.builder(
-                      cacheExtent: 9999,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisExtent: 300,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 4,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemCount: diaries.diaries.length,
-                      itemBuilder: (context, index) {
-                        return DiaryEntryCard(diary: diaries.diaries[index]);
-                      });
-            }),
+                  );
+          }),
+        ),
+        Container(
+          height: 100,
+          decoration: BoxDecoration(color: Colors.white, boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: -1,
+              blurRadius: 2,
+              offset: const Offset(0, 4),
+            ),
+          ]),
+          alignment: Alignment.centerLeft,
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    Provider.of<UserData>(context).displayName ?? "User Name",
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 8.0),
+                    child: ((diaryProvider.diaries.isNotEmpty &&
+                            diaryProvider.isLoaded &&
+                            lateDiary != null))
+                        ? RichText(
+                            textAlign: TextAlign.right,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '마지막 일기: ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[800],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "${lateDiary.title}\n",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '${formatDate(lateDiary.date)}\n',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${timeDifference(lateDiary.date)}에 작성됨',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blueAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Text(""),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -181,9 +182,12 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
             children: [
               Expanded(
                 child: widget.diary.imageURI.isNotEmpty
-                    ? Image.network(
-                        widget.diary.imageURI[0],
-                        fit: BoxFit.fitWidth,
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          widget.diary.imageURI[0],
+                          fit: BoxFit.cover,
+                        ),
                       )
                     : Container(color: Colors.grey),
               ),
@@ -201,6 +205,7 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
+                  maxLines: 1,
                   widget.diary.content,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(

@@ -6,6 +6,7 @@ import 'package:intertravel/ViewModel/DiaryProvider.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;
+  NLatLng? _selectedLocation;
   bool _mapLoad = false;
   User? _user;
   String _uid = "";
@@ -13,6 +14,8 @@ class UserData extends ChangeNotifier {
   Image _photo = Image.asset("assets/images/user.png");
 
   NLatLng? get location => _location;
+
+  NLatLng? get selectedLocation => _selectedLocation;
 
   bool get mapLoad => _mapLoad;
 
@@ -23,6 +26,8 @@ class UserData extends ChangeNotifier {
   String get displayName => _displayName;
 
   Image get photo => _photo;
+
+
 
 
   set user(User? value) {
@@ -88,6 +93,11 @@ class UserData extends ChangeNotifier {
       location = null; // 에러 발생 시 위치 정보를 null로 설정
       notifyListeners();
     }
+  }
+
+  set selectedLocation(NLatLng? value) {
+    _selectedLocation = value;
+    notifyListeners();
   }
 
   set photo(Image value) {
