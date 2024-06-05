@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
 
 import '../../Util/Constrains.dart';
 import '../../ViewModel/DiaryProvider.dart';
-import '../../ViewModel/ImageProvider.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({super.key});

@@ -1,4 +1,3 @@
-import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intertravel/View/DIalog/ListDialog.dart';
 
@@ -24,4 +23,5 @@ var namedRoutes = <String, WidgetBuilder>{
   GlobalPageRoute.list: (context) => const ListPage(),
 };
 
-Widget currentPage = LoginPage();
+// ignore: prefer_const_constructors
+Widget currentPage = const LoginPage();

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as HTTP;
 
 class NaverGeoCoder {
   static const endPoint =
@@ -20,11 +20,9 @@ class NaverGeoCoder {
     final uri = Uri.parse(endPoint +
         'coords=${latLng.longitude},${latLng.latitude}' +
         "&output=json&orders=roadaddr,admcode");
-    http.Response response = await http.get(uri, headers: header);
-    print(response.body);
+    HTTP.Response response = await HTTP.get(uri, headers: header);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print("data//////////: $data");
       final addType = data['results'][0]['name'];
       if(addType == "roadaddr") {
         String city = data['results'][0]['region']['area1']['name'] +
@@ -35,7 +33,6 @@ class NaverGeoCoder {
             " " +
             data['results'][0]['land']['name'];
         if(data['results'][0]['land']['addition0']["value"] != null){
-          print(data['results'][0]['land']['addition0']["value"]);
           city += " " + data['results'][0]['land']['addition0']["value"];
         }
         return city;

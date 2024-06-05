@@ -1,7 +1,5 @@
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intertravel/View/LoginPage.dart';
@@ -40,7 +38,7 @@ class _MainPageState extends State<MainPage> {
                 }, builder: (context, user, child) {
                   return (user != null)
                       ? DefaultBottomBarController(child: const MapScreen())
-                      : LoginPage();
+                      : const LoginPage();
                 })
               : Center(
                   child: ElevatedButton(

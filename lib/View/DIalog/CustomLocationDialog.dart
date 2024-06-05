@@ -55,7 +55,7 @@ class _CustomLocationDialogState extends State<CustomLocationDialog> {
                           padding: const EdgeInsets.all(8.0),
                           child: RichText(
                               text: TextSpan(
-                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            style: const TextStyle(color: Colors.black, fontSize: 14),
                             children: [
                               const TextSpan(text: "지도 위치: "),
                               TextSpan(

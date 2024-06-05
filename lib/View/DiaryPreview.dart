@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:provider/provider.dart';
 
-import '../DataSource/NaverGeoCoder.dart';
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
 import '../ViewModel/DiaryProvider.dart';
@@ -87,7 +85,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
-                    Provider.of<UserData>(context).displayName ?? "User Name",
+                    Provider.of<UserData>(context).displayName,
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.w700),
                     overflow: TextOverflow.ellipsis,
@@ -139,7 +137,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                               ],
                             ),
                           )
-                        : Text(""),
+                        : const Text(""),
                   ),
                 ),
               ],
@@ -169,7 +167,7 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 3,
-      color: Color.fromARGB(255, 242, 249, 254),
+      color: const Color.fromARGB(255, 242, 249, 254),
       child: InkWell(
         onTap: () {
           Provider.of<DiaryProvider>(context, listen: false)

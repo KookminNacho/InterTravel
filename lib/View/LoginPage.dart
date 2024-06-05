@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intertravel/Repository/AuthRepository.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: MediaQuery.of(context).size.width / 1.2,
                   height: buttonHeight,
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 245, 0),
+                      color: const Color.fromARGB(255, 255, 245, 0),
                       borderRadius: BorderRadius.circular(10)),
                   child: const Text(
                     "카카오로 시작하기 (개발 예정)",

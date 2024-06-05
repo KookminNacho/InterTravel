@@ -1,12 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:provider/provider.dart';
 
-import '../DataSource/NaverGeoCoder.dart';
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
 import '../ViewModel/DiaryProvider.dart';
@@ -64,8 +60,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   backgroundColor: Colors.white,
                   bottomSheet: bottomSheet(),
                   bottomNavigationBar: Container(
-                    color: Colors.white,
-                    height: 80,
+                    decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                    height: 97,
                     child: bottomBar(),
                   ),
                   body: Stack(
@@ -116,7 +112,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                                         35.95667374781408, 127.85881633921491),
                                     zoom: 6)),
                         onMapReady: (NaverMapController mapController) {
-                          Future.delayed(Duration(milliseconds: 1000), () {
+                          Future.delayed(const Duration(milliseconds: 1000),
+                              () {
                             setState(() {
                               loginColor = Colors.black.withOpacity(0.5);
                               loginHeight = 0;
@@ -149,35 +146,43 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       List<Widget> buttonList = List.generate(
         iconList.length,
         (index) => MaterialButton(
-          height: 80,
+          height: 100,
           onPressed: () {
             callDialog(index);
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(iconList[index][0]),
+              Icon(iconList[index][0], size: 25,),
               Text(iconList[index][1], style: const TextStyle(fontSize: 9))
             ],
           ),
         ),
       );
-      buttonList.add(MaterialButton(
-        onPressed: () {
-          showDialog(
-              context: context, builder: (context) => const SettingDialog());
-        },
-        child: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Image.network(user.user!.photoURL!)),
+      buttonList.add(ClipRRect(
+        borderRadius: BorderRadius.circular(50),
+        child: MaterialButton(
+          shape: const CircleBorder(),
+          materialTapTargetSize: MaterialTapTargetSize.padded,
+          onPressed: () {
+            showDialog(
+                context: context, builder: (context) => const SettingDialog());
+          },
+          child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Image.network(user.user!.photoURL!)),
+        ),
       ));
       return BottomAppBar(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
           color: Colors.white,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: buttonList,
+          child: SizedBox(
+            height: 70,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttonList,
+            ),
           ));
     });
   }
@@ -208,7 +213,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           Animation<double> secondaryAnimation) {
         switch (index) {
           case 0:
-            return AddNewDiaryPage();
+            return const AddNewDiaryPage();
           case 1:
             return const ListPage();
           case 2:

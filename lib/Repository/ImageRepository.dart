@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:intertravel/DataSource/ImageDataSource.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:intertravel/ViewModel/UserData.dart';

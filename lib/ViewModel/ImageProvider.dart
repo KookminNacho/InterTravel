@@ -2,9 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intertravel/Repository/ImageRepository.dart';
-import 'package:intertravel/View/DiaryPreview.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
-import 'dart:io';
 
 import '../Model/Diary.dart';
 import 'UserData.dart';

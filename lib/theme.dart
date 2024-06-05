@@ -4,13 +4,13 @@ class CustomTheme {
   static ThemeData dark([ThemeData? template]) {
     var themeData = template ?? ThemeData.dark();
     var newThemeData = themeData.copyWith(
-      canvasColor: Color.fromRGBO(25, 39, 62, 1),
+      canvasColor: const Color.fromRGBO(25, 39, 62, 1),
       indicatorColor: Colors.deepOrange,
       textTheme: themeData.textTheme.apply(
         fontFamily: 'Pretendard',
       ),
       bottomAppBarTheme:
-          BottomAppBarTheme(color: Color.fromRGBO(39, 59, 89, 1)),
+          const BottomAppBarTheme(color: Color.fromRGBO(39, 59, 89, 1)),
       colorScheme: const ColorScheme(
           background: Color.fromRGBO(31, 50, 69, 1),
           brightness: Brightness.dark,

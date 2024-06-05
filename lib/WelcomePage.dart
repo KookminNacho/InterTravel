@@ -1,10 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +10,6 @@ import '../View/AddNewDiaryPage.dart';
 import '../View/RandomStackPhoto.dart';
 import '../ViewModel/DiaryProvider.dart';
 import '../ViewModel/ImageProvider.dart';
-import '../ViewModel/UIViewMode.dart';
 import '../ViewModel/UserData.dart';
 import 'View/DiaryPreview.dart';
 
@@ -88,7 +83,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         diary.selectDiary(Diary(
                             uid: "local",
                             date: DateTime.now(),
-                            location: NLatLng(1, 1),
+                            location: const NLatLng(1, 1),
                             owner: userData!.uid,
                             title: "temp",
                             content: "temp",
@@ -106,24 +101,24 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                     PopupMenuButton(
                       itemBuilder: (BuildContext context) { return [
-                        PopupMenuItem(child: Text("수정"), onTap: (){
+                        PopupMenuItem(child: const Text("수정"), onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewDiaryPage(diary: selectedDiary)));
                         },),
-                        PopupMenuItem(child: Text("삭제"), onTap: (){
+                        PopupMenuItem(child: const Text("삭제"), onTap: (){
                           showDialog(context: context, builder: (BuildContext context){
                             return AlertDialog(
-                              title: Text("일기 삭제"),
+                              title: const Text("일기 삭제"),
                               content: SizedBox(
                                 height: MediaQuery.of(context).size.height * 0.1,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("정말로 삭제하시겠습니까?", style: TextStyle(fontSize: 16)),
+                                    const Text("정말로 삭제하시겠습니까?", style: TextStyle(fontSize: 16)),
                                     RichText(text: TextSpan(
-                                      style: TextStyle(color: Colors.black, fontSize: 14),
+                                      style: const TextStyle(color: Colors.black, fontSize: 14),
                                       children: [
-                                        TextSpan(text: "일기 제목: "),
-                                        TextSpan(text: selectedDiary.title, style: TextStyle(fontWeight: FontWeight.bold)),
+                                        const TextSpan(text: "일기 제목: "),
+                                        TextSpan(text: selectedDiary.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
                                   ],
@@ -132,11 +127,11 @@ class _WelcomePageState extends State<WelcomePage> {
                               actions: [
                                 MaterialButton(onPressed: (){
                                   Navigator.pop(context);
-                                }, child: Text("취소")),
+                                }, child: const Text("취소")),
                                 MaterialButton(onPressed: (){
                                   Provider.of<DiaryProvider>(context, listen: false).deleteDiary(selectedDiary);
                                   Navigator.pop(context);
-                                }, child: Text("확인")),
+                                }, child: const Text("확인")),
                               ],
 
                             );
@@ -151,8 +146,8 @@ class _WelcomePageState extends State<WelcomePage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Divider(),
-                  RandomStackPhoto(),
+                  const Divider(),
+                  const RandomStackPhoto(),
                   Padding(
                     padding: const EdgeInsets.only(top: 32.0),
                     child: MaterialButton(

@@ -1,12 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 
 import '../Model/Diary.dart';
 
@@ -27,7 +25,7 @@ class _DiaryPageWState extends State<DiaryPage> {
     diary = Provider.of<DiaryProvider>(context, listen: false).selectedDiary!;
     images = diary.imageURI.map((e) => Image.network(e)).toList();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
     super.initState();
   }
 
@@ -56,7 +54,7 @@ class _DiaryPageWState extends State<DiaryPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                   child: Container(
                     height: 500,
                     width: double.infinity,
@@ -64,7 +62,7 @@ class _DiaryPageWState extends State<DiaryPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 16),
+                      padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 16),
                       child: Center(
                         child: Column(
                           children: [
@@ -110,9 +108,9 @@ class _DiaryPageWState extends State<DiaryPage> {
                   ),
                 ),
                 (diary.address != null)?Text((diary.address != "")?diary.address!:"위치 정보가 없습니다."):Container(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: const Divider(
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(
                     thickness: 1,
                     color: Colors.grey,
                   ),
@@ -120,17 +118,17 @@ class _DiaryPageWState extends State<DiaryPage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                   child: Text(diary.content,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                       )),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                   child: MaterialButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('Go Back'),
+                    child: const Text('Go Back'),
                   ),
                 ),
               ],

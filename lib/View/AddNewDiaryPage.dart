@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -16,9 +14,9 @@ import '../ViewModel/ImageProvider.dart';
 import '../ViewModel/UserData.dart';
 
 class AddNewDiaryPage extends StatefulWidget {
-  AddNewDiaryPage({super.key, this.diary});
+  const AddNewDiaryPage({super.key, this.diary});
 
-  Diary? diary;
+  final Diary? diary;
 
   @override
   State<AddNewDiaryPage> createState() => _AddNewDiaryPageState();
@@ -43,8 +41,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 32),
+      bottomNavigationBar: const Padding(
+        padding: EdgeInsets.only(bottom: 32),
       ),
       appBar: AppBar(
         title: const Text("새 일기"),
@@ -55,7 +53,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
           children: [
             TextField(
               controller: titleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "제목을 입력해주세요",
                 border: OutlineInputBorder(),
               ),
@@ -66,7 +64,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                 controller: contentController,
                 maxLines: null,
                 expands: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "내용을 입력해주세요",
                   border: OutlineInputBorder(),
                 ),
@@ -84,12 +82,11 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                     return Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Row(
-
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           (userData.selectedLocation == null)
-                              ? Text("현재 위치: ")
-                              : Text("설정 위치: "),
+                              ? const Text("현재 위치: ")
+                              : const Text("설정 위치: "),
                           SizedBox(
                             width: 200,
                             child: AutoSizeText(
@@ -97,7 +94,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                               minFontSize: 10,
                               maxFontSize: 14,
                               maxLines: 2,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           IconButton(
@@ -148,8 +146,9 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("저장"),
-                          content:
-                              Text("저장하시겠습니까? 일기 ID: ${widget.diary?.uid}"),
+                          content: (widget.diary == null)
+                              ? Text("저장하시겠습니까?}")
+                              : Text("수정하시겠습니까? "),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -161,6 +160,8 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                               onPressed: () {
                                 uploadImage(Provider.of<UserData>(context,
                                     listen: false));
+                                // 키보드 닫기
+                                FocusScope.of(context).unfocus();
                               },
                               child: const Text("확인"),
                             ),
