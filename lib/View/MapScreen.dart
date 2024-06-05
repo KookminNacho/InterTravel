@@ -169,8 +169,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 context: context, builder: (context) => const SettingDialog());
           },
           child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Image.network(user.user!.photoURL!)),
+            foregroundImage: NetworkImage(user.user!.photoURL!),
+              backgroundColor: Colors.grey,
+          ),
         ),
       ));
       return BottomAppBar(

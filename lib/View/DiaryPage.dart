@@ -107,7 +107,7 @@ class _DiaryPageWState extends State<DiaryPage> {
                     ),
                   ),
                 ),
-                (diary.address != null)?Text((diary.address != "")?diary.address!:"위치 정보가 없습니다."):Container(),
+                (diary.address != null)?Text((diary.address != "" && diary.address != null)?diary.address!:"위치 정보가 없습니다."):Container(),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Divider(

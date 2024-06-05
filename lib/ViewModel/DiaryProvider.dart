@@ -50,6 +50,7 @@ class DiaryProvider with ChangeNotifier {
     DiaryRepository diaryRepository = DiaryRepository();
     diaryRepository.addDiary(diary, user.user!.uid);
     _diary.add(diary);
+    isLoaded = false;
     notifyListeners();
   }
 

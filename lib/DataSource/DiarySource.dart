@@ -43,6 +43,7 @@ class DiarySource {
         imageURI: url,
         owner: doc.data()['owner'],
         userID: doc.data()['userID'],
+        address: doc.data()['address'],
       );
     }).toList();
     diaries = await Future.wait(futures);
@@ -60,7 +61,9 @@ class DiarySource {
         'location': GeoPoint(diary.location.latitude, diary.location.longitude),
         'image': diary.imageURI,
         'owner': user,
+        'address': diary.address,
       });
+      print("Diary added ${diary.title}, ${diary.content}, ${diary.date}, ${diary.location}, ${diary.imageURI}, ${diary.address} $user");
     } catch (e) {
       print(e);
       return false;
@@ -79,6 +82,7 @@ class DiarySource {
         'location': GeoPoint(diary.location.latitude, diary.location.longitude),
         'image': diary.imageURI,
         'owner': diary.owner,
+        'address': diary.address,
       });
     } catch (e) {
       print(e);

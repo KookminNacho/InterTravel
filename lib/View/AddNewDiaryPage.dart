@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +28,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   bool imageUploaded = false;
+  late UserData userDatas;
 
   @override
   void initState() {
@@ -39,182 +41,202 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userDatas = Provider.of<UserData>(context, listen: false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: const Padding(
-        padding: EdgeInsets.only(bottom: 32),
-      ),
-      appBar: AppBar(
-        title: const Text("새 일기"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(
-                labelText: "제목을 입력해주세요",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: TextField(
-                controller: contentController,
-                maxLines: null,
-                expands: true,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        bottomNavigationBar: const Padding(
+          padding: EdgeInsets.only(bottom: 32),
+        ),
+        appBar: AppBar(
+          title: const Text("새 일기"),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: titleController,
                 decoration: const InputDecoration(
-                  labelText: "내용을 입력해주세요",
+                  labelText: "제목을 입력해주세요",
                   border: OutlineInputBorder(),
                 ),
               ),
-            ),
-            Consumer<UserData>(builder: (context, userData, child) {
-              return FutureBuilder(
-                future: NaverGeoCoder.getCityName(
-                    (userData.selectedLocation == null)
-                        ? userData.location!
-                        : userData.selectedLocation!),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          (userData.selectedLocation == null)
-                              ? const Text("현재 위치: ")
-                              : const Text("설정 위치: "),
-                          SizedBox(
-                            width: 200,
-                            child: AutoSizeText(
-                              snapshot.data.toString(),
-                              minFontSize: 10,
-                              maxFontSize: 14,
-                              maxLines: 2,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                setCustomLocation(userData.location!);
-                              },
-                              icon: const Icon(Icons.map_outlined, size: 14)),
-                          IconButton(
-                              onPressed: () {
-                                userData.selectedLocation = null;
-                              },
-                              icon: const Icon(Icons.location_on_outlined,
-                                  size: 14)),
-                        ],
-                      ),
-                    );
-                  }
-                  return const Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text("현재 위치를 불러오는 중입니다."),
-                  );
-                },
-              );
-            }),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: file.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == file.length) {
-                    return _buildAddButton();
-                  } else {
-                    return _buildImage(index);
-                  }
-                },
+              const SizedBox(height: 10),
+              Expanded(
+                child: TextField(
+                  controller: contentController,
+                  maxLines: null,
+                  expands: true,
+                  decoration: const InputDecoration(
+                    labelText: "내용을 입력해주세요",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
               ),
-            ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MaterialButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("저장"),
-                          content: (widget.diary == null)
-                              ? Text("저장하시겠습니까?}")
-                              : Text("수정하시겠습니까? "),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text("취소"),
+              Consumer<UserData>(builder: (context, userData, child) {
+                return FutureBuilder(
+                  future: NaverGeoCoder.getCityName(
+                      (userData.selectedLocation == null)
+                          ? userData.location!
+                          : userData.selectedLocation!),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                    if (snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            (userData.selectedLocation == null)
+                                ? const Text("현재 위치: ")
+                                : const Text("설정 위치: "),
+                            SizedBox(
+                              width: 200,
+                              child: AutoSizeText(
+                                snapshot.data.toString(),
+                                minFontSize: 10,
+                                maxFontSize: 14,
+                                maxLines: 2,
+                                style:
+                                    const TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                uploadImage(Provider.of<UserData>(context,
-                                    listen: false));
-                                // 키보드 닫기
-                                FocusScope.of(context).unfocus();
-                              },
-                              child: const Text("확인"),
-                            ),
+                            IconButton(
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  setCustomLocation(userData.location!);
+                                },
+                                icon: const Icon(Icons.map_outlined, size: 14)),
+                            IconButton(
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  userData.selectedLocation = null;
+                                },
+                                icon: const Icon(Icons.location_on_outlined,
+                                    size: 14)),
                           ],
-                        );
-                      },
+                        ),
+                      );
+                    }
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text("현재 위치를 불러오는 중입니다."),
                     );
                   },
-                  child: const Text("저장하기"),
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    if (titleController.text == "" &&
-                        contentController.text == "" &&
-                        file.isEmpty) {
-                      Navigator.pop(context);
-                      return;
+                );
+              }),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: file.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == file.length) {
+                      return _buildAddButton();
+                    } else {
+                      return _buildImage(index);
                     }
-                    showDialog(
+                  },
+                ),
+              ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MaterialButton(
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text("일기 작성 취소"),
-                            content: const Text("저장하지 않고 나가시겠습니까?"),
+                            title: const Text("저장"),
+                            content: (widget.diary == null)
+                                ? Text("저장하시겠습니까?")
+                                : Text("수정하시겠습니까?"),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
+                                  FocusScope.of(context).unfocus();
                                 },
                                 child: const Text("취소"),
                               ),
                               TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text(
-                                    "나가기",
-                                    style: TextStyle(color: Colors.red),
-                                  )),
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  uploadImage(Provider.of<UserData>(context,
+                                      listen: false));
+                                  // 키보드 닫기
+                                  FocusScope.of(context).unfocus();
+                                },
+                                child: const Text("확인"),
+                              ),
                             ],
                           );
-                        });
-                  },
-                  child: const Text("그만두기"),
-                ),
-              ],
-            )
-          ],
+                        },
+                      );
+                    },
+                    child: const Text("저장하기"),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      if (titleController.text == "" &&
+                          contentController.text == "" &&
+                          file.isEmpty) {
+                        Navigator.pop(context);
+                        return;
+                      }
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("일기 작성 취소"),
+                              content: const Text("저장하지 않고 나가시겠습니까?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("취소"),
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      FocusScope.of(context).unfocus();
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "나가기",
+                                      style: TextStyle(color: Colors.red),
+                                    )),
+                              ],
+                            );
+                          });
+                    },
+                    child: const Text("그만두기"),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildAddButton() {
     return Container(
@@ -224,6 +246,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
       ),
       child: MaterialButton(
         onPressed: () async {
+          FocusScope.of(context).unfocus();
           List<XFile> imageList = await ImagePicker().pickMultiImage();
           if (imageList.isNotEmpty) {
             setState(() {
@@ -283,10 +306,11 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
       content: contentController.text,
       imageURI: [],
       date: DateTime.now(),
-      location: userData.location!,
+      location: userData.selectedLocation ?? userData.location!,
       owner: userData.uid,
       userID: userData.displayName,
-      address: await NaverGeoCoder.getCityName(userData.location!),
+      address: await NaverGeoCoder.getCityName(
+          userData.selectedLocation ?? userData.location!),
     );
 
     List<String> imageUri =
@@ -308,9 +332,18 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
       Provider.of<DiaryProvider>(context, listen: false)
           .addDiary(diary, userData);
     }
+    print("추가된 주소 이름: ${diary.address}");
     Provider.of<UIViewModel>(context, listen: false).setFirstLoad(true);
 
     Navigator.pop(context);
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    userDatas.selectedLocation = null;
+
+    // TODO: implement dispose
+    super.dispose();
   }
 }

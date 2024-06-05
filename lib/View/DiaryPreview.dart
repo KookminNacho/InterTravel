@@ -18,7 +18,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
   Widget build(BuildContext context) {
     DiaryProvider diaryProvider = Provider.of<DiaryProvider>(context);
     Diary? lateDiary =
-        (diaryProvider.isLoaded) ? diaryProvider.diaries.first : null;
+        (diaryProvider.isLoaded && diaryProvider.diaries.isNotEmpty) ? diaryProvider.diaries.first : null;
     return Stack(
       children: [
         Padding(
