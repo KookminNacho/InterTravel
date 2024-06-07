@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     loginHeight = MediaQuery.of(context).size.height / 2.5;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         initialRoute: GlobalPageRoute.mainPage,
         routes: namedRoutes,
         theme: ThemeData(
