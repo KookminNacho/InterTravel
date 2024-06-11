@@ -23,16 +23,14 @@ class _ListPageState extends State<ListPage> {
         return ListView.builder(
           itemCount: diaries.diaries.length,
           itemBuilder: (context, index) {
-            Image? imageData = Image.network(
+            Image? imageData = (diaries.diaries[index].imageURI.isNotEmpty)?Image.network(
               diaries.diaries[index].imageURI[0],
               fit: BoxFit.cover,
-            );
+            ):null;
             return Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
                 border: BorderDirectional(
                   top: BorderSide(
-                    color: Colors.black12,
                     width: 1,
                   ),
                 ),
@@ -62,7 +60,7 @@ class _ListPageState extends State<ListPage> {
                       diaries.diaries[index].content,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      style: const TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 4),
                     Text(

@@ -57,7 +57,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 return Scaffold(
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.startTop,
-                  backgroundColor: Colors.white,
                   bottomSheet: bottomSheet(),
                   bottomNavigationBar: Container(
                     decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
@@ -176,7 +175,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       ));
       return BottomAppBar(
           padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
-          color: Colors.white,
           child: SizedBox(
             height: 70,
             child: Row(
@@ -320,7 +318,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           horizontalMargin: 0,
           bottomAppBarBody: Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),

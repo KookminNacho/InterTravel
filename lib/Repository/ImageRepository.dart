@@ -43,19 +43,21 @@ class ImageRepository {
     return [IMG.encodeJpg(img), IMG.encodeJpg(bigimg)];
   }
 
-  Future<List<String>> upLoadImage(UserData userData, List<String> images, Diary diary) async {
+  Future<List<String>> upLoadImage(
+      UserData userData, List<String> images, Diary diary) async {
     ImageDataSource imageDataSource = ImageDataSource();
     List<String> imageURI = [];
     int i = 0;
     for (String imagePath in images) {
-      if (imagePath.contains("https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
+      if (imagePath.contains(
+          "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
         imageURI.add(imagePath);
         print("Image Already exists: $imagePath");
         i++;
       } else {
         Uint8List byteData = await File(imagePath).readAsBytes();
-        String imgURL =
-            await imageDataSource.upLoadImage(byteData, "${userData.uid}/${diary.title+DateTime.now().toString()}N${i++}");
+        String imgURL = await imageDataSource.upLoadImage(byteData,
+            "${userData.uid}/${diary.title + DateTime.now().toString()}N${i++}");
         imageURI.add(imgURL);
       }
     }

@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
                   width: MediaQuery.of(context).size.width / 1.2,
                   height: buttonHeight,
                   decoration: BoxDecoration(
-                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10)),
                   child: const Text(
                     "구글로 시작하기",

@@ -30,6 +30,7 @@ dependencies:
   image_picker: ^1.1.0
   material_dialogs: ^1.1.4
   photo_view: ^0.15.0
+  extended_text_field: ^15.0.0
 
   # Map Plugin
   geolocator: ^11.0.0
@@ -65,6 +66,7 @@ flutter:
     - assets/images/marker.png
     - assets/images/myPosition.png
     - .env
+    - assets/appainter_theme.json
 
   fonts:
     - family: Pretendard

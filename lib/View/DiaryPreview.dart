@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 
 import '../Model/Diary.dart';
@@ -67,81 +68,68 @@ class _DiaryPreViewState extends State<DiaryPreView> {
         ),
         Container(
           height: 100,
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: -1,
-              blurRadius: 2,
-              offset: const Offset(0, 4),
-            ),
-          ]),
+          decoration: BoxDecoration(color: CustomTheme.dark().scaffoldBackgroundColor),
           alignment: Alignment.centerLeft,
           width: MediaQuery.of(context).size.width,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    Provider.of<UserData>(context).displayName,
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.w700),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Text(
+                  Provider.of<UserData>(context).displayName,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.w700),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 8.0),
-                    child: ((diaryProvider.diaries.isNotEmpty &&
-                            diaryProvider.isLoaded &&
-                            lateDiary != null))
-                        ? RichText(
-                            textAlign: TextAlign.right,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '마지막 일기: ',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[800],
-                                    fontWeight: FontWeight.bold,
-                                  ),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 8.0),
+                  child: ((diaryProvider.diaries.isNotEmpty &&
+                          diaryProvider.isLoaded &&
+                          lateDiary != null))
+                      ? RichText(
+                          textAlign: TextAlign.right,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '마지막 일기: ',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextSpan(
-                                  text: "${lateDiary.title}\n",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              TextSpan(
+                                text: "${lateDiary.title}\n",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                TextSpan(
-                                  text: '${formatDate(lateDiary.date)}\n',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[600],
-                                  ),
+                              ),
+                              TextSpan(
+                                text: '${formatDate(lateDiary.date)}\n',
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                                TextSpan(
-                                  text:
-                                      '${timeDifference(lateDiary.date)}에 작성됨',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.blueAccent,
-                                  ),
+                              ),
+                              TextSpan(
+                                text:
+                                    '${timeDifference(lateDiary.date)}에 작성됨',
+                                style: const TextStyle(
+                                  fontSize: 14,
                                 ),
-                              ],
-                            ),
-                          )
-                        : const Text(""),
-                  ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : const Text(""),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -167,7 +155,6 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 3,
-      color: const Color.fromARGB(255, 242, 249, 254),
       child: InkWell(
         onTap: () {
           Provider.of<DiaryProvider>(context, listen: false)
@@ -207,7 +194,6 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
                   widget.diary.content,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Colors.grey,
                     fontSize: 12,
                   ),
                 ),

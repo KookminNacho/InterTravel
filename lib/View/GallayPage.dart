@@ -44,7 +44,6 @@ class _GalleryPageState extends State<GalleryPage> {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
-        foregroundColor: Colors.white,
       ),
       backgroundColor: Colors.black54,
       body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
@@ -98,31 +97,25 @@ class _KeepAliveDiaryCardState extends State<KeepAliveDiaryCard>
               color: colors[Random().nextInt(colors.length)],
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Column(
-              children: [
-                Image.network(
-                  widget.url[0],
-                  fit: BoxFit.cover,
-                  frameBuilder:
-                      (buildContext, context, frame, wasSynchronouslyLoaded) {
-                    return AnimatedOpacity(
-                      opacity: frame == null ? 0 : 1,
-                      duration: const Duration(milliseconds: 500),
-                      child: frame != null
-                          ? Image.network(
-                              widget.url[0],
-                              fit: BoxFit.cover,
-                            )
-                          : const Center(child: CircularProgressIndicator()),
-                    );
-                  },
-                ),
-                Text(widget.url[1].title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: const TextStyle(color: Colors.black54, fontSize: 12),
-                    textAlign: TextAlign.center),
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                widget.url[0],
+                fit: BoxFit.cover,
+                frameBuilder:
+                    (buildContext, context, frame, wasSynchronouslyLoaded) {
+                  return AnimatedOpacity(
+                    opacity: frame == null ? 0 : 1,
+                    duration: const Duration(milliseconds: 500),
+                    child: frame != null
+                        ? Image.network(
+                            widget.url[0],
+                            fit: BoxFit.cover,
+                          )
+                        : const Center(child: CircularProgressIndicator()),
+                  );
+                },
+              ),
             ),
           ),
         ],

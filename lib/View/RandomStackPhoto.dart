@@ -22,7 +22,6 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
               border: Border.all(color: Colors.black12, width: 1),
               boxShadow: const [
                 BoxShadow(
@@ -36,7 +35,7 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
             height: MediaQuery.of(context).size.width * 0.45 / MediaQuery.of(context).size.aspectRatio * 0.65,
             width: MediaQuery.of(context).size.width * 0.65,
             child: Text(
-              style: TextStyle(color: Colors.grey,fontSize: 8,fontWeight: FontWeight.w100),
+              style: TextStyle(fontSize: 8,fontWeight: FontWeight.w100),
                           diaryProvider.selectedDiary!.content,
                           textAlign: TextAlign.center,
                         ),
