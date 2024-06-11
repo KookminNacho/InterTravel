@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:intertravel/Util/Constrains.dart';
@@ -22,23 +24,27 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
+              color: Color.fromARGB(255, 50, 50, 50),
               border: Border.all(color: Colors.black12, width: 1),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.grey,
+                  color: Colors.black,
                   spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: Offset(0, 4),
+                  blurRadius: 1,
+                  offset: Offset(-2, 2),
                 ),
               ],
             ),
-            height: MediaQuery.of(context).size.width * 0.45 / MediaQuery.of(context).size.aspectRatio * 0.65,
+            height: MediaQuery.of(context).size.width *
+                0.45 /
+                MediaQuery.of(context).size.aspectRatio *
+                0.65,
             width: MediaQuery.of(context).size.width * 0.65,
             child: Text(
-              style: TextStyle(fontSize: 8,fontWeight: FontWeight.w100),
-                          diaryProvider.selectedDiary!.content,
-                          textAlign: TextAlign.center,
-                        ),
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w100),
+              diaryProvider.selectedDiary!.content,
+              textAlign: TextAlign.center,
+            ),
           ),
           Stack(
             alignment: Alignment.center,
@@ -46,14 +52,16 @@ class _RandomStackPhotoState extends State<RandomStackPhoto> {
               diaryProvider.selectedDiary!.imageURI.length,
               (index) {
                 Image image = Image.network(
-                  height: MediaQuery.of(context).size.width * 0.45,
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  fit: BoxFit.contain,
+                  cacheWidth: MediaQuery.of(context).size.width.toInt(),
                   key: ValueKey(diaryProvider.selectedDiary!.imageURI[index]),
                   diaryProvider.selectedDiary!.imageURI[index],
                   frameBuilder:
                       (context, child, frame, wasSynchronouslyLoaded) {
                     return AnimatedContainer(
+                      width: MediaQuery.of(context).size.width * 0.65,
+                      padding: const EdgeInsets.all(8),
+                      // 이미지 크기보다 5 크게
+                      color: Colors.blue,
                       transform: Matrix4.identity()
                         ..rotateZ(
                           photoAngleSpread[index],

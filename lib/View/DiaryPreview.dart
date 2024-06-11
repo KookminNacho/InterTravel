@@ -19,7 +19,9 @@ class _DiaryPreViewState extends State<DiaryPreView> {
   Widget build(BuildContext context) {
     DiaryProvider diaryProvider = Provider.of<DiaryProvider>(context);
     Diary? lateDiary =
-        (diaryProvider.isLoaded && diaryProvider.diaries.isNotEmpty) ? diaryProvider.diaries.first : null;
+        (diaryProvider.isLoaded && diaryProvider.diaries.isNotEmpty)
+            ? diaryProvider.diaries.first
+            : null;
     return Stack(
       children: [
         Padding(
@@ -44,7 +46,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                 ? const Center(child: Text("일기가 없습니다."))
                 : ClipRect(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 116.0),
+                      padding: const EdgeInsets.only(top: 130.0),
                       child: GridView.builder(
                           clipBehavior: Clip.none,
                           physics: const ClampingScrollPhysics(),
@@ -67,66 +69,79 @@ class _DiaryPreViewState extends State<DiaryPreView> {
           }),
         ),
         Container(
-          height: 100,
-          decoration: BoxDecoration(color: CustomTheme.dark().scaffoldBackgroundColor),
+          height: 120,
+          decoration: BoxDecoration(
+              color: CustomTheme.dark().scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                  offset: const Offset(0, 4),
+                )
+              ]),
           alignment: Alignment.centerLeft,
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  Provider.of<UserData>(context).displayName,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w700),
-                  overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    Provider.of<UserData>(context).displayName,
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
-              Container(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16.0, right: 16.0, bottom: 8.0),
-                  child: ((diaryProvider.diaries.isNotEmpty &&
-                          diaryProvider.isLoaded &&
-                          lateDiary != null))
-                      ? RichText(
-                          textAlign: TextAlign.right,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '마지막 일기: ',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 8.0),
+                    child: ((diaryProvider.diaries.isNotEmpty &&
+                            diaryProvider.isLoaded &&
+                            lateDiary != null))
+                        ? RichText(
+                            textAlign: TextAlign.right,
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: '마지막 일기: ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: "${lateDiary.title}\n",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                TextSpan(
+                                  text: "${lateDiary.title}\n",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: '${formatDate(lateDiary.date)}\n',
-                                style: TextStyle(
-                                  fontSize: 14,
+                                TextSpan(
+                                  text: '${formatDate(lateDiary.date)}\n',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text:
-                                    '${timeDifference(lateDiary.date)}에 작성됨',
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                TextSpan(
+                                  text:
+                                      '${timeDifference(lateDiary.date)}에 작성됨',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const Text(""),
+                              ],
+                            ),
+                          )
+                        : const Text(""),
+                  ),
                 ),
               ),
             ],
