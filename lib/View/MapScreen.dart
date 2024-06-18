@@ -146,6 +146,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         iconList.length,
         (index) => MaterialButton(
           height: 100,
+          minWidth: MediaQuery.of(context).size.width / 5,
           onPressed: () {
             callDialog(index);
           },
@@ -161,6 +162,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       buttonList.add(ClipRRect(
         borderRadius: BorderRadius.circular(50),
         child: MaterialButton(
+          minWidth: MediaQuery.of(context).size.width / 5,
           shape: const CircleBorder(),
           materialTapTargetSize: MaterialTapTargetSize.padded,
           onPressed: () {
@@ -178,6 +180,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           child: SizedBox(
             height: 70,
             child: Row(
+
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: buttonList,

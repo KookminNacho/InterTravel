@@ -41,7 +41,6 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                 ],
               ));
             }
-            final aspectRatio = MediaQuery.of(context).size.aspectRatio;
             return diaries.diaries.isEmpty && diaries.isLoaded
                 ? const Center(child: Text("일기가 없습니다."))
                 : ClipRect(
@@ -54,7 +53,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             mainAxisExtent: 300,
-                            crossAxisCount: (aspectRatio > 0.6) ? 3 : 2,
+                            crossAxisCount: 2,
                             crossAxisSpacing: 4,
                             mainAxisSpacing: 8,
                             childAspectRatio: 1,

@@ -90,7 +90,6 @@ class _WelcomePageState extends State<WelcomePage> {
                       },
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
                       child: AutoSizeText(
                         selectedDiary.title,
                         maxLines: 1,

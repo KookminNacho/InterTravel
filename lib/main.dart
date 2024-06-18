@@ -19,6 +19,7 @@ import 'ViewModel/UserPermission.dart';
 import 'firebase_options.dart';
 
 String jsonString = "";
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -47,34 +48,45 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    loginHeight = MediaQuery.of(context).size.height / 2.5;
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: GlobalPageRoute.mainPage,
-        routes: namedRoutes,
-        theme: CustomTheme.dark(),
-        // theme: ThemeData(
-        //   primaryColor: Colors.white,
-        //   dialogTheme: const DialogTheme(
-        //     backgroundColor: Colors.white,
-        //     elevation: 0,
-        //     surfaceTintColor: Colors.white,
-        //   ),
-        //   useMaterial3: true,
-        //   /**/
-        //   canvasColor: Colors.white,
-        //   scaffoldBackgroundColor: Colors.white,
-        //   appBarTheme: const AppBarTheme(
-        //     elevation: 0,
-        //     iconTheme: IconThemeData(color: Colors.black),
-        //   ),
-        //   primarySwatch: Colors.blue,
-        //   buttonTheme: const ButtonThemeData(
-        //     buttonColor: Colors.blue,
-        //     textTheme: ButtonTextTheme.primary,
-        //   ),
-        // )
+      debugShowCheckedModeBanner: false,
+      initialRoute: GlobalPageRoute.mainPage,
+      routes: namedRoutes,
+      theme: CustomTheme.dark(),
+      builder: (context, child) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            double aspectRatio = constraints.maxWidth / constraints.maxHeight;
+            if (aspectRatio > 0.6) {
+              aspectRatio = 9 / 16;
+            }
+            double width = constraints.maxWidth;
+            double height = constraints.maxHeight;
+            double newHeight = width / aspectRatio;
+            double newWidth = height * aspectRatio;
+            if (newHeight <= height) {
+              return Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: width,
+                  height: newHeight,
+                  child: child,
+                ),
+              );
+            } else {
+              // Else, adjust the width
+              return Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: newWidth,
+                  height: height,
+                  child: child,
+                ),
+              );
+            }
+          },
+        );
+      },
     );
   }
 }

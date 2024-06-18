@@ -52,8 +52,7 @@ class _GalleryPageState extends State<GalleryPage> {
           child: MasonryGridView.count(
             clipBehavior: Clip.none,
             itemCount: imageList.length,
-            crossAxisCount:
-                (MediaQuery.of(context).size.aspectRatio < 0.6) ? 2 : 3,
+            crossAxisCount: 2 ,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
             itemBuilder: (context, index) {

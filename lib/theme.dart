@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CustomTheme {
   static ThemeData dark() {
     return ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
       primaryColor: const Color(0xFF1E88E5), // 밝은 파란색
       primaryColorLight: const Color(0xFF6AB7FF), // 밝은 파란색
