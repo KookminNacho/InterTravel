@@ -104,4 +104,11 @@ class UserData extends ChangeNotifier {
     _photo = value;
     notifyListeners();
   }
+
+  void deleteAccount(DiaryProvider of) {
+    FirebaseAuth.instance.currentUser!.delete();
+    of.clearDiary();
+    user = null;
+    notifyListeners();
+  }
 }

@@ -27,4 +27,12 @@ class DiaryRepository{
     return await _diarySource.deleteDiary(selectedDiary);
 
   }
+
+  void deleteAllDiaries() {
+    _diarySource.deleteAllDiaries();
+  }
+
+  void deleteImage(String image) {
+    _diarySource.deleteImage(image);
+  }
 }

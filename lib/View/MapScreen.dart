@@ -1,6 +1,7 @@
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 
 import '../Model/Diary.dart';
@@ -27,10 +28,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   bool _cameraMove = false;
   late NaverMapController _controller;
   double zoomLevel = 10;
+  late Widget _preloadedPage;
 
   @override
   void initState() {
     super.initState();
+    _preloadAddNewDiaryPage();
     UserData user = Provider.of<UserData>(context, listen: false);
     if (user.location == null) {
       user.getLocation();
@@ -41,6 +44,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       await mapLoad(diaries);
     });
     DefaultBottomBarController.of(context).open();
+  }
+
+  void _preloadAddNewDiaryPage() async {
+    _preloadedPage = AddNewDiaryPage();
   }
 
   @override
@@ -55,11 +62,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               return Consumer<UserData>(builder: (context, user, child) {
                 mapFunction(diaries, user, uiViewModel);
                 return Scaffold(
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.startTop,
                   bottomSheet: bottomSheet(),
                   bottomNavigationBar: Container(
-                    decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black12)),
                     height: 97,
                     child: bottomBar(),
                   ),
@@ -140,47 +146,53 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     });
   }
 
+  List<Widget> buttonList = [];
+
   Widget bottomBar() {
     return Consumer<UserData>(builder: (context, user, child) {
-      List<Widget> buttonList = List.generate(
-        iconList.length,
-        (index) => MaterialButton(
-          height: 100,
-          minWidth: MediaQuery.of(context).size.width / 5,
-          onPressed: () {
-            callDialog(index);
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(iconList[index][0], size: 25,),
-              Text(iconList[index][1], style: const TextStyle(fontSize: 9))
-            ],
+      if (buttonList.isEmpty) {
+        buttonList = List.generate(
+          iconList.length,
+          (index) => MaterialButton(
+            padding: const EdgeInsets.all(0),
+            splashColor: Colors.transparent,
+            onPressed: () {
+              callDialog(index);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  iconList[index][0],
+                  size: 25,
+                ),
+                Text(iconList[index][1], style: const TextStyle(fontSize: 9))
+              ],
+            ),
           ),
-        ),
-      );
-      buttonList.add(ClipRRect(
-        borderRadius: BorderRadius.circular(50),
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width / 5,
-          shape: const CircleBorder(),
-          materialTapTargetSize: MaterialTapTargetSize.padded,
-          onPressed: () {
-            showDialog(
-                context: context, builder: (context) => const SettingDialog());
-          },
-          child: CircleAvatar(
-            foregroundImage: NetworkImage(user.user!.photoURL!),
+        );
+        buttonList.add(ClipRRect(
+          borderRadius: BorderRadius.circular(50),
+          child: MaterialButton(
+            minWidth: MediaQuery.of(context).size.width / 5,
+            shape: const CircleBorder(),
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => const SettingDialog());
+            },
+            child: CircleAvatar(
+              foregroundImage: NetworkImage(user.user!.photoURL!),
               backgroundColor: Colors.grey,
+            ),
           ),
-        ),
-      ));
+        ));
+      }
       return BottomAppBar(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 8),
+          padding: const EdgeInsets.only(left: 10, right: 10),
           child: SizedBox(
-            height: 70,
             child: Row(
-
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: buttonList,
@@ -320,7 +332,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottomOffset: 0,
           horizontalMargin: 0,
           bottomAppBarBody: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
+                color: CustomTheme.dark().scaffoldBackgroundColor,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),

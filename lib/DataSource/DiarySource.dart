@@ -103,6 +103,19 @@ class DiarySource {
     return true;
   }
 
+  void deleteAllDiaries() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    firestore.collection('Diaries').get().then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  void deleteImage(String image) {
+    FirebaseStorage.instance.refFromURL(image).delete();
+  }
+
 // void addDiary() async {
 //   print("Adding diaries");
 //

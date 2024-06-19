@@ -83,4 +83,18 @@ class DiaryProvider with ChangeNotifier {
       print("Diary delete failed");
     }
   }
+
+  void deleteAllDiaries() {
+    DiaryRepository diaryRepository = DiaryRepository();
+    for (var diary in _diary) {
+      for (var image in diary.imageURI) {
+        diaryRepository.deleteImage(image);
+      }
+      diaryRepository.deleteAllDiaries();
+      _diary = [];
+      _selectedDiary = null;
+      isLoaded = false;
+      notifyListeners();
+    }
+  }
 }
