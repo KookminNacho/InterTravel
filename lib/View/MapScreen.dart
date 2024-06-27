@@ -47,7 +47,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void _preloadAddNewDiaryPage() async {
-    _preloadedPage = AddNewDiaryPage();
+    _preloadedPage = const AddNewDiaryPage();
   }
 
   @override
