@@ -49,10 +49,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       initialRoute: GlobalPageRoute.mainPage,
       routes: namedRoutes,
-      theme: CustomTheme.dark(),
+      theme: CustomTheme.light(),
       builder: (context, child) {
         return LayoutBuilder(
           builder: (context, constraints) {

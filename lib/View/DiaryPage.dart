@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
 import '../Model/Diary.dart';
+import 'AddNewDiaryPage.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -33,6 +35,65 @@ class _DiaryPageWState extends State<DiaryPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            PopupMenuButton(
+              icon: Icon(FontAwesomeIcons.bars),
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AddNewDiaryPage(diary: diary)));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          Icon(FontAwesomeIcons.pencil),
+                          Text('수정'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: InkWell(
+                      onTap: () {
+                        Provider.of<DiaryProvider>(context, listen: false)
+                            .deleteDiary(diary);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          Icon(FontAwesomeIcons.trash),
+                          Text('삭제'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              child: null,
+            )
+          ],
+          title: AutoSizeText(
+            diary.title,
+            maxLines: 1,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+        ),
         key: scaffoldKey,
         body: SafeArea(
           top: true,
@@ -44,17 +105,6 @@ class _DiaryPageWState extends State<DiaryPage> {
               children: [
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                  child: AutoSizeText(
-                    diary.title,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
                   child: Container(
                     height: 500,
                     width: double.infinity,
@@ -62,7 +112,8 @@ class _DiaryPageWState extends State<DiaryPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 16),
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0, 16, 0, 16),
                       child: Center(
                         child: Column(
                           children: [
@@ -80,7 +131,8 @@ class _DiaryPageWState extends State<DiaryPage> {
                                 initialPage: 0,
                                 indicatorBottomPadding: 16,
                                 children: diary.imageURI
-                                    .map((e) => (e.contains("https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot"))
+                                    .map((e) => (e.contains(
+                                            "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot"))
                                         ? InkWell(
                                             onTap: () {
                                               showDialog(
@@ -101,13 +153,16 @@ class _DiaryPageWState extends State<DiaryPage> {
                               ),
                             ),
                           ],
-
                         ),
                       ),
                     ),
                   ),
                 ),
-                (diary.address != null)?Text((diary.address != "" && diary.address != null)?diary.address!:"위치 정보가 없습니다."):Container(),
+                (diary.address != null)
+                    ? Text((diary.address != "" && diary.address != null)
+                        ? diary.address!
+                        : "위치 정보가 없습니다.")
+                    : Container(),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Divider(
@@ -147,23 +202,31 @@ class PhotoViewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: PhotoView(
-              maxScale: PhotoViewComputedScale.covered * 3.0,
-              minScale: PhotoViewComputedScale.contained,
-              imageProvider: NetworkImage(imageURI),
+    try {
+      return Scaffold(
+        body: Stack(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: PhotoView(
+                  maxScale: PhotoViewComputedScale.covered * 3.0,
+                  minScale: PhotoViewComputedScale.contained,
+                  imageProvider: NetworkImage(imageURI),
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Text('이미지를 불러오는 중 오류가 발생했습니다.'),
+                    );
+                  }),
             ),
-          ),
-          CloseButton(onPressed: () {
-            Navigator.pop(context);
-          }),
-        ],
-      ),
-    );
+            CloseButton(onPressed: () {
+              Navigator.pop(context);
+            }),
+          ],
+        ),
+      );
+    } catch (e) {
+      return Container();
+    }
   }
 }

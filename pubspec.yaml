@@ -26,6 +26,7 @@ dependencies:
   intl: ^0.17.0 # 시간 표시용
   expandable_bottom_bar:
     path: localPackage/expandable-bottom-bar-master #3.22 이후로 지원불가!
+  font_awesome_flutter: ^10.7.0
 
   image_picker: ^1.1.0
   material_dialogs: ^1.1.4

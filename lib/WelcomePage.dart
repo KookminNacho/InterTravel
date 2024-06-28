@@ -1,17 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:intertravel/View/DiaryPage.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
 import '../View/AddNewDiaryPage.dart';
-import '../View/RandomStackPhoto.dart';
 import '../ViewModel/DiaryProvider.dart';
 import '../ViewModel/ImageProvider.dart';
 import '../ViewModel/UserData.dart';
-import 'View/DiaryPreview.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -22,174 +21,162 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 25.0),
       height: welcomeHeight + 50,
-      child: Column(
+      child: Consumer<DiaryProvider>(
+        builder: (context, diaryProvider, child) {
+          return Selector<UserData, User?>(
+            builder: (context, userData, child) {
+              return Consumer<ImageProviderModel>(
+                builder: (context, imageProvider, child) {
+                  return DiaryListView(diaryProvider, userData!);
+                },
+              );
+            },
+            selector: (_, userData) => userData.user,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget DiaryListView(DiaryProvider diaryProvider, User userData) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('${userData.displayName}',
+                    style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                CircleAvatar(
+                  backgroundImage: NetworkImage(userData.photoURL!),
+                  backgroundColor: Colors.transparent,
+                  radius: 15,
+                ),
+              ],
+            ),
+            Text(
+                "마지막 일기: ${diaryProvider.diaries.isNotEmpty ? DateFormat('yyyy년 MM월 dd일').format(diaryProvider.diaries.first.date) : "없음"}"),
+          ],
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              '최근 일기',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
-            child: Consumer<DiaryProvider>(
-              builder: (context, diaryProvider, child) {
-                Diary? selectedDiary = diaryProvider.selectedDiary;
-                return Selector<UserData, User?>(
-                  builder: (context, userData, child) {
-                    return Consumer<ImageProviderModel>(
-                        builder: (context, imageProvider, child) {
-                      return Stack(
-                        children: [
-                          const DiaryPreView(),
-                          if (selectedDiary != null)
-                            SelectedDiaryView(userData, selectedDiary)
-                          else
-                            Container(),
-                        ],
-                      );
-                    });
-                  },
-                  selector: (_, userData) {
-                    return userData.user;
-                  },
+            child: PageView.builder(
+              onPageChanged: (index) {
+                diaryProvider.selectDiary(diaryProvider.diaries[index]);
+              },
+              controller: PageController(viewportFraction: 0.85),
+              itemCount: diaryProvider.diaries.length,
+              physics: const ClampingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Diary diary = diaryProvider.diaries[index];
+                return SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          diaryProvider.selectDiary(diary);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DiaryPage(),
+                            ),
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15)),
+                              child: diary.imageURI.isNotEmpty
+                                  ? Image.network(
+                                      cacheHeight: 1024,
+                                      diary.imageURI[0],
+                                      height: 200,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: Colors.grey[300],
+                                      child: Icon(Icons.image,
+                                          size: 50, color: Colors.grey[600]),
+                                    ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    diary.title,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    diary.content,
+                                    style: TextStyle(fontSize: 14),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    DateFormat('yyyy년 MM월 dd일 h시')
+                                        .format(diary.date),
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget SelectedDiaryView(User? userData, Diary selectedDiary) {
-    return Scaffold(
-      body: SizedBox(
-        child: Column(
-          children: [
-            SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BackButton(
-                      onPressed: () {
-                        DiaryProvider diary =
-                            Provider.of<DiaryProvider>(context, listen: false);
-                        diary.selectDiary(Diary(
-                            uid: "local",
-                            date: DateTime.now(),
-                            location: const NLatLng(1, 1),
-                            owner: userData!.uid,
-                            title: "temp",
-                            content: "temp",
-                            imageURI: ["a", "b", "c"]));
-                        diary.selectDiary(null);
-                      },
-                    ),
-                    Container(
-                      child: AutoSizeText(
-                        selectedDiary.title,
-                        maxLines: 1,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                    PopupMenuButton(
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                            child: const Text("수정"),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddNewDiaryPage(
-                                          diary: selectedDiary)));
-                            },
-                          ),
-                          PopupMenuItem(
-                            child: const Text("삭제"),
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("일기 삭제"),
-                                      content: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.1,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text("정말로 삭제하시겠습니까?",
-                                                style: TextStyle(fontSize: 16)),
-                                            RichText(
-                                                text: TextSpan(
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                              children: [
-                                                const TextSpan(text: "일기 제목: "),
-                                                TextSpan(
-                                                    text: selectedDiary.title,
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            )),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: [
-                                        MaterialButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("취소")),
-                                        MaterialButton(
-                                            onPressed: () {
-                                              Provider.of<DiaryProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .deleteDiary(selectedDiary);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("확인")),
-                                      ],
-                                    );
-                                  });
-                            },
-                          ),
-                        ];
-                      },
-                      child: const Icon(Icons.more_vert),
-                    ),
-                  ],
-                )),
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  const Divider(),
-                  const RandomStackPhoto(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: MaterialButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/diary");
-                        },
-                        elevation: 0,
-                        child:
-                            const Text("읽기", style: TextStyle(fontSize: 24))),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNewDiaryPage()),
+          );
+        },
       ),
     );
   }

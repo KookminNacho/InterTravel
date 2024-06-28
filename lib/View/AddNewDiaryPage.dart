@@ -50,7 +50,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    const int contentMaxLength = 50;
+    const int contentMaxLength = 500;
     const int contentMaxLine = 50;
 
     ScrollController _scrollController = ScrollController();
@@ -64,7 +64,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
           padding: EdgeInsets.only(bottom: 32),
         ),
         appBar: AppBar(
-          title: const Text("새 일기"),
+          title: Text((widget.diary == null)?"새 일기":"일기 수정"),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -122,11 +122,11 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                               text: " $currentLength",
                               style: TextStyle(
                                 color: (currentLength != maxLength)
-                                    ? CustomTheme.dark()
+                                    ? CustomTheme.light()
                                         .textTheme
                                         .bodyLarge
                                         ?.color
-                                    : CustomTheme.dark().colorScheme.error,
+                                    : CustomTheme.light().colorScheme.error,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

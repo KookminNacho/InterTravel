@@ -84,7 +84,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           }
                         },
                         onCameraChange: (reason, isGesture) {
-                          if (reason == NCameraUpdateReason.gesture) {
+                          if (reason == NCameraUpdateReason.gesture)
+                          {
                             if (!DefaultBottomBarController.of(context)
                                 .isClosing) {
                               DefaultBottomBarController.of(context).close();
@@ -260,7 +261,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     marker.setOnTapListener((overlay) {
       _cameraMove = false;
       DefaultBottomBarController.of(context).open();
-      Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+      if (diary !=
+          Provider.of<DiaryProvider>(context, listen: false).selectedDiary) {
+        Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+      }
     });
     return marker;
   }
@@ -333,7 +337,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           horizontalMargin: 0,
           bottomAppBarBody: Container(
               decoration: BoxDecoration(
-                color: CustomTheme.dark().scaffoldBackgroundColor,
+                color: CustomTheme.light().scaffoldBackgroundColor,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),
@@ -357,7 +361,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       ),
                     )),
               )),
-          expandedBody: const WelcomePage()),
+          expandedBody: WelcomePage()),
     );
   }
 }

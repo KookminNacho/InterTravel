@@ -49,7 +49,7 @@ class DiaryProvider with ChangeNotifier {
   void addDiary(Diary diary, UserData user) {
     DiaryRepository diaryRepository = DiaryRepository();
     diaryRepository.addDiary(diary, user.user!.uid);
-    _diary.add(diary);
+    _diary.insert(0, diary);
     isLoaded = false;
     notifyListeners();
   }

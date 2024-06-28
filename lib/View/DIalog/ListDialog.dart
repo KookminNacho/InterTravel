@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:provider/provider.dart';
-
 import '../../Util/Constrains.dart';
 import '../../ViewModel/DiaryProvider.dart';
 
@@ -17,73 +16,105 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일기 목록'),
+        title: Text('일기 목록', style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
       ),
-      body: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-        return ListView.builder(
-          itemCount: diaries.diaries.length,
-          itemBuilder: (context, index) {
-            Image? imageData = (diaries.diaries[index].imageURI.isNotEmpty)?Image.network(
-              diaries.diaries[index].imageURI[0],
-              fit: BoxFit.cover,
-            ):null;
-            return Container(
-              decoration: const BoxDecoration(
-                border: BorderDirectional(
-                  top: BorderSide(
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(10),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                    height: 75,
-                    width: 75,
-                    child: imageData,
-                  ),
-                ),
-                title: Text(
-                  diaries.diaries[index].title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Text(
-                      diaries.diaries[index].content,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      formatDate(diaries.diaries[index].date),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+      body: Consumer<DiaryProvider>(
+        builder: (context, diaries, child) {
+          return ListView.builder(
+            itemCount: diaries.diaries.length,
+            itemBuilder: (context, index) {
+              Image? imageData = (diaries.diaries[index].imageURI.isNotEmpty)
+                  ? Image.network(
+                cacheHeight: 500,
+                diaries.diaries[index].imageURI[0],
+                fit: BoxFit.cover,
+              )
+                  : null;
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
                     ),
                   ],
                 ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.grey,
+                child: InkWell(
+                  onTap: () {
+                    Provider.of<UIViewModel>(context, listen: false).bigWelcome();
+                    diaries.selectDiary(diaries.diaries[index]);
+                    Navigator.of(context).pop();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (imageData != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: imageData,
+                            ),
+                          ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                diaries.diaries[index].title,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                diaries.diaries[index].content,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    formatDate(diaries.diaries[index].date),
+                                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                onTap: () {
-                  Provider.of<UIViewModel>(context, listen: false).bigWelcome();
-                  diaries.selectDiary(diaries.diaries[index]);
-                  Navigator.of(context).pop();
-                },
-              ),
-            );
-          },
-        );
-      }),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

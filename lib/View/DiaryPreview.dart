@@ -70,7 +70,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
         Container(
           height: 120,
           decoration: BoxDecoration(
-              color: CustomTheme.dark().scaffoldBackgroundColor,
+              color: CustomTheme.light().scaffoldBackgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.2),
@@ -114,6 +114,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
                                   ),
                                 ),
                                 TextSpan(
@@ -121,12 +122,14 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
                                 TextSpan(
                                   text: '${formatDate(lateDiary.date)}\n',
                                   style: const TextStyle(
                                     fontSize: 14,
+                                    color: Colors.grey,
                                   ),
                                 ),
                                 TextSpan(
@@ -134,6 +137,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                       '${timeDifference(lateDiary.date)}에 작성됨',
                                   style: const TextStyle(
                                     fontSize: 14,
+                                    color: Colors.grey,
                                   ),
                                 ),
                               ],
