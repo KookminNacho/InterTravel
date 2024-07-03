@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +19,7 @@ import 'AddNewDiaryPage.dart';
 import 'DIalog/ListDialog.dart';
 import 'DIalog/SettingDialog.dart';
 import 'GallayPage.dart';
+import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -25,6 +30,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   bool _userVerified = false;
+  bool _mapReady = false;
   bool _cameraMove = false;
   late NaverMapController _controller;
   double zoomLevel = 10;
@@ -84,8 +90,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           }
                         },
                         onCameraChange: (reason, isGesture) {
-                          if (reason == NCameraUpdateReason.gesture)
-                          {
+                          if (reason == NCameraUpdateReason.gesture) {
                             if (!DefaultBottomBarController.of(context)
                                 .isClosing) {
                               DefaultBottomBarController.of(context).close();
@@ -121,6 +126,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           Future.delayed(const Duration(milliseconds: 1000),
                               () {
                             setState(() {
+                              _mapReady = true;
                               loginColor = Colors.black.withOpacity(0.5);
                               loginHeight = 0;
                             });
@@ -203,9 +209,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   List iconList = [
-    [Icons.add, "새 일기"],
-    [Icons.list, "리스트"],
-    [Icons.space_dashboard, "갤러리"]
+    [FontAwesomeIcons.plus, "새 일기"],
+    [FontAwesomeIcons.list, "리스트"],
+    [FontAwesomeIcons.thLarge, "갤러리"]
   ];
 
   void callDialog(int index) {
@@ -249,9 +255,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     });
   }
 
-  void drawMarker(Diary d) {
-    NOverlayImage markerImage =
-        const NOverlayImage.fromAssetImage("assets/images/marker.png");
+  Future<void> drawMarker(Diary d) async {
+    NOverlayImage markerImage = await NOverlayImage.fromAssetImage(
+      "assets/images/marker.png",
+    );
     _controller.addOverlay(clickAbleMarker(d, markerImage));
   }
 
@@ -285,7 +292,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         print("Map is not ready");
       }
 
-      if (!diaries.isLoaded) {
+      if (!diaries.isLoaded && _mapReady) {
         diaries.loadDiary(user.uid);
         await mapLoad(diaries);
       }

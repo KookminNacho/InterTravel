@@ -77,14 +77,14 @@ class _LoginPageState extends State<LoginPage>
                                 fontSize: 40,
                                 fontWeight: FontWeight.bold,
                                 foreground: Paint()
-                                  ..shader = LinearGradient(
+                                  ..shader = const LinearGradient(
                                     colors: [Colors.blue, Colors.purple],
                                   ).createShader(const Rect.fromLTWH(
                                       0.0, 0.0, 200.0, 70.0)),
                               ),
                             ),
                             const SizedBox(height: 20),
-                            Text(
+                            const Text(
                               "간편 로그인을 통해 여행을 시작하세요\n클릭 몇 번으로 시작!",
                               style: TextStyle(
                                 color: Colors.black,
