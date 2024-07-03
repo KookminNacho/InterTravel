@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/InterTravel.iml" filepath="$PROJECT_DIR$/.idea/InterTravel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/interTravel.iml" filepath="$PROJECT_DIR$/.idea/interTravel.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/intertravel_android.iml" filepath="$PROJECT_DIR$/android/intertravel_android.iml" />
     </modules>
   </component>

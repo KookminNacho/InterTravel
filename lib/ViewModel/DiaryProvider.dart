@@ -7,6 +7,8 @@ import 'UserData.dart';
 class DiaryProvider with ChangeNotifier {
   bool _isLoaded = false;
   List<Diary> _diary = [];
+  List<Diary> _dateSortedDiary = [];
+  List<Diary> _nameSortedDiary = [];
   Diary? _selectedDiary;
 
   bool get isLoaded => _isLoaded;
@@ -15,11 +17,15 @@ class DiaryProvider with ChangeNotifier {
 
   Diary? get selectedDiary => _selectedDiary;
 
-
   // 일기를 불러오는 메소드
   Future<void> loadDiary(String userID) async {
     DiaryRepository diaryRepository = DiaryRepository();
     _diary = await diaryRepository.getDiaries(userID);
+    _dateSortedDiary = List.from(_diary);
+    _dateSortedDiary.sort((a, b) => b.date.compareTo(a.date));
+    _nameSortedDiary = List.from(_diary);
+    _nameSortedDiary.sort((a, b) => a.title.compareTo(b.title));
+    _diary = _dateSortedDiary;
     _isLoaded = true;
     notifyListeners();
   }
@@ -33,6 +39,7 @@ class DiaryProvider with ChangeNotifier {
   // 불러온 일기를 초기화하는 메소드
   Future<void> clearDiary() async {
     await Future.delayed(const Duration(milliseconds: 100));
+    _selectedDiary = null;
     _diary = [];
     _isLoaded = false;
     notifyListeners();
@@ -42,7 +49,8 @@ class DiaryProvider with ChangeNotifier {
   void addDiary(Diary diary, UserData user) {
     DiaryRepository diaryRepository = DiaryRepository();
     diaryRepository.addDiary(diary, user.user!.uid);
-    _diary.add(diary);
+    _diary.insert(0, diary);
+    isLoaded = false;
     notifyListeners();
   }
 
@@ -53,5 +61,40 @@ class DiaryProvider with ChangeNotifier {
 
   Diary lastDiary() {
     return _diary.last;
+  }
+
+  void updateDiary(Diary diary, Diary newDiary, UserData user) {
+    DiaryRepository diaryRepository = DiaryRepository();
+    diaries[diaries.indexOf(diary)] = newDiary;
+    diaryRepository.updateDiary(newDiary);
+    isLoaded = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteDiary(Diary selectedDiary) async {
+    DiaryRepository diaryRepository = DiaryRepository();
+    bool result = await diaryRepository.deleteDiary(selectedDiary);
+    if (result) {
+      _diary.remove(selectedDiary);
+      selectDiary(null);
+      isLoaded = false;
+      notifyListeners();
+    } else {
+      print("Diary delete failed");
+    }
+  }
+
+  void deleteAllDiaries() {
+    DiaryRepository diaryRepository = DiaryRepository();
+    for (var diary in _diary) {
+      for (var image in diary.imageURI) {
+        diaryRepository.deleteImage(image);
+      }
+      diaryRepository.deleteAllDiaries();
+      _diary = [];
+      _selectedDiary = null;
+      isLoaded = false;
+      notifyListeners();
+    }
   }
 }

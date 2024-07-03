@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:intertravel/DataSource/ImageDataSource.dart';
 import 'package:image/image.dart' as IMG;
+import 'package:intertravel/ViewModel/UserData.dart';
 import 'dart:io';
 
 import '../Model/Diary.dart';
@@ -43,15 +43,23 @@ class ImageRepository {
     return [IMG.encodeJpg(img), IMG.encodeJpg(bigimg)];
   }
 
-  Future<List<String>> upLoadImage(List<File> images, Diary diary) async {
+  Future<List<String>> upLoadImage(
+      UserData userData, List<String> images, Diary diary) async {
     ImageDataSource imageDataSource = ImageDataSource();
     List<String> imageURI = [];
     int i = 0;
-    for (File image in images) {
-      Uint8List byteData = await image.readAsBytes();
-      String imgURL =
-          await imageDataSource.upLoadImage(byteData, "${diary.title}${i++}");
-      imageURI.add(imgURL);
+    for (String imagePath in images) {
+      if (imagePath.contains(
+          "https://firebasestorage.googleapis.com/v0/b/intertravel-fab82.appspot")) {
+        imageURI.add(imagePath);
+        print("Image Already exists: $imagePath");
+        i++;
+      } else {
+        Uint8List byteData = await File(imagePath).readAsBytes();
+        String imgURL = await imageDataSource.upLoadImage(byteData,
+            "${userData.uid}/${diary.title + DateTime.now().toString()}N${i++}");
+        imageURI.add(imgURL);
+      }
     }
     return imageURI;
   }

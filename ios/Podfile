@@ -1,6 +1,7 @@
 # Uncomment this line to define a global platform for your project
+source 'https://cdn.cocoapods.org/'
 platform :ios, '14.0'
-
+# platform :osx, '10.14'
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
@@ -29,15 +30,15 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
 
-# 빌드시 FireStore 플러그인 다운로드가 너무 오래 걸리는 관계로 직접 다운로드 받아서 사용
-  pod 'FirebaseFirestore' , :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.22.0'
-
+  pod 'Firebase/Core'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Firestore'
 
   use_frameworks!
   use_modular_headers!
 
-
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
@@ -47,7 +48,7 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
-  
+
   installer.pods_project.targets.each do |target|
     if target.name == "geolocator_apple"
       target.build_configurations.each do |config|
@@ -56,23 +57,22 @@ post_install do |installer|
     end
     # Start of the permission_handler configuration
     target.build_configurations.each do |config|
-
       # You can enable the permissions needed here. For example to enable camera
       # permission, just remove the `#` character in front so it looks like this:
       #
       # ## dart: PermissionGroup.camera
       # 'PERMISSION_CAMERA=1'
       #
-#        Preprocessor definitions can be found at: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
+      # Preprocessor definitions can be found at: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
 
         ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (iOS 16 and below)]
         # 'PERMISSION_EVENTS=1',
-   
+
         ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (iOS 17 and above)]
         # 'PERMISSION_EVENTS_FULL_ACCESS=1',
-  
+
         ## dart: PermissionGroup.reminders
         # 'PERMISSION_REMINDERS=1',
 
@@ -95,7 +95,7 @@ post_install do |installer|
         # 'PERMISSION_PHOTOS_ADD_ONLY=1',
 
         ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
-         'PERMISSION_LOCATION=1',
+        'PERMISSION_LOCATION=1',
 
         ## dart: PermissionGroup.notification
         # 'PERMISSION_NOTIFICATIONS=1',
@@ -119,7 +119,3 @@ post_install do |installer|
     end
   end
 end
-
-
-
-

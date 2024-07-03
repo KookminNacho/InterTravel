@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:permission_handler/permission_handler.dart";
 
 class UserPermission extends ChangeNotifier {
-  bool _locationPermission = false;
+  bool _locationPermission = true;
 
   UserPermission() {
     checkLocationPermission();

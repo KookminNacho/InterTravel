@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 
 class ImageDataSource {
   Future<Uint8List?> getImage(String url) async {
@@ -20,7 +19,6 @@ class ImageDataSource {
     await ref.putData(image);
 
     String imgURL = await ref.getDownloadURL();
-    print("ImageDataSource upLoadImage: $imgURL");
     return imgURL;
   }
 }

@@ -58,6 +58,14 @@
           }
         },
         {
+          "client_id": "983897180404-g4gm87tvgtqa60uru1as2quqb6krcjdj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.remake.intertravel",
+            "certificate_hash": "0ddb86b2cef4ffdc34e0ff47cb24a97694134407"
+          }
+        },
+        {
           "client_id": "983897180404-c895tl8kq9galr12mqpirs3l7arh4n4g.apps.googleusercontent.com",
           "client_type": 3
         }

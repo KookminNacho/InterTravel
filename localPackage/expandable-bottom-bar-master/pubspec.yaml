@@ -1,0 +1,18 @@
+name: expandable_bottom_bar
+description: Animatable bottom app bar with expandable sheet. Use me if you need
+  cool bottom bar!
+homepage: https://github.com/rIIh/expandable-bottom-bar
+
+version: 2.0.2
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mockito: ^5.0.8

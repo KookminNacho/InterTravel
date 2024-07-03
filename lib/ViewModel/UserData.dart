@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intertravel/ViewModel/DiaryProvider.dart';
 
 class UserData extends ChangeNotifier {
   NLatLng? _location;
+  NLatLng? _selectedLocation;
   bool _mapLoad = false;
   User? _user;
   String _uid = "";
@@ -12,6 +14,8 @@ class UserData extends ChangeNotifier {
   Image _photo = Image.asset("assets/images/user.png");
 
   NLatLng? get location => _location;
+
+  NLatLng? get selectedLocation => _selectedLocation;
 
   bool get mapLoad => _mapLoad;
 
@@ -22,6 +26,8 @@ class UserData extends ChangeNotifier {
   String get displayName => _displayName;
 
   Image get photo => _photo;
+
+
 
 
   set user(User? value) {
@@ -50,8 +56,9 @@ class UserData extends ChangeNotifier {
 
   }
 
-  void signOut() {
+  void signOut(DiaryProvider diaryProvider) {
     FirebaseAuth.instance.signOut();
+    diaryProvider.clearDiary();
     user = null;
     notifyListeners();
   }
@@ -88,8 +95,20 @@ class UserData extends ChangeNotifier {
     }
   }
 
+  set selectedLocation(NLatLng? value) {
+    _selectedLocation = value;
+    notifyListeners();
+  }
+
   set photo(Image value) {
     _photo = value;
+    notifyListeners();
+  }
+
+  void deleteAccount(DiaryProvider of) {
+    FirebaseAuth.instance.currentUser!.delete();
+    of.clearDiary();
+    user = null;
     notifyListeners();
   }
 }

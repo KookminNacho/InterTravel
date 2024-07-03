@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 
 import '../Model/Diary.dart';
@@ -16,42 +17,137 @@ class DiaryPreView extends StatefulWidget {
 class _DiaryPreViewState extends State<DiaryPreView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    DiaryProvider diaryProvider = Provider.of<DiaryProvider>(context);
+    Diary? lateDiary =
+        (diaryProvider.isLoaded && diaryProvider.diaries.isNotEmpty)
+            ? diaryProvider.diaries.first
+            : null;
+    return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-          child: Text(
-            Provider.of<UserData>(context).displayName ?? "User Name",
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-          child: Text(
-            (Provider.of<DiaryProvider>(context).diaries.length > 0)
-                ? '마지막 일기: ${formatDate(Provider.of<DiaryProvider>(context).diaries.last.date)}\n${Provider.of<DiaryProvider>(context).diaries.last.title}'
-                : '일기가 없습니다.',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
-              return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 4,
-                    mainAxisSpacing: 8,
-                    childAspectRatio: 0.7,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+          child: Consumer<DiaryProvider>(builder: (context, diaries, child) {
+            if (!diaries.isLoaded) {
+              return const Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text(
+                    "일기를 불러오는 중입니다...",
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  itemCount: diaries.diaries.length,
-                  itemBuilder: (context, index) {
-                    return DiaryEntryCard(diary: diaries.diaries[index]);
-                  });
-            }),
+                ],
+              ));
+            }
+            return diaries.diaries.isEmpty && diaries.isLoaded
+                ? const Center(child: Text("일기가 없습니다."))
+                : ClipRect(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 130.0),
+                      child: GridView.builder(
+                          clipBehavior: Clip.none,
+                          physics: const ClampingScrollPhysics(),
+                          cacheExtent: 9999,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 300,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 8,
+                            childAspectRatio: 1,
+                          ),
+                          itemCount: diaries.diaries.length,
+                          itemBuilder: (context, index) {
+                            return DiaryEntryCard(
+                                diary: diaries.diaries[index]);
+                          }),
+                    ),
+                  );
+          }),
+        ),
+        Container(
+          height: 120,
+          decoration: BoxDecoration(
+              color: CustomTheme.light().scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                  offset: const Offset(0, 4),
+                )
+              ]),
+          alignment: Alignment.centerLeft,
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    Provider.of<UserData>(context).displayName,
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 8.0),
+                    child: ((diaryProvider.diaries.isNotEmpty &&
+                            diaryProvider.isLoaded &&
+                            lateDiary != null))
+                        ? RichText(
+                            textAlign: TextAlign.right,
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: '마지막 일기: ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "${lateDiary.title}\n",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '${formatDate(lateDiary.date)}\n',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${timeDifference(lateDiary.date)}에 작성됨',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const Text(""),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -59,21 +155,28 @@ class _DiaryPreViewState extends State<DiaryPreView> {
   }
 }
 
-class DiaryEntryCard extends StatelessWidget {
+class DiaryEntryCard extends StatefulWidget {
   final Diary diary;
 
   const DiaryEntryCard({Key? key, required this.diary}) : super(key: key);
 
   @override
+  State<DiaryEntryCard> createState() => _DiaryEntryCardState();
+}
+
+class _DiaryEntryCardState extends State<DiaryEntryCard>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 3,
-      color: Color.fromARGB(255, 242, 249, 254),
       child: InkWell(
         onTap: () {
-          Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
+          Provider.of<DiaryProvider>(context, listen: false)
+              .selectDiary(widget.diary);
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -81,17 +184,20 @@ class DiaryEntryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: diary.imageURI.isNotEmpty
-                    ? Image.network(
-                        diary.imageURI[0],
-                        fit: BoxFit.fitWidth,
+                child: widget.diary.imageURI.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          widget.diary.imageURI[0],
+                          fit: BoxFit.cover,
+                        ),
                       )
                     : Container(color: Colors.grey),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  diary.title,
+                  widget.diary.title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -102,10 +208,10 @@ class DiaryEntryCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  diary.content,
+                  maxLines: 1,
+                  widget.diary.content,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Colors.grey,
                     fontSize: 12,
                   ),
                 ),
@@ -116,4 +222,8 @@ class DiaryEntryCard extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -2,11 +2,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intertravel/Repository/ImageRepository.dart';
-import 'package:intertravel/View/DiaryPreview.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
-import 'dart:io';
 
 import '../Model/Diary.dart';
+import 'UserData.dart';
 
 class ImageProviderModel with ChangeNotifier {
   final Map<String, List<Uint8List?>> _images = {};
@@ -40,8 +39,8 @@ class ImageProviderModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<String>> upLoadImage(List<File> images, Diary diary) async {
-    List<String> imageURI = await _imageRepository.upLoadImage(images, diary);
+  Future<List<String>> upLoadImage(UserData userData, List<String> images, Diary diary) async {
+    List<String> imageURI = await _imageRepository.upLoadImage(userData, images, diary);
     diary.imageURI = imageURI;
     notifyListeners();
 
