@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,15 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _debounce?.cancel();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -94,10 +105,10 @@ class _WelcomePageState extends State<WelcomePage> {
                       children: [
                         PageView.builder(
                           onPageChanged: (index) async {
-                            await Future.delayed(
-                                const Duration(milliseconds: 300));
-                            diaryProvider
-                                .selectDiary(diaryProvider.diaries[index]);
+                            if (_debounce?.isActive ?? false) _debounce!.cancel();
+                            _debounce = Timer(const Duration(milliseconds: 500), () {
+                              diaryProvider.selectDiary(diaryProvider.diaries[index]);
+                            });
                           },
                           controller: diaryProvider.pageController,
                           itemCount: diaryProvider.diaries.length,
@@ -140,7 +151,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                                 )
                                               : Container(
                                                   width: double.infinity,
-                                                  height: 200,
+                                                  height: 150,
                                                   color: Colors.grey[300],
                                                   child: Icon(Icons.image,
                                                       size: 50,
@@ -166,7 +177,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                               Text(
                                                 diary.content,
                                                 style: TextStyle(fontSize: 14),
-                                                maxLines: 3,
+                                                maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                               SizedBox(height: 8),
