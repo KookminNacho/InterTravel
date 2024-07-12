@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage>
                               "InterTravel",
                               style: TextStyle(
                                 fontSize: 40,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                                 foreground: Paint()
                                   ..shader = const LinearGradient(
                                     colors: [Colors.blue, Colors.purple],
@@ -198,7 +198,7 @@ class _LoginPageState extends State<LoginPage>
           const SizedBox(width: 12),
           Text(text,
               style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
         ],
       ),
     );

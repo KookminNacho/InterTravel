@@ -58,9 +58,6 @@ class MyApp extends StatelessWidget {
         return LayoutBuilder(
           builder: (context, constraints) {
             double aspectRatio = constraints.maxWidth / constraints.maxHeight;
-            if (aspectRatio > 0.6) {
-              aspectRatio = 9 / 16;
-            }
             double width = constraints.maxWidth;
             double height = constraints.maxHeight;
             double newHeight = width / aspectRatio;

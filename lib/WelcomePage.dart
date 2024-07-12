@@ -20,8 +20,6 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  PageController _pageController = PageController(viewportFraction: 0.85);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,12 +27,7 @@ class _WelcomePageState extends State<WelcomePage> {
       height: welcomeHeight + 50,
       child: Consumer<DiaryProvider>(
         builder: (context, diaryProvider, child) {
-          if (diaryProvider.selectedDiary != null) {
-            _pageController.animateToPage(
-                diaryProvider.diaries.indexOf(diaryProvider.selectedDiary!),
-                duration: const Duration(milliseconds: 1),
-                curve: Curves.easeIn);
-          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {});
           return Selector<UserData, User?>(
             builder: (context, userData, child) {
               return Consumer<ImageProviderModel>(
@@ -59,13 +52,16 @@ class _WelcomePageState extends State<WelcomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('${userData.displayName}',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 CircleAvatar(
                   backgroundImage: NetworkImage(userData.photoURL!),
                   backgroundColor: Colors.transparent,
                   radius: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('${userData.displayName}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w100)),
                 ),
               ],
             ),
@@ -87,108 +83,152 @@ class _WelcomePageState extends State<WelcomePage> {
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   '최근 일기',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
                 ),
               ),
             ),
             Flexible(
               flex: 5,
               child: (diaryProvider.isLoaded)
-                  ? PageView.builder(
-                      onPageChanged: (index) {
-                        diaryProvider.selectDiary(diaryProvider.diaries[index]);
-                      },
-                      controller: _pageController,
-                      itemCount: diaryProvider.diaries.length,
-                      physics: const ClampingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        Diary diary = diaryProvider.diaries[index];
-                        return SingleChildScrollView(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 8),
-                            child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  diaryProvider.selectDiary(diary);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DiaryPage(),
-                                    ),
-                                  );
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(15)),
-                                      child: diary.imageURI.isNotEmpty
-                                          ? Image.network(
-                                              cacheHeight: 1024,
-                                              diary.imageURI[0],
-                                              height: 200,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Container(
-                                              width: double.infinity,
-                                              height: 200,
-                                              color: Colors.grey[300],
-                                              child: Icon(Icons.image,
-                                                  size: 50,
-                                                  color: Colors.grey[600]),
-                                            ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            diary.title,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                  ? Stack(
+                      children: [
+                        PageView.builder(
+                          onPageChanged: (index) async {
+                            await Future.delayed(
+                                const Duration(milliseconds: 300));
+                            diaryProvider
+                                .selectDiary(diaryProvider.diaries[index]);
+                          },
+                          controller: diaryProvider.pageController,
+                          itemCount: diaryProvider.diaries.length,
+                          physics: const ClampingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            Diary diary = diaryProvider.diaries[index];
+                            return SingleChildScrollView(
+                              child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 8),
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      diaryProvider.selectDiary(diary);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DiaryPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(15)),
+                                          child: diary.imageURI.isNotEmpty
+                                              ? Image.network(
+                                                  cacheHeight: 1024,
+                                                  diary.imageURI[0],
+                                                  height: 150,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Container(
+                                                  width: double.infinity,
+                                                  height: 200,
+                                                  color: Colors.grey[300],
+                                                  child: Icon(Icons.image,
+                                                      size: 50,
+                                                      color: Colors.grey[600]),
+                                                ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                diary.title,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                diary.content,
+                                                style: TextStyle(fontSize: 14),
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                DateFormat('yyyy년 MM월 dd일 h시')
+                                                    .format(diary.date),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey[600]),
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            diary.content,
-                                            style: TextStyle(fontSize: 14),
-                                            maxLines: 3,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            DateFormat('yyyy년 MM월 dd일 h시')
-                                                .format(diary.date),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey[600]),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
+                            );
+                          },
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  color: Colors.transparent,
+                                  width: MediaQuery.of(context).size.width / 5,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _moveToPreviousPage(diaryProvider);
+                                    },
+                                  )),
+                              Container(
+                                  color: Colors.transparent,
+                                  width: MediaQuery.of(context).size.width / 5,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _moveToNextPage(diaryProvider);
+                                    },
+                                  )),
+                            ])
+                      ],
                     )
                   : Center(child: CircularProgressIndicator()),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _moveToNextPage(DiaryProvider diaryProvider) {
+    diaryProvider.pageController.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _moveToPreviousPage(DiaryProvider diaryProvider) {
+    diaryProvider.pageController.previousPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 }

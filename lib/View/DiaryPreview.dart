@@ -91,7 +91,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                   child: Text(
                     Provider.of<UserData>(context).displayName,
                     style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.w700),
+                        fontSize: 24, fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -113,7 +113,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                   text: '마지막 일기: ',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.grey,
                                   ),
                                 ),
@@ -121,7 +121,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                   text: "${lateDiary.title}\n",
                                   style: const TextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -199,7 +199,7 @@ class _DiaryEntryCardState extends State<DiaryEntryCard>
                 child: Text(
                   widget.diary.title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                     fontSize: 16,
                   ),
                   overflow: TextOverflow.ellipsis,

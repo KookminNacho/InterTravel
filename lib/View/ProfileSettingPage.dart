@@ -59,7 +59,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
             const SizedBox(height: 20),
             Text(
               userData.user?.displayName ?? '사용자',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 10),
             Text(
@@ -103,7 +103,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
           child: Text(
             title,
             style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+                fontSize: 18, fontWeight: FontWeight.w500, color: Colors.blue),
           ),
         ),
         Container(

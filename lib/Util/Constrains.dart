@@ -7,7 +7,7 @@ Color loginColor = Colors.black;
 
 double loginHeight = 200;
 
-double welcomeHeight = 500;
+double welcomeHeight = 400;
 
 int animationDuration = 150;
 List<double> photoAngleSpread =

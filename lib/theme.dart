@@ -28,7 +28,7 @@ class CustomTheme {
       textTheme: const TextTheme(
         bodyLarge: TextStyle(color: Color(0xFF333333), fontSize: 16, fontWeight: FontWeight.w400),
         bodyMedium: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w400),
-        displayLarge: TextStyle(color: Color(0xFF333333), fontSize: 24, fontWeight: FontWeight.w700),
+        displayLarge: TextStyle(color: Color(0xFF333333), fontSize: 24, fontWeight: FontWeight.w500),
         displayMedium: TextStyle(color: Color(0xFF333333), fontSize: 22, fontWeight: FontWeight.w600),
         displaySmall: TextStyle(color: Color(0xFF333333), fontSize: 20, fontWeight: FontWeight.w500),
         headlineMedium: TextStyle(color: Color(0xFF333333), fontSize: 18, fontWeight: FontWeight.w400),

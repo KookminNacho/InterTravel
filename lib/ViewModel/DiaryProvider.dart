@@ -5,6 +5,8 @@ import '../Model/Diary.dart';
 import 'UserData.dart';
 
 class DiaryProvider with ChangeNotifier {
+  PageController pageController = PageController(viewportFraction: 0.5, );
+
   bool _isLoaded = false;
   List<Diary> _diary = [];
   List<Diary> _dateSortedDiary = [];
@@ -33,6 +35,12 @@ class DiaryProvider with ChangeNotifier {
   // 일기를 선택하는 메소드
   void selectDiary(Diary? diary) {
     _selectedDiary = diary;
+    print("Selected Diary: ${_selectedDiary!.title}");
+    if (_selectedDiary != null) {
+      int idx = diaries.indexWhere((element) => element == diary);
+      pageController.jumpToPage(idx);
+      print("Selected Diary Index: $idx");
+    }
     notifyListeners();
   }
 

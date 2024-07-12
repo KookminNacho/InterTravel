@@ -35,6 +35,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   late NaverMapController _controller;
   double zoomLevel = 10;
   late Widget _preloadedPage;
+  late DiaryProvider diaries;
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     if (user.location == null) {
       user.getLocation();
     }
-    DiaryProvider diaries = Provider.of<DiaryProvider>(context, listen: false);
+    diaries = Provider.of<DiaryProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await diaries.loadDiary(user.uid);
       await mapLoad(diaries);
@@ -160,38 +161,42 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       if (buttonList.isEmpty) {
         buttonList = List.generate(
           iconList.length,
-          (index) => MaterialButton(
-            padding: const EdgeInsets.all(0),
-            splashColor: Colors.transparent,
-            onPressed: () {
-              callDialog(index);
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  iconList[index][0],
-                  size: 25,
-                ),
-                Text(iconList[index][1], style: const TextStyle(fontSize: 9))
-              ],
+              (index) => Flexible(
+            child: MaterialButton(
+              padding: const EdgeInsets.all(0),
+              splashColor: Colors.transparent,
+              onPressed: () {
+                callDialog(index);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    iconList[index][0],
+                    size: 25,
+                  ),
+                  Text(iconList[index][1], style: const TextStyle(fontSize: 9))
+                ],
+              ),
             ),
           ),
         );
-        buttonList.add(ClipRRect(
-          borderRadius: BorderRadius.circular(50),
-          child: MaterialButton(
-            minWidth: MediaQuery.of(context).size.width / 5,
-            shape: const CircleBorder(),
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) => const SettingDialog());
-            },
-            child: CircleAvatar(
-              foregroundImage: NetworkImage(user.user!.photoURL!),
-              backgroundColor: Colors.grey,
+        buttonList.add(Flexible(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: MaterialButton(
+              minWidth: MediaQuery.of(context).size.width / 5,
+              shape: const CircleBorder(),
+              materialTapTargetSize: MaterialTapTargetSize.padded,
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => const SettingDialog());
+              },
+              child: CircleAvatar(
+                foregroundImage: NetworkImage(user.user!.photoURL!),
+                backgroundColor: Colors.grey,
+              ),
             ),
           ),
         ));
@@ -207,6 +212,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           ));
     });
   }
+
 
   List iconList = [
     [FontAwesomeIcons.plus, "새 일기"],
@@ -267,11 +273,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         NMarker(id: diary.title, position: diary.location, icon: image);
     marker.setOnTapListener((overlay) {
       _cameraMove = false;
+      diaries.selectDiary(diary);
       DefaultBottomBarController.of(context).open();
-      if (diary !=
-          Provider.of<DiaryProvider>(context, listen: false).selectedDiary) {
-        Provider.of<DiaryProvider>(context, listen: false).selectDiary(diary);
-      }
+
     });
     return marker;
   }
