@@ -2,6 +2,7 @@ import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:intertravel/View/DIalog/PermissionRequestPage.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/View/MapScreen.dart';
 import 'package:provider/provider.dart';
@@ -40,15 +41,7 @@ class _MainPageState extends State<MainPage> {
                       ? DefaultBottomBarController(child: const MapScreen())
                       : const LoginPage();
                 })
-              : Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<UserPermission>()
-                            .requestLocationPermission();
-                      },
-                      child: Text("권한을 허용해주세요")),
-                );
+              : PermissionRequestPage();
         });
   }
 }

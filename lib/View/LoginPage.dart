@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    double buttonHeight = MediaQuery.of(context).size.height / 15;
     return Consumer<UserData>(builder: (context, userData, child) {
       AuthRepository authRepository = AuthRepository();
       return Scaffold(
