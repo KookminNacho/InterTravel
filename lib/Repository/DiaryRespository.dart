@@ -5,7 +5,7 @@ import '../Model/Diary.dart';
 
 class DiaryRepository{
 
-  DiarySource _diarySource = DiarySource();
+  final DiarySource _diarySource = DiarySource();
 
   Future<List<Diary>> getDiaries(String userID) async {
     List<Diary> diaries = await _diarySource.getDiaries(userID);

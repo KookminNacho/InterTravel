@@ -61,7 +61,7 @@ class BottomBarController extends ChangeNotifier {
         // actual scroll physics will be implemented in a future release
         _animationController.animateTo(
           _animationController.value + visualVelocity * 0.16,
-          duration: Duration(milliseconds: 410),
+          duration: const Duration(milliseconds: 410),
           curve: Curves.decelerate,
         );
       }
@@ -70,10 +70,11 @@ class BottomBarController extends ChangeNotifier {
 
     // Check if the controller is already halfway there
     if (snap) {
-      if (_animationController.value > 0.5)
+      if (_animationController.value > 0.5) {
         open();
-      else
+      } else {
         close();
+      }
     }
   }
 
@@ -123,7 +124,7 @@ class DefaultBottomBarController extends StatefulWidget {
   final Widget child;
 
   /// Creates a default [BottomBarController] for the given [child] widget
-  DefaultBottomBarController({
+  const DefaultBottomBarController({
     Key? key,
     required this.child,
   }) : super(key: key);

@@ -5,7 +5,7 @@ import "package:intertravel/ViewModel/UserData.dart";
 
 class AuthRepository {
 
-  AuthDataSource _authDataSource = AuthDataSource();
+  final AuthDataSource _authDataSource = AuthDataSource();
 
   Future<UserCredential?> signInWithGoogle(UserData userdata) async {
     UserCredential? user = await _authDataSource.signWithGoogle(userdata);

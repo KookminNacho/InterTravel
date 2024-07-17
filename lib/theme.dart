@@ -20,10 +20,10 @@ class CustomTheme {
       splashColor: const Color(0xFF4A90E2).withOpacity(0.3), // 반투명한 파란색
       unselectedWidgetColor: const Color(0xFFBDBDBD), // 중간 톤의 회색
       disabledColor: const Color(0xFFE0E0E0), // 밝은 회색
-      buttonTheme: ButtonThemeData(
-        buttonColor: const Color(0xFF4A90E2), // 밝은 파란색
-        disabledColor: const Color(0xFFBDBDBD), // 중간 톤의 회색
-        highlightColor: const Color(0xFF3A70B2), // 어두운 파란색
+      buttonTheme: const ButtonThemeData(
+        buttonColor: Color(0xFF4A90E2), // 밝은 파란색
+        disabledColor: Color(0xFFBDBDBD), // 중간 톤의 회색
+        highlightColor: Color(0xFF3A70B2), // 어두운 파란색
       ),
       textTheme: const TextTheme(
         bodyLarge: TextStyle(color: Color(0xFF333333), fontSize: 16, fontWeight: FontWeight.w400),
@@ -41,10 +41,8 @@ class CustomTheme {
         labelLarge: TextStyle(color: Color(0xFF333333), fontSize: 14, fontWeight: FontWeight.w600),
       ),
       colorScheme: const ColorScheme(
-        background: Color(0xFFFFFFFF), // 흰색
         brightness: Brightness.light,
-        error: Color(0xFFE74C3C), // 밝은 빨간색
-        onBackground: Color(0xFF333333), // 매우 어두운 회색
+        error: Color(0xFFE74C3C), // 매우 어두운 회색
         onError: Color(0xFFFFFFFF), // 흰색
         onPrimary: Color(0xFFFFFFFF), // 흰색
         onSecondary: Color(0xFFFFFFFF), // 흰색

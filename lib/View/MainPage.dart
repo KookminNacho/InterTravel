@@ -38,10 +38,10 @@ class _MainPageState extends State<MainPage> {
                   return userData.user;
                 }, builder: (context, user, child) {
                   return (user != null)
-                      ? DefaultBottomBarController(child: const MapScreen())
+                      ? const DefaultBottomBarController(child: MapScreen())
                       : const LoginPage();
                 })
-              : PermissionRequestPage();
+              : const PermissionRequestPage();
         });
   }
 }

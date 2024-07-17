@@ -204,12 +204,12 @@ class _LoginPageState extends State<LoginPage>
   }
 
   void RandomCameraMove() {
-    final NCameraPosition _kInitialPosition = const NCameraPosition(
+    const NCameraPosition kInitialPosition = NCameraPosition(
       target: NLatLng(37.3595704, 127.105399),
       zoom: 7.0,
     );
     NCameraUpdate cameraUpdate = NCameraUpdate.scrollAndZoomTo(
-        target: NLatLng(37.3595704, 127.105399), zoom: 7.0);
+        target: const NLatLng(37.3595704, 127.105399), zoom: 7.0);
     cameraUpdate.setAnimation(animation: NCameraAnimation.linear);
     _mapController.updateCamera(cameraUpdate);
   }

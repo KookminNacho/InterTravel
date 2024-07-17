@@ -1,7 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:photo_view/photo_view.dart';
@@ -38,16 +36,16 @@ class _DiaryPageState extends State<DiaryPage> {
         foregroundColor: Colors.black,
         title: Text(
           diary.title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
         actions: [
           PopupMenuButton(
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => [
               PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.edit, color: Colors.blue),
-                  title: Text('수정'),
+                  leading: const Icon(Icons.edit, color: Colors.blue),
+                  title: const Text('수정'),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -61,8 +59,8 @@ class _DiaryPageState extends State<DiaryPage> {
               ),
               PopupMenuItem(
                 child: ListTile(
-                  leading: Icon(Icons.delete, color: Colors.red),
-                  title: Text('삭제'),
+                  leading: const Icon(Icons.delete, color: Colors.red),
+                  title: const Text('삭제'),
                   onTap: () {
                     Provider.of<DiaryProvider>(context, listen: false).deleteDiary(diary);
                     Navigator.pop(context);
@@ -89,7 +87,7 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   Widget _buildImageSlideshow() {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.4,
       child: ImageSlideshow(
         width: double.infinity,
@@ -109,7 +107,7 @@ class _DiaryPageState extends State<DiaryPage> {
         imageUrl,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) =>
-            Icon(Icons.error, size: 50, color: Colors.red),
+            const Icon(Icons.error, size: 50, color: Colors.red),
       ),
     );
   }
@@ -125,7 +123,7 @@ class _DiaryPageState extends State<DiaryPage> {
 
   Widget _buildDateAndLocation() {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -133,15 +131,15 @@ class _DiaryPageState extends State<DiaryPage> {
             formatDate(diary.date),
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           if (diary.address != null && diary.address!.isNotEmpty)
             Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: Colors.blue),
-                SizedBox(width: 4),
+                const Icon(Icons.location_on, size: 16, color: Colors.blue),
+                const SizedBox(width: 4),
                 Text(
                   diary.address!,
-                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                  style: const TextStyle(fontSize: 16, color: Colors.blue),
                 ),
               ],
             ),
@@ -156,10 +154,10 @@ class _DiaryPageState extends State<DiaryPage> {
 
   Widget _buildContent() {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Text(
         diary.content,
-        style: TextStyle(fontSize: 16, height: 1.5),
+        style: const TextStyle(fontSize: 16, height: 1.5),
       ),
     );
   }
@@ -181,15 +179,15 @@ class PhotoViewDialog extends StatelessWidget {
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 2,
             errorBuilder: (context, error, stackTrace) =>
-                Center(child: Text('이미지를 불러오는 중 오류가 발생했습니다.')),
+                const Center(child: Text('이미지를 불러오는 중 오류가 발생했습니다.')),
           ),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: CircleAvatar(
                 backgroundColor: Colors.black54,
                 child: IconButton(
-                  icon: Icon(Icons.close, color: Colors.white),
+                  icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),

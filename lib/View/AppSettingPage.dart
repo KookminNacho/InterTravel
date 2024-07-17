@@ -7,7 +7,7 @@ class AppSettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('앱 설정'),
+        title: const Text('앱 설정'),
       ),
       body: Center(
         child: Column(

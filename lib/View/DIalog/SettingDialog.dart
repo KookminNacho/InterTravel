@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intertravel/ViewModel/DiaryProvider.dart';
-import 'package:provider/provider.dart';
 
-import '../../ViewModel/UserData.dart';
 import '../AppSettingPage.dart';
 import '../ProfileSettingPage.dart';
 

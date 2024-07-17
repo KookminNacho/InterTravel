@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intertravel/View/DiaryPage.dart';
@@ -9,7 +8,6 @@ import 'package:intl/intl.dart';
 
 import '../Model/Diary.dart';
 import '../Util/Constrains.dart';
-import '../View/AddNewDiaryPage.dart';
 import '../ViewModel/DiaryProvider.dart';
 import '../ViewModel/ImageProvider.dart';
 import '../ViewModel/UserData.dart';
@@ -117,7 +115,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             Diary diary = diaryProvider.diaries[index];
                             return SingleChildScrollView(
                               child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Card(
                                   elevation: 4,
                                   shape: RoundedRectangleBorder(
@@ -129,7 +127,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => DiaryPage(),
+                                          builder: (context) => const DiaryPage(),
                                         ),
                                       );
                                     },
@@ -166,21 +164,21 @@ class _WelcomePageState extends State<WelcomePage> {
                                             children: [
                                               Text(
                                                 diary.title,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.w500),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
-                                              SizedBox(height: 8),
+                                              const SizedBox(height: 8),
                                               Text(
                                                 diary.content,
-                                                style: TextStyle(fontSize: 14),
+                                                style: const TextStyle(fontSize: 14),
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
-                                              SizedBox(height: 8),
+                                              const SizedBox(height: 8),
                                               Text(
                                                 DateFormat('yyyy년 MM월 dd일 h시')
                                                     .format(diary.date),
@@ -221,7 +219,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             ])
                       ],
                     )
-                  : Center(child: CircularProgressIndicator()),
+                  : const Center(child: CircularProgressIndicator()),
             ),
           ],
         ),

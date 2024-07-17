@@ -57,7 +57,7 @@ class BottomExpandableAppBar extends StatefulWidget {
   /// [Decoration] for the bottom app bar
   final Decoration? appBarDecoration;
 
-  BottomExpandableAppBar({
+  const BottomExpandableAppBar({
     Key? key,
     this.expandedBody,
     this.expandedHeight,
@@ -159,7 +159,7 @@ class _BottomExpandableAppBarState extends State<BottomExpandableAppBar> {
                     decoration: widget.expandedDecoration ??
                         BoxDecoration(
                           color: widget.expandedBackColor ?? Theme.of(context).bottomAppBarTheme.color,
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)
+                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)
                         ),),
                     child: Opacity(opacity: panelState > 0.25 ? 1 : panelState * 4, child: widget.expandedBody),
                   ),
@@ -167,14 +167,6 @@ class _BottomExpandableAppBarState extends State<BottomExpandableAppBar> {
               ),
             ),
             ClipPath(
-              child: Container(
-                color: widget.bottomAppBarColor ?? Theme.of(context).bottomAppBarTheme.color,
-                height: widget.appBarHeight + viewPadding.vertical,
-                child: Padding(
-                  padding: viewPadding,
-                  child: widget.bottomAppBarBody,
-                ),
-              ),
               clipper: widget.shape != null
                   ? _BottomAppBarClipper(
                       geometry: Scaffold.geometryOf(context),
@@ -183,6 +175,14 @@ class _BottomExpandableAppBarState extends State<BottomExpandableAppBar> {
                       buttonOffset: widget.bottomOffset,
                     )
                   : null,
+              child: Container(
+                color: widget.bottomAppBarColor ?? Theme.of(context).bottomAppBarTheme.color,
+                height: widget.appBarHeight + viewPadding.vertical,
+                child: Padding(
+                  padding: viewPadding,
+                  child: widget.bottomAppBarBody,
+                ),
+              ),
             ),
           ],
         );
@@ -214,7 +214,7 @@ class _BottomAppBarClipper extends CustomClipper<Path> {
       0.0,
       (geometry.value.bottomNavigationBarTop ?? 0) * -1.0 - buttonOffset,
     );
-    return shape.getOuterPath(Offset(0, 0) & size, button?.inflate(notchMargin));
+    return shape.getOuterPath(const Offset(0, 0) & size, button?.inflate(notchMargin));
   }
 
   @override

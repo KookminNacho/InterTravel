@@ -58,7 +58,7 @@ class _CustomLocationDialogState extends State<CustomLocationDialog> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Text("지도 위치", style: TextStyle(fontSize: 20),),
+                        const Text("지도 위치", style: TextStyle(fontSize: 20),),
                         Text(
                           value ?? "로딩 중...",
                           style: const TextStyle(fontWeight: FontWeight.w300),

@@ -51,7 +51,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                           physics: const ClampingScrollPhysics(),
                           cacheExtent: 9999,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             mainAxisExtent: 300,
                             crossAxisCount: 2,
                             crossAxisSpacing: 4,

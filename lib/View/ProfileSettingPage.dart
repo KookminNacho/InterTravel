@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intertravel/View/Privacy.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../ViewModel/DiaryProvider.dart';
 import '../ViewModel/UserData.dart';
@@ -82,7 +81,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                   '개인정보 처리방침',
                   Icons.privacy_tip,
                   () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Privacy()))),
+                      MaterialPageRoute(builder: (context) => const Privacy()))),
               _buildSettingTile('로그아웃', Icons.exit_to_app, signOutDialog),
               _buildSettingTile(
                   '회원 탈퇴', Icons.delete_forever, deleteAccountDialog,
@@ -173,7 +172,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return DeleteAccountDialog();
+        return const DeleteAccountDialog();
       },
     );
   }

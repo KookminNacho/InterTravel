@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intertravel/theme.dart';
@@ -19,7 +17,6 @@ import 'AddNewDiaryPage.dart';
 import 'DIalog/ListDialog.dart';
 import 'DIalog/SettingDialog.dart';
 import 'GallayPage.dart';
-import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -133,7 +130,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                             });
                           });
                           _controller = mapController;
-                          ;
                         },
                       ),
                       (_userVerified)
@@ -256,13 +252,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     if (DefaultBottomBarController.of(context).isClosed) {
       DefaultBottomBarController.of(context).open();
     }
-    diaries.diaries.forEach((element) {
+    for (var element in diaries.diaries) {
       drawMarker(element);
-    });
+    }
   }
 
   Future<void> drawMarker(Diary d) async {
-    NOverlayImage markerImage = await NOverlayImage.fromAssetImage(
+    NOverlayImage markerImage = const NOverlayImage.fromAssetImage(
       "assets/images/marker.png",
     );
     _controller.addOverlay(clickAbleMarker(d, markerImage));
@@ -349,7 +345,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottomAppBarBody: Container(
               decoration: BoxDecoration(
                 color: CustomTheme.light().scaffoldBackgroundColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20)),
               ),
@@ -372,7 +368,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       ),
                     )),
               )),
-          expandedBody: WelcomePage()),
+          expandedBody: const WelcomePage()),
     );
   }
 }

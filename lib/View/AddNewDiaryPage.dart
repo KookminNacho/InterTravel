@@ -1,13 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intertravel/DataSource/NaverGeoCoder.dart';
 import 'package:intertravel/View/DIalog/CustomLocationDialog.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
-import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
@@ -118,7 +115,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: (snapshot.connectionState == ConnectionState.waiting)
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : Row(
                       children: [
                         Icon(Icons.location_on, color: Colors.blue[700]),
@@ -144,7 +141,7 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
   }
 
   Widget _buildImageGallery() {
-    return Container(
+    return SizedBox(
       height: 120,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -238,20 +235,20 @@ class _AddNewDiaryPageState extends State<AddNewDiaryPage> {
               },
             );
           },
-          child: const Text("그만두기"),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.red,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
+          child: const Text("그만두기"),
         ),
         ElevatedButton(
           onPressed: () => _showSaveConfirmDialog(),
-          child: const Text("저장하기"),
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
             backgroundColor: Colors.blue,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
+          child: const Text("저장하기"),
         ),
       ],
     );

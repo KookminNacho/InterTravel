@@ -21,5 +21,5 @@ class Diary {
       this.userID = "",
       this.imageURI = const [],
       this.address = ""
-      }) {}
+      });
 }

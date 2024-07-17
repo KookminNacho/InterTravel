@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../Model/Diary.dart';
-import '../../Util/Constrains.dart';
 import '../../ViewModel/DiaryProvider.dart';
 import '../../ViewModel/UIViewMode.dart';
 
@@ -24,7 +23,7 @@ class ListPage extends StatelessWidget {
       body: Consumer<DiaryProvider>(
         builder: (context, diaries, child) {
           return ListView.builder(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             itemCount: diaries.diaries.length,
             itemBuilder: (context, index) {
               final diary = diaries.diaries[index];
@@ -38,7 +37,7 @@ class ListPage extends StatelessWidget {
 
   Widget _buildDiaryCard(BuildContext context, Diary diary) {
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
       child: InkWell(
@@ -53,7 +52,7 @@ class ListPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildDiaryImage(diary),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,14 +65,14 @@ class ListPage extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       diary.content,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     _buildDateRow(diary.date),
                   ],
                 ),
@@ -108,7 +107,7 @@ class ListPage extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.calendar_today, size: 14, color: Colors.grey[500]),
-        SizedBox(width: 4),
+        const SizedBox(width: 4),
         Text(
           DateFormat('yyyy년 MM월 dd일').format(date),
           style: TextStyle(fontSize: 12, color: Colors.grey[500]),
