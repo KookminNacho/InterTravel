@@ -1,4 +1,3 @@
-
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
+import 'package:intertravel/ViewModel/GeminiProvider.dart';
 import 'package:intertravel/ViewModel/UIViewMode.dart';
 import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,8 @@ void main() async {
     ChangeNotifierProvider(create: (context) => DiaryProvider()),
     ChangeNotifierProvider(create: (context) => ImageProviderModel()),
     ChangeNotifierProvider(create: (context) => MarkerManager()),
-    ChangeNotifierProvider(create: (context) => UIViewModel())
+    ChangeNotifierProvider(create: (context) => UIViewModel()),
+    ChangeNotifierProvider(create: (context) => GeminiProvider()),
   ], child: const MyApp()));
 }
 

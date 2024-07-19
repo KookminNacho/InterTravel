@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intertravel/View/DIalog/PermissionRequestPage.dart';
 import 'package:intertravel/View/LoginPage.dart';
 import 'package:intertravel/View/MapScreen.dart';
+import 'package:intertravel/ViewModel/GeminiProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../ViewModel/UserData.dart';
@@ -24,6 +25,7 @@ class _MainPageState extends State<MainPage> {
       UserData provider = Provider.of<UserData>(context, listen: false);
       provider.autoLogin();
       await provider.getLocation();
+      Provider.of<GeminiProvider>(context, listen: false).init();
     });
     super.initState();
   }
