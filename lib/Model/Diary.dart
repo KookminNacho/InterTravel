@@ -10,6 +10,7 @@ class Diary {
   String? userID;
   List<String> imageURI;
   String? address;
+  List<String>? tags;
 
   Diary(
       {required this.uid,
@@ -20,6 +21,7 @@ class Diary {
       required this.owner,
       this.userID = "",
       this.imageURI = const [],
-      this.address = ""
+      this.address = "",
+      this.tags = const [],
       });
 }

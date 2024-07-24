@@ -13,6 +13,7 @@ class DiaryProvider with ChangeNotifier {
   List<Diary> _nameSortedDiary = [];
   Diary? _selectedDiary;
 
+
   bool get isLoaded => _isLoaded;
 
   List<Diary> get diaries => _diary;
@@ -104,5 +105,13 @@ class DiaryProvider with ChangeNotifier {
       isLoaded = false;
       notifyListeners();
     }
+  }
+
+  void updateDiaryTags(Diary diary, List<String> tags) {
+    DiaryRepository diaryRepository = DiaryRepository();
+    diary.tags = tags;
+    diaryRepository.updateDiary(diary);
+    isLoaded = false;
+    notifyListeners();
   }
 }

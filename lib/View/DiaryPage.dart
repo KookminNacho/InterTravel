@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:intertravel/Repository/UserRepository.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/GeminiProvider.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../Model/Diary.dart';
+import '../ViewModel/UserData.dart';
 import 'AddNewDiaryPage.dart';
 
 class DiaryPage extends StatefulWidget {
@@ -26,6 +28,7 @@ class _DiaryPageState extends State<DiaryPage> {
   late Diary diary;
   late List<Image> images;
   List<Uint8List> imageBytes = [];
+  List<String> tags = [];
 
   Future<Uint8List?> loadImageAsUint8List(String imageUrl) async {
     try {
@@ -54,15 +57,17 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   void initState() {
     diary = Provider.of<DiaryProvider>(context, listen: false).selectedDiary!;
-    GeminiProvider geminiProvider =Provider.of<GeminiProvider>(context, listen: false);
+    GeminiProvider geminiProvider =
+        Provider.of<GeminiProvider>(context, listen: false);
     geminiProvider.response = '';
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _loadImage();
-      geminiProvider.requestPrompt(imageBytes, diary);
+      if (diary.tags == null || diary.tags!.isEmpty) {
+        geminiProvider.requestPrompt(imageBytes, diary);
+      }
     });
     super.initState();
     images = diary.imageURI.map((e) => Image.network(e)).toList();
-
   }
 
   @override
@@ -101,7 +106,8 @@ class _DiaryPageState extends State<DiaryPage> {
                   leading: const Icon(Icons.delete, color: Colors.red),
                   title: const Text('삭제'),
                   onTap: () {
-                    Provider.of<DiaryProvider>(context, listen: false).deleteDiary(diary);
+                    Provider.of<DiaryProvider>(context, listen: false)
+                        .deleteDiary(diary);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -119,29 +125,172 @@ class _DiaryPageState extends State<DiaryPage> {
             _buildDateAndLocation(),
             _buildDivider(),
             _buildContent(),
-            _buildAISuggestion(),
+            (diary.tags == null || diary.tags!.isEmpty)
+                ? _buildAISuggestion()
+                : _tagsView(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAISuggestion() {
-    return Consumer<GeminiProvider>(
-      builder: (context, geminiProvider, child) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(geminiProvider.response),
-
-
-            ],
-          ),
-        );
-      }
+  Widget _tagsView() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      height: 40,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: diary.tags!.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  diary.tags![index],
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            );
+          }),
     );
+  }
+
+  Widget _buildAISuggestion() {
+    return Consumer<GeminiProvider>(builder: (context, geminiProvider, child) {
+      if (geminiProvider.response == '') {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              height: 30,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: geminiProvider.tags.background.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ToggleButtons(
+                      isSelected: [geminiProvider.selectedBackgrounds[index]],
+                      onPressed: (_) {
+                        setState(() {
+                          if (geminiProvider.selectedBackgrounds[index] ==
+                              false) {
+                            tags.add(geminiProvider.tags.background[index]);
+                            geminiProvider.selectedBackgrounds[index] = true;
+                          } else {
+                            tags.remove(geminiProvider.tags.background[index]);
+                            geminiProvider.selectedBackgrounds[index] = false;
+                          }
+                          print(tags);
+                        });
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            geminiProvider.tags.background[index],
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                      color: Colors.blue,
+                      selectedColor: Colors.white,
+                      fillColor: Colors.blue,
+                      borderColor: Colors.blue,
+                      selectedBorderColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 30,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: geminiProvider.tags.keywords.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ToggleButtons(
+                      isSelected: [geminiProvider.selectedKeywords[index]],
+                      onPressed: (_) {
+                        setState(() {
+                          if (geminiProvider.selectedKeywords[index] == false) {
+                            tags.add(geminiProvider.tags.keywords[index]);
+                            geminiProvider.selectedKeywords[index] = true;
+                            print('add');
+                          } else {
+                            tags.remove(geminiProvider.tags.keywords[index]);
+                            geminiProvider.selectedKeywords[index] = false;
+                          }
+                          print(tags);
+                        });
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            geminiProvider.tags.keywords[index],
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                      color: Colors.blue,
+                      selectedColor: Colors.white,
+                      fillColor: Colors.blue,
+                      borderColor: Colors.blue,
+                      selectedBorderColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Consumer<GeminiProvider>(builder: (context, geminiProvider, child) {
+              if (geminiProvider.selectedBackgrounds.contains(true) ||
+                  geminiProvider.selectedKeywords.contains(true)) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Provider.of<DiaryProvider>(context, listen: false)
+                              .updateDiaryTags(diary, tags);
+                          Navigator.pop(context);
+                          Provider.of<UserData>(context, listen: false).addTag(tags);
+                        },
+                        child: Text(
+                          '태그 저장하기',
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[600]),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildImageSlideshow() {

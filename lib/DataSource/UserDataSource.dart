@@ -1,9 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intertravel/ViewModel/UserData.dart';
 
-class AuthDataSource {
+class UserDataSource {
+  Future<void> AddTag(List<String> tags) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    firestore
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({'tags': tags});
+  }
+
   Future<UserCredential?> signWithGoogle(UserData user) async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -34,5 +43,4 @@ class AuthDataSource {
     }
     return null;
   }
-
 }

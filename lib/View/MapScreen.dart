@@ -47,6 +47,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await diaries.loadDiary(user.uid);
       await mapLoad(diaries);
+      await user.loadSavedUserData();
+
     });
     DefaultBottomBarController.of(context).open();
   }

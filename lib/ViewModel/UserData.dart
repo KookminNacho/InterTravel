@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intertravel/Model/SavedUserData.dart';
+import 'package:intertravel/Repository/UserRepository.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 
 class UserData extends ChangeNotifier {
+  late SavedUserData _savedUserData;
   NLatLng? _location;
   NLatLng? _selectedLocation;
   bool _mapLoad = false;
@@ -12,6 +15,10 @@ class UserData extends ChangeNotifier {
   String _uid = "";
   String _displayName = "";
   Image _photo = Image.asset("assets/images/user.png");
+
+  late List<String> _tags = [];
+
+  SavedUserData? get savedUserData => _savedUserData;
 
   NLatLng? get location => _location;
 
@@ -27,8 +34,51 @@ class UserData extends ChangeNotifier {
 
   Image get photo => _photo;
 
+  List<String> get tags => _tags;
 
+  void addTag(List<String> tags) {
+    UserRepository userRepository = UserRepository();
+    for (String tag in tags) {
+      if (!_tags.contains(tag)) {
+        _tags.add(tag);
+      }
+      userRepository.addTag(tags);
+    }
+    notifyListeners();
+  }
 
+  void removeTag(String tag) {
+    _tags.remove(tag);
+    notifyListeners();
+  }
+
+  void clearTags() {
+    _tags.clear();
+    notifyListeners();
+  }
+
+  void loadTags(List<String> tags) {
+    _tags.clear();
+    _tags.addAll(tags);
+    notifyListeners();
+  }
+
+  set tags(List<String> value) {
+    print("Tags changed: $value");
+    _tags = value;
+    notifyListeners();
+  }
+
+  Future <void> loadSavedUserData() async {
+    print("Loading saved user data...");
+    UserRepository userRepository = UserRepository();
+    _savedUserData = await userRepository.loadSavedUserData(this);
+    tags = _savedUserData.tags;
+    notifyListeners();
+    print("Saved user data loaded. Tags: ${_savedUserData!.tags}");
+
+    notifyListeners();
+  }
 
   set user(User? value) {
     _user = value;
@@ -38,22 +88,20 @@ class UserData extends ChangeNotifier {
     if (user?.displayName != null) {
       _displayName = user!.displayName!;
     }
-    if(user?.photoURL != null) {
+    if (user?.photoURL != null) {
       _photo = Image.network(user!.photoURL!);
     }
     notifyListeners();
   }
 
   void autoLogin() {
-    if(FirebaseAuth.instance.currentUser != null) {
+    if (FirebaseAuth.instance.currentUser != null) {
       user = FirebaseAuth.instance.currentUser;
       print("Auto login: ${user!.displayName}");
-    }
-    else{
+
+    } else {
       print("Auto login failed");
     }
-
-
   }
 
   void signOut(DiaryProvider diaryProvider) {

@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:intertravel/Repository/AuthRepository.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../Repository/UserRepository.dart';
 import '../ViewModel/UserData.dart';
 
 class LoginPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     return Consumer<UserData>(builder: (context, userData, child) {
-      AuthRepository authRepository = AuthRepository();
+      UserRepository authRepository = UserRepository();
       return Scaffold(
         body: Stack(
           children: [
@@ -117,6 +117,7 @@ class _LoginPageState extends State<LoginPage>
                                 userCred = await authRepository
                                     .signInWithGoogle(userData);
                                 if (userCred != null) {
+
                                   user = userCred.user;
                                   loginSuccess = true;
                                 }

@@ -19,6 +19,12 @@ class DiarySource {
       try {
         var data = doc.data();
         List<String> url = List<String>.from(data['image']);
+        List<String> tags;
+        try {
+          tags = List<String>.from(data['tags']);
+        } catch (e) {
+          tags = [];
+        }
 
         GeoPoint location = data['location'];
         NLatLng nLatLng = NLatLng(location.latitude, location.longitude);
@@ -34,6 +40,7 @@ class DiarySource {
           owner: data['owner'],
           userID: data['userID'],
           address: data['address'],
+          tags: tags,
         );
       } catch (e) {
         print(e);
@@ -42,7 +49,8 @@ class DiarySource {
     }).toList();
 
     // Filter out null values
-    List<Future<Diary?>> nonNullFutures = futures.where((future) => future != null).toList();
+    List<Future<Diary?>> nonNullFutures =
+        futures.where((future) => future != null).toList();
 
     var results = await Future.wait(nonNullFutures);
     diaries = results.where((diary) => diary != null).cast<Diary>().toList();
@@ -59,6 +67,7 @@ class DiarySource {
         'image': diary.imageURI,
         'owner': user,
         'address': diary.address,
+        'tags': diary.tags,
       });
       print(
           "Diary added ${diary.title}, ${diary.content}, ${diary.date}, ${diary.location}, ${diary.imageURI}, ${diary.address}, $user");
@@ -79,6 +88,7 @@ class DiarySource {
         'image': diary.imageURI,
         'owner': diary.owner,
         'address': diary.address,
+        'tags': diary.tags,
       });
       return true;
     } catch (e) {
@@ -99,7 +109,8 @@ class DiarySource {
 
   Future<void> deleteAllDiaries() async {
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await firestore.collection('Diaries').get();
+      QuerySnapshot<Map<String, dynamic>> snapshot =
+          await firestore.collection('Diaries').get();
       for (var doc in snapshot.docs) {
         await doc.reference.delete();
       }
