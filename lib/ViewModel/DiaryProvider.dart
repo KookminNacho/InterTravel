@@ -114,4 +114,12 @@ class DiaryProvider with ChangeNotifier {
     isLoaded = false;
     notifyListeners();
   }
+
+  void clearDiaryTags(Diary diary) {
+    DiaryRepository diaryRepository = DiaryRepository();
+    diary.tags = [];
+    diaryRepository.updateDiary(diary);
+    isLoaded = false;
+    notifyListeners();
+  }
 }

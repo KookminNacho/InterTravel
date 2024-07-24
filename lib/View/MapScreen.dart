@@ -3,7 +3,6 @@ import 'package:expandable_bottom_bar/expandable_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intertravel/ViewModel/GeminiProvider.dart';
 import 'package:intertravel/theme.dart';
 import 'package:provider/provider.dart';
 

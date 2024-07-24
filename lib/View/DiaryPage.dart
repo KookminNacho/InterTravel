@@ -1,13 +1,12 @@
-import 'dart:ffi';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
-import 'package:intertravel/Repository/UserRepository.dart';
 import 'package:intertravel/Util/Constrains.dart';
 import 'package:intertravel/ViewModel/DiaryProvider.dart';
 import 'package:intertravel/ViewModel/GeminiProvider.dart';
+import 'package:intertravel/theme.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
@@ -137,36 +136,75 @@ class _DiaryPageState extends State<DiaryPage> {
   Widget _tagsView() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      height: 40,
       width: MediaQuery.of(context).size.width,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: diary.tags!.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 40,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: diary.tags!.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        diary.tags![index],
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  );
+                }),
+          ),
+          Container(
+            margin: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: () {
+                Provider.of<DiaryProvider>(context, listen: false)
+                    .updateDiaryTags(diary, []);
+                _reloadPage();
+              },
+              child: Text(
+                '태그 초기화하기',
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  diary.tags![index],
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            );
-          }),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _reloadPage() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => DiaryPage()),
     );
   }
 
   Widget _buildAISuggestion() {
     return Consumer<GeminiProvider>(builder: (context, geminiProvider, child) {
       if (geminiProvider.response == '') {
-        return const Center(child: CircularProgressIndicator());
+        return Center(
+            child: Column(
+          children: [
+            LoadingAnimationWidget.waveDots(
+                color: CustomTheme.light().highlightColor, size: 50),
+            Text(
+              "AI 태그 추천 중..."
+              "\n네트워크 상태에 따라 시간이 걸릴 수 있습니다.",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ));
       }
       return Padding(
         padding: const EdgeInsets.all(16),
@@ -193,9 +231,14 @@ class _DiaryPageState extends State<DiaryPage> {
                             tags.remove(geminiProvider.tags.background[index]);
                             geminiProvider.selectedBackgrounds[index] = false;
                           }
-                          print(tags);
                         });
                       },
+                      color: Colors.blue,
+                      selectedColor: Colors.white,
+                      fillColor: Colors.blue,
+                      borderColor: Colors.blue,
+                      selectedBorderColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -205,12 +248,6 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                         ),
                       ],
-                      color: Colors.blue,
-                      selectedColor: Colors.white,
-                      fillColor: Colors.blue,
-                      borderColor: Colors.blue,
-                      selectedBorderColor: Colors.blue,
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   );
                 },
@@ -239,6 +276,12 @@ class _DiaryPageState extends State<DiaryPage> {
                           print(tags);
                         });
                       },
+                      color: Colors.blue,
+                      selectedColor: Colors.white,
+                      fillColor: Colors.blue,
+                      borderColor: Colors.blue,
+                      selectedBorderColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(10),
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -248,12 +291,6 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                         ),
                       ],
-                      color: Colors.blue,
-                      selectedColor: Colors.white,
-                      fillColor: Colors.blue,
-                      borderColor: Colors.blue,
-                      selectedBorderColor: Colors.blue,
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   );
                 },
@@ -271,8 +308,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         onPressed: () {
                           Provider.of<DiaryProvider>(context, listen: false)
                               .updateDiaryTags(diary, tags);
-                          Navigator.pop(context);
-                          Provider.of<UserData>(context, listen: false).addTag(tags);
+                          Provider.of<UserData>(context, listen: false)
+                              .addTag(tags);
+                          _reloadPage();
                         },
                         child: Text(
                           '태그 저장하기',
@@ -287,6 +325,14 @@ class _DiaryPageState extends State<DiaryPage> {
                 return Container();
               }
             }),
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "태그 추천은 구글 Gemini AI를 통해 제공되고 있어요!\n가끔 오류가 발생할 수 있습니다.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+            ),
           ],
         ),
       );

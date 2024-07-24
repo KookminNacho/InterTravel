@@ -8,10 +8,11 @@ import "../Model/SavedUserData.dart";
 class UserRepository {
   final UserDataSource _authDataSource = UserDataSource();
 
-  Future<void> addTag(List<String> tags) async {
+  Future<void> updateTag(List<String> tags) async {
     // 중복 태그 제거
     tags = tags.toSet().toList();
-    await _authDataSource.AddTag(tags);
+    print("태그 모음: $tags");
+    await _authDataSource.updateTag(tags);
   }
 
   Future<UserCredential?> signInWithGoogle(UserData userdata) async {

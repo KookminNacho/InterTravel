@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 import '../Model/Diary.dart';
@@ -69,8 +70,6 @@ class DiarySource {
         'address': diary.address,
         'tags': diary.tags,
       });
-      print(
-          "Diary added ${diary.title}, ${diary.content}, ${diary.date}, ${diary.location}, ${diary.imageURI}, ${diary.address}, $user");
       return true;
     } catch (e) {
       print(e);

@@ -36,19 +36,21 @@ class UserData extends ChangeNotifier {
 
   List<String> get tags => _tags;
 
-  void addTag(List<String> tags) {
+  void addTag(List<String> newtags) {
     UserRepository userRepository = UserRepository();
-    for (String tag in tags) {
+    for (String tag in newtags) {
       if (!_tags.contains(tag)) {
         _tags.add(tag);
       }
-      userRepository.addTag(tags);
     }
+    userRepository.updateTag(tags);
     notifyListeners();
   }
 
   void removeTag(String tag) {
     _tags.remove(tag);
+    UserRepository userRepository = UserRepository();
+    userRepository.updateTag(tags);
     notifyListeners();
   }
 
@@ -75,7 +77,7 @@ class UserData extends ChangeNotifier {
     _savedUserData = await userRepository.loadSavedUserData(this);
     tags = _savedUserData.tags;
     notifyListeners();
-    print("Saved user data loaded. Tags: ${_savedUserData!.tags}");
+    print("Saved user data loaded. Tags: ${_savedUserData.tags}");
 
     notifyListeners();
   }

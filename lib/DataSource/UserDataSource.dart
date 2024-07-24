@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intertravel/ViewModel/UserData.dart';
 
 class UserDataSource {
-  Future<void> AddTag(List<String> tags) async {
+  Future<void> updateTag(List<String> tags) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     firestore
         .collection('users')

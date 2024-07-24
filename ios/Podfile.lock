@@ -1074,9 +1074,9 @@ PODS:
     - GoogleUtilities/Environment (~> 7.12)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
   - Flutter (1.0.0)
-  - flutter_naver_map (1.0.0):
+  - flutter_naver_map (1.2.3):
     - Flutter
-    - NMapsMap (= 3.18.0)
+    - NMapsMap (= 3.18.1)
   - geolocator_apple (1.2.0):
     - Flutter
   - google_sign_in_ios (0.0.1):
@@ -1232,7 +1232,7 @@ PODS:
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
   - NMapsGeometry (1.0.2)
-  - NMapsMap (3.18.0):
+  - NMapsMap (3.18.1):
     - NMapsGeometry
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -1350,7 +1350,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 48de4aec81a6b79bb30404e5e6db43ea74848fed
   FirebaseStorage: 44f4e25073f6fa0d4d8c09f5bec299ee9e4eb985
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_naver_map: 7f20ccc4039e362cd0e8690d0a8272fea3906010
+  flutter_naver_map: 9b36cee8e83421f40782af8a4e7afbdf63ee5f92
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
   GoogleAppMeasurement: 9abf64b682732fed36da827aa2a68f0221fd2356
@@ -1364,7 +1364,7 @@ SPEC CHECKSUMS:
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   NMapsGeometry: 4e02554fa9880ef02ed96b075dc84355d6352479
-  NMapsMap: 36dc18a1f5f315121b33fccd2398c7a702bf0fc8
+  NMapsMap: e879088eeee2d1e3b97f0a609076e1824dce2cad
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
