@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:flutter/material.dart';
+import 'package:intertravel/Repository/UserRepository.dart';
+import 'package:intertravel/View/DIalog/TravelSuggestionDialog.dart';
+import 'package:provider/provider.dart';
 
 import '../Model/Diary.dart';
 import 'UserData.dart';
@@ -63,7 +66,7 @@ class GeminiProvider with ChangeNotifier {
     }
   }
 
-  void travelSuggestions(List<Diary> diaries, List<String> tags) async {
+  Future<void> travelSuggestions(List<Diary> diaries, List<String> tags) async {
     String TextLocation = '';
     suggest = '';
 
@@ -97,13 +100,15 @@ class GeminiProvider with ChangeNotifier {
       print(text);
 
       text = text.replaceAll("```", "");
-
+      suggest = text;
       jsonDecode(text ?? '')['recommendation'].forEach((element) {
         addSuggest(Suggestions(
             location: element['region'], reason: element['reason']));
       });
+      UserRepository userRepository = UserRepository();
+      userRepository.updateSuggestions([{text: DateTime.now()}]);
     } catch (e) {
-      print(e);
+      print("ERROR in travelSuggestions: $e");
     }
   }
 

@@ -381,7 +381,7 @@ class _DiaryPageState extends State<DiaryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            formatDate(diary.date),
+            formatDateTime(diary.date),
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),

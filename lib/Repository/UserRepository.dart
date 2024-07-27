@@ -29,26 +29,36 @@ class UserRepository {
     return user;
   }
 
+  Future<void> updateSuggestions(List<Map<String, DateTime>> list) async {
+    await _authDataSource.updateSuggestions(list);
+  }
+
   Future<SavedUserData> loadSavedUserData(UserData userdata) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final savedUserData = await firestore.collection('users').doc(userdata.uid).get();
+    final savedUserData =
+        await firestore.collection('users').doc(userdata.uid).get();
     if (savedUserData.exists) {
+      print(savedUserData.get('lastSuggestions'));
+      List<Map<String, DateTime>> suggestions = (savedUserData.get('lastSuggestions') as List<dynamic>?)
+          ?.map((item) => Map<String, DateTime>.from(
+          item.map((key, value) => MapEntry(key, (value as Timestamp).toDate()))))
+          .toList() ?? [];
       return SavedUserData(
         uid: savedUserData.get('uid'),
         email: savedUserData.get('email'),
         displayName: savedUserData.get('displayName'),
         tags: List<String>.from(savedUserData.get('tags')),
+        lastSuggestions: suggestions,
       );
-    }
-    else{
+    } else {
       return SavedUserData(
         uid: "",
         email: "",
         displayName: "",
         tags: [],
+        lastSuggestions: [],
       );
     }
-
   }
 
   Future<void> addUserToFirestore() async {

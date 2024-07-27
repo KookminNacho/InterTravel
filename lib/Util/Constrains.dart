@@ -33,9 +33,16 @@ const List<Color> colors = [
   Color(0xFFFFCCBC), // Light Orange
 ];
 
+String formatDateTime(DateTime date) {
+  return DateFormat('yyyy년 M월 d일 h:mm').format(date);
+}
 
 String formatDate(DateTime date) {
-  return DateFormat('yyyy년 MM월 dd일 hh:mm').format(date);
+  return DateFormat('yyyy년 M월 d일').format(date);
+}
+
+String formatDateHour(DateTime date) {
+  return DateFormat('yyyy년 M월 d일 h시').format(date);
 }
 
 String timeDifference(DateTime date) {

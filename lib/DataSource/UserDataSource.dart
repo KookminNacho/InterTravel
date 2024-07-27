@@ -43,4 +43,19 @@ class UserDataSource {
     }
     return null;
   }
+
+  Future<void> updateSuggestions(List<Map<String, DateTime>> list) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      await firestore
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({'lastSuggestions': FieldValue.arrayUnion(list)});
+    } catch (e) {
+      await firestore
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({'lastSuggestions': FieldValue.arrayUnion(list)});
+    }
+  }
 }

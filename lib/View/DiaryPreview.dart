@@ -126,7 +126,7 @@ class _DiaryPreViewState extends State<DiaryPreView> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: '${formatDate(lateDiary.date)}\n',
+                                  text: '${formatDateTime(lateDiary.date)}\n',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,

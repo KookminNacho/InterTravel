@@ -15,6 +15,7 @@ class UserData extends ChangeNotifier {
   String _uid = "";
   String _displayName = "";
   Image _photo = Image.asset("assets/images/user.png");
+  List<Map<String, DateTime>> _lastSuggestions = [];
 
   late List<String> _tags = [];
 
@@ -35,6 +36,8 @@ class UserData extends ChangeNotifier {
   Image get photo => _photo;
 
   List<String> get tags => _tags;
+
+  List<Map<String, DateTime>> get lastSuggestions => _lastSuggestions;
 
   void addTag(List<String> newtags) {
     UserRepository userRepository = UserRepository();
@@ -76,6 +79,9 @@ class UserData extends ChangeNotifier {
     UserRepository userRepository = UserRepository();
     _savedUserData = await userRepository.loadSavedUserData(this);
     tags = _savedUserData.tags;
+    _lastSuggestions = _savedUserData.lastSuggestions;
+    print(_savedUserData.lastSuggestions);
+
     notifyListeners();
     print("Saved user data loaded. Tags: ${_savedUserData.tags}");
 

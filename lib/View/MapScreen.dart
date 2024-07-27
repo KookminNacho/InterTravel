@@ -12,7 +12,7 @@ import '../ViewModel/DiaryProvider.dart';
 import '../ViewModel/ImageProvider.dart';
 import '../ViewModel/UIViewMode.dart';
 import '../ViewModel/UserData.dart';
-import '../WelcomePage.dart';
+import 'WelcomePage.dart';
 import 'AddNewDiaryPage.dart';
 import 'DIalog/ListDialog.dart';
 import 'DIalog/SettingDialog.dart';

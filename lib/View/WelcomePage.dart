@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intertravel/View/DiaryPage.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../Model/Diary.dart';
-import '../Util/Constrains.dart';
-import '../ViewModel/DiaryProvider.dart';
-import '../ViewModel/ImageProvider.dart';
-import '../ViewModel/UserData.dart';
-import 'View/DIalog/TravelSuggestionDialog.dart';
+import '../../Model/Diary.dart';
+import '../../Util/Constrains.dart';
+import '../../ViewModel/DiaryProvider.dart';
+import '../../ViewModel/ImageProvider.dart';
+import '../../ViewModel/UserData.dart';
+import 'DIalog/TravelSuggestionDialog.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -78,7 +79,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(userData.displayName,
                         style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w100)),
+                            fontSize: 18, fontWeight: FontWeight.w600)),
                   ),
                 ],
               ),
@@ -125,16 +126,11 @@ class _WelcomePageState extends State<WelcomePage> {
             context: context,
             builder: (context) => AlertDialog(
               title: const Text("AI 여행 추천"),
-              content: const SizedBox(
+              content: SizedBox(
                 height: 500,
+                width: MediaQuery.of(context).size.width * 0.8,
                 child: TravelSuggestionDialog(),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("확인"),
-                ),
-              ],
             ),
           );
         }
@@ -176,70 +172,66 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Widget _buildDiaryCard(Diary diary, DiaryProvider diaryProvider) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: Card(
-          elevation: 4,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: InkWell(
-            onTap: () {
-              diaryProvider.selectDiary(diary);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const DiaryPage()));
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(15)),
-                  child: diary.imageURI.isNotEmpty
-                      ? Image.network(
-                          diary.imageURI[0],
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          cacheHeight: 1024,
-                        )
-                      : Container(
-                          width: double.infinity,
-                          height: 200,
-                          color: Colors.grey[300],
-                          child: Icon(Icons.image,
-                              size: 50, color: Colors.grey[600]),
-                        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: Card(
+        elevation: 4,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: InkWell(
+          onTap: () {
+            diaryProvider.selectDiary(diary);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const DiaryPage()));
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(15)),
+                child: diary.imageURI.isNotEmpty
+                    ? Image.network(
+                        diary.imageURI[0],
+                        height: 150,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        cacheHeight: 1024,
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: 150,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.image,
+                            size: 50, color: Colors.grey[600]),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      diary.title,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      diary.content,
+                      style: const TextStyle(fontSize: 14),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      DateFormat('yyyy년 MM월 dd일').format(diary.date),
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        diary.title,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        diary.content,
-                        style: const TextStyle(fontSize: 16),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        DateFormat('yyyy년 MM월 dd일 HH:mm').format(diary.date),
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
